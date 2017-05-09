@@ -3,22 +3,21 @@
  * using inline code instead of interrupts.
  *
  * Example Pulse Sensors:
- *   Pulse Sensor Amped (http://www.pulsesensor.com)
+ *   Pulse Sensor Amped (https://www.pulsesensor.com)
  *     available through SparkFun, Adafruit, and others.
- *   Grove Pulse Sensor (TODO)
  *   
  * This code has been tested with the Pulse Sensor Amped
  * and Arduino 101 and Arduino Uno.
  * 
- * Copyright (c) 2016 Bradford Needham, North Plains, Oregon, USA
- * @bneedhamia, https://www.needhamia.com
+ * Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
+ * @bneedhamia, https://bluepapertech.com
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
  * 
  * This software is not intended for medical use.
  */
 
-#include <PulseSensorBPM.h>
+#include <PulseSensorAmpedObject.h>
 
 /*
  * Pinout:
@@ -120,7 +119,7 @@ int fadePWM;
 /*
  * The per-sample processing code.
  */
-PulseSensorBPM pulseDetector(PIN_INPUT, MICROS_PER_READ / 1000L);
+PulseSensorAmpedObject pulseDetector(PIN_INPUT, MICROS_PER_READ / 1000L);
 
 void setup() {
   /*

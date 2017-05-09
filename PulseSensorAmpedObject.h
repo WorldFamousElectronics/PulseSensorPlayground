@@ -1,24 +1,25 @@
 /*
  * Beats-Per-Minute (BPM) heart rate calculation library.
  * Based on Pulse Sensor Amped 1.4 by Joel Murphy and Yury Gitman
- * See http://www.pulsesensor.com
+ * See https://www.pulsesensor.com
  * and https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
  * 
  * This library supports interrupt and non-interrupt use, enabling its
  * use in a wider set of Arduino compatible boards and using a smaller set
  * of I/O pins than the original Sketch.
  * 
- * Source, etc. available at https://github.com/bneedhamia/PulseSensorBPM
+ * Source, etc. available at
+ * https://github.com/bneedhamia/PulseSensorAmpedObject
  * 
- * Portions Copyright (c) 2016 Bradford Needham, North Plains, Oregon
- * @bneedhamia, https://www.needhamia.com
+ * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon
+ * @bneedhamia, https://bluepapertech.com
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
  * 
  * This software is not intended for medical use.
  */
-#ifndef pulsesensorbpm_h
-#define pulsesensorbpm_h
+#ifndef pulse_sensor_amped_object_h
+#define pulse_sensor_amped_object_h
 
 #include <Arduino.h>
 
@@ -27,9 +28,9 @@
  *   rightmost (lsb) 4 hexidecimal digits = minor version number;
  *   next left 4 digits = major version number.
  */
-#define PULSE_AMPED_BPM_VERSION 0x00010000L
+#define PULSE_SENSOR_AMPED_OBJECT_VERSION 0x00010000L
 
-class PulseSensorBPM {
+class PulseSensorAmpedObject {
   private:
     int pinPulse;                   // Analog Input pin the Pulse Sensor is connected to.
     
@@ -55,11 +56,11 @@ class PulseSensorBPM {
 
   public:
     static long getVersion();
-    PulseSensorBPM(int pulse_pin, unsigned long sample_interval_ms);
+    PulseSensorAmpedObject(int pulse_pin, unsigned long sample_interval_ms);
     int getSignal();
     int getBPM();
     int getIBI();
     boolean isPulse();
     boolean readSensor();
 };
-#endif // pulsesensorbpm_h
+#endif // pulse_sensor_amped_object_h

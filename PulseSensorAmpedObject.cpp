@@ -1,23 +1,24 @@
 /*
  * Heart Rate Calculation library.
  * Based on Pulse Sensor Amped 1.4 by Joel Murphy and Yury Gitman
- * See http://www.pulsesensor.com
+ * See https://www.pulsesensor.com
  * and https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
  * 
- * Portions Copyright (c) 2016 Bradford Needham, North Plains, Oregon
- * @bneedhamia, https://www.needhamia.com
+ * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon
+ * @bneedhamia, https://bluepapertech.com
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
+ * 
  * This software is not intended for medical use.
  */
 
-#include <PulseSensorBPM.h>
+#include <PulseSensorAmpedObject.h>
 
 /*
  * Returns the current version of the library.
  */
-long PulseSensorBPM::getVersion() {
-  return(PULSE_AMPED_BPM_VERSION);
+long PulseSensorAmpedObject::getVersion() {
+  return(PULSE_SENSOR_AMPED_OBJECT_VERSION);
 }
 
 /*
@@ -25,15 +26,15 @@ long PulseSensorBPM::getVersion() {
  * pulse_pin = Analog Input. Arduino pin number
  *   to read the pulse signal from.  For example, A0
  * sample_interval_ms = the expected time between calls
- *   to PulseSensorBPM::readSensor(), in Milliseconds.
+ *   to PulseSensorAmpedObject::readSensor(), in Milliseconds.
  *   The application is responsible for calling readSensor()
  *   every sample_interval_ms, either through an Timer interrupt
  *   or by using delayMicroseconds().  See the Examples.
  *   
  * This code assumes that the application constructs
- * a PulseSensorBPM object only once.
+ * a PulseSensorAmpedObject object only once.
  */
-PulseSensorBPM::PulseSensorBPM(int pulse_pin, unsigned long sample_interval_ms) {
+PulseSensorAmpedObject::PulseSensorAmpedObject(int pulse_pin, unsigned long sample_interval_ms) {
   pinPulse = pulse_pin;
   sampleIntervalMs = sample_interval_ms;
 
@@ -56,14 +57,14 @@ PulseSensorBPM::PulseSensorBPM(int pulse_pin, unsigned long sample_interval_ms) 
  * Returns the most recent sample read from the pulse sensor.
  * Range 0..1023
  */
-int PulseSensorBPM::getSignal() {
+int PulseSensorAmpedObject::getSignal() {
   return(Signal);
 }
 
 /*
  * Returs the most recent BPM (Beats Per Minute) calculation.
  */
-int PulseSensorBPM::getBPM() {
+int PulseSensorAmpedObject::getBPM() {
   return(BPM);
 }
 
@@ -71,7 +72,7 @@ int PulseSensorBPM::getBPM() {
  * Returns the most recent IBI (Inter-Beat Inverval, in milliseconds)
  * calculation.
  */
-int PulseSensorBPM::getIBI() {
+int PulseSensorAmpedObject::getIBI() {
   return(IBI);
 }
 
@@ -82,7 +83,7 @@ int PulseSensorBPM::getIBI() {
  * 
  * Used in the original code to drive an LED.
  */
-boolean PulseSensorBPM::isPulse() {
+boolean PulseSensorAmpedObject::isPulse() {
   return(Pulse);
 }
 
@@ -91,7 +92,7 @@ boolean PulseSensorBPM::isPulse() {
  * Returns true if the start of a pulse was found
  * (the variable QS in the original code), false otherwise.
  */
-boolean PulseSensorBPM::readSensor() {
+boolean PulseSensorAmpedObject::readSensor() {
   boolean QS = false;                        // value to return. True if we found the start of a pulse.
   
   Signal = analogRead(pinPulse);             // read a sample from the pulse sensor
