@@ -21,7 +21,7 @@
  * This software is not intended for medical use.
  */
  
-#include <PulseSensorAmpedObject.h>
+#include <PulseSensorPlayground.h>
 
 /*
  * Pinout:
@@ -59,7 +59,7 @@ int fadePWM;
 /*
  * The per-sample processing code.
  */
-PulseSensorAmpedObject pulseDetector(PIN_INPUT, MICROS_PER_READ / 1000L);
+PulseSensorPlayground pulseSensor;
 
 /*
  * If true, we've seen a beat that hasn't yet been printed.
@@ -92,6 +92,9 @@ void setup() {
   fadePWM = 0;
   analogWrite(PIN_FADE, fadePWM);   // sets PWM duty cycle
 
+  // Create the beat detector
+  pulseSensor.beginBeatDetection(PIN_INPUT, MICROS_PER_READ / 1000L);
+
   QS = false;
   interruptSetup(); // start the interrupt timer.
 }
@@ -106,7 +109,7 @@ void loop() {
   delay(20);
   
   Serial.print('S');
-  Serial.println(pulseDetector.getSignal());
+  Serial.println(pulseSensor.getBeatSignal());
 
   // Coincidentally, fade the LED a bit.
   fadePWM -= PWM_STEPS_PER_FADE;
@@ -116,7 +119,7 @@ void loop() {
   analogWrite(PIN_FADE, fadePWM);
 
   // Blink the non-fading LED when the start of a pulse is detected.
-  if (pulseDetector.isPulse()) {
+  if (pulseSensor.isBeat()) {
     digitalWrite(PIN_BLINK, HIGH);
   } else {
     digitalWrite(PIN_BLINK, LOW);
@@ -128,9 +131,9 @@ void loop() {
     analogWrite(PIN_FADE, fadePWM);
     
     Serial.print('B');
-    Serial.println(pulseDetector.getBPM());
+    Serial.println(pulseSensor.getBeatsPerMinute());
     Serial.print('Q');
-    Serial.println(pulseDetector.getIBI());
+    Serial.println(pulseSensor.getInterBeatIntervalMs());
     
     QS = false;
   }
@@ -153,7 +156,7 @@ void interruptSetup(){
 // Timer 2 makes sure that we take a reading every 2 miliseconds
 ISR(TIMER2_COMPA_vect){                    // triggered when Timer2 counts to 124
   cli();                                   // disable interrupts while we do this
-  if (pulseDetector.readSensor()) {
+  if (pulseSensor.readPulseSensor()) {
     QS = true;
   }
   sei();                                   // enable interrupts when youre done!

@@ -9,7 +9,7 @@
  * of I/O pins than the original Sketch.
  * 
  * Source, etc. available at
- * https://github.com/bneedhamia/PulseSensorAmpedObject
+ * https://github.com/bneedhamia/PulseSensorBeatDetector
  * 
  * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon
  * @bneedhamia, https://bluepapertech.com
@@ -18,8 +18,8 @@
  * 
  * This software is not intended for medical use.
  */
-#ifndef pulse_sensor_amped_object_h
-#define pulse_sensor_amped_object_h
+#ifndef PULSE_SENSOR_BEAT_DETECTOR_H
+#define PULSE_SENSOR_BEAT_DETECTOR_H
 
 #include <Arduino.h>
 
@@ -28,9 +28,18 @@
  *   rightmost (lsb) 4 hexidecimal digits = minor version number;
  *   next left 4 digits = major version number.
  */
-#define PULSE_SENSOR_AMPED_OBJECT_VERSION 0x00010000L
+#define PULSE_SENSOR_BEAT_DETECTOR_VERSION 0x00010000L
 
-class PulseSensorAmpedObject {
+class PulseSensorBeatDetector {
+  public:
+    static long getVersion();
+    PulseSensorBeatDetector(int pulse_pin, unsigned long sample_interval_ms);
+    int getSignal();
+    int getBPM();
+    int getIBI();
+    boolean isPulse();
+    boolean readSensor();
+
   private:
     int pinPulse;                   // Analog Input pin the Pulse Sensor is connected to.
     
@@ -53,14 +62,5 @@ class PulseSensorAmpedObject {
     int amp;                         // used to hold amplitude of pulse waveform, seeded (sample value)
     boolean firstBeat;               // used to seed rate array so we startup with reasonable BPM
     boolean secondBeat;              // used to seed rate array so we startup with reasonable BPM
-
-  public:
-    static long getVersion();
-    PulseSensorAmpedObject(int pulse_pin, unsigned long sample_interval_ms);
-    int getSignal();
-    int getBPM();
-    int getIBI();
-    boolean isPulse();
-    boolean readSensor();
 };
-#endif // pulse_sensor_amped_object_h
+#endif // PULSE_SENSOR_BEAT_DETECTOR_H

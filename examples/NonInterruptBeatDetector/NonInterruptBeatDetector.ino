@@ -17,7 +17,7 @@
  * This software is not intended for medical use.
  */
 
-#include <PulseSensorAmpedObject.h>
+#include <PulseSensorPlayground.h>
 
 /*
  * Pinout:
@@ -119,7 +119,7 @@ int fadePWM;
 /*
  * The per-sample processing code.
  */
-PulseSensorAmpedObject pulseDetector(PIN_INPUT, MICROS_PER_READ / 1000L);
+PulseSensorPlayground pulseSensor;
 
 void setup() {
   /*
@@ -149,6 +149,9 @@ void setup() {
   samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
   lastReportMicros = 0L;
   resetJitter();
+  
+  // Setup our pulse detector
+  pulseSensor.beginBeatDetection(PIN_INPUT, MICROS_PER_READ / 1000L);
 
   // wait one sample interval before starting to search for pulses.
   wantMicros = micros() + MICROS_PER_READ;
@@ -215,9 +218,9 @@ void loop() {
   }
   
   wantMicros = nowMicros + MICROS_PER_READ;
-  boolean QS = pulseDetector.readSensor();
+  boolean QS = pulseSensor.readPulseSensor();
 
-  if (pulseDetector.isPulse()) {
+  if (pulseSensor.isBeat()) {
     digitalWrite(PIN_BLINK, HIGH);
   } else {
     digitalWrite(PIN_BLINK, LOW);
@@ -248,7 +251,7 @@ void loop() {
     samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
 
     Serial.print('S');
-    Serial.println(pulseDetector.getSignal());
+    Serial.println(pulseSensor.getBeatSignal());
 
     // Coincidentally, fade the LED a bit.
     fadePWM -= PWM_STEPS_PER_FADE;
@@ -262,9 +265,9 @@ void loop() {
   // Every beat, report the heart rate and inter-beat-interval
   if (QS) {
     Serial.print('B');
-    Serial.println(pulseDetector.getBPM());
+    Serial.println(pulseSensor.getBeatsPerMinute());
     Serial.print('Q');
-    Serial.println(pulseDetector.getIBI());
+    Serial.println(pulseSensor.getInterBeatIntervalMs());
   }
 
 }
