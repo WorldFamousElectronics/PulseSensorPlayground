@@ -1,5 +1,13 @@
 /*
+ * A central Playground object to exercise the PulseSensor.
+ * See https://www.pulsesensor.com to get started.
  * 
+ * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
+ * @bneedhamia, https://bluepapertech.com
+ * Licensed under the MIT License, a copy of which
+ * should have been included with this software.
+ * 
+ * This software is not intended for medical use.
  */
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
@@ -10,15 +18,18 @@
 class PulseSensorPlayground {
   public:
     PulseSensorBeatDetector *pBeat;
-    void beginBeatDetection(int pulse_pin
-        , unsigned long sample_interval_ms) {
-      pBeat = new PulseSensorBeatDetector(pulse_pin, sample_interval_ms);
+    void beginBeatDetection() {
+      pBeat = new PulseSensorBeatDetector();
     }
-    int getBeatSignal() { return pBeat->getSignal(); }
+    void setBeatSampleIntervalMs(long sampleIntervalMs) {
+      pBeat->setSampleIntervalMs(sampleIntervalMs);
+	}
     int getBeatsPerMinute() { return pBeat->getBPM(); }
     int getInterBeatIntervalMs() { return pBeat->getIBI(); }
-    boolean isBeat() { return pBeat->isPulse(); }
-    boolean readPulseSensor() { return pBeat->readSensor(); }
+    boolean isBeat() { return pBeat->isBeat(); }
+    boolean addBeatValue(int analogValue) {
+      return pBeat->addBeatValue(analogValue);
+    }
     
 };
 

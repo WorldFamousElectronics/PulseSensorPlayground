@@ -4,7 +4,7 @@
  * See https://www.pulsesensor.com
  * and https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
  * 
- * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon
+ * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
  * @bneedhamia, https://bluepapertech.com
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
@@ -15,32 +15,13 @@
 #include <PulseSensorBeatDetector.h>
 
 /*
- * Returns the current version of the library.
+ * Constructs a Pulse detector that will process PulseSensor voltages
+ * that the caller reads from the PulseSensor.
  */
-long PulseSensorBeatDetector::getVersion() {
-  return(PULSE_SENSOR_BEAT_DETECTOR_VERSION);
-}
-
-/*
- * Constructs a Pulse Sensor manager.
- * pulse_pin = Analog Input. Arduino pin number
- *   to read the pulse signal from.  For example, A0
- * sample_interval_ms = the expected time between calls
- *   to PulseSensorBeatDetector::readSensor(), in Milliseconds.
- *   The application is responsible for calling readSensor()
- *   every sample_interval_ms, either through an Timer interrupt
- *   or by using delayMicroseconds().  See the Examples.
- *   
- * This code assumes that the application constructs
- * a PulseSensorBeatDetector object only once.
- */
-PulseSensorBeatDetector::PulseSensorBeatDetector(int pulse_pin, unsigned long sample_interval_ms) {
-  pinPulse = pulse_pin;
-  sampleIntervalMs = sample_interval_ms;
-
-  // pulse_pin needs no setup for analogRead().
+PulseSensorBeatDetector::PulseSensorBeatDetector() {
 
   // Initialize (seed) the pulse detector
+  sampleIntervalMs = DEFAULT_SAMPLE_INTERVAL_MS;
   IBI = 600;                  // 600ms per beat = 100 Beats Per Minute (BPM)
   Pulse = false; 
   sampleCounter = 0;
@@ -54,15 +35,16 @@ PulseSensorBeatDetector::PulseSensorBeatDetector(int pulse_pin, unsigned long sa
 }
 
 /*
- * Returns the most recent sample read from the pulse sensor.
- * Range 0..1023
+ * Sets the expected time between calls to addBeatValue().
+ * newSampleIntervalMs = the time, in milliseconds, between reads
+ * of the analog value from the PulseSensor.
  */
-int PulseSensorBeatDetector::getSignal() {
-  return(Signal);
+void PulseSensorBeatDetector::setSampleIntervalMs(long newSampleIntervalMs) {
+  sampleIntervalMs = newSampleIntervalMs;
 }
 
 /*
- * Returs the most recent BPM (Beats Per Minute) calculation.
+ * Returns the most recent BPM (Beats Per Minute) calculation.
  */
 int PulseSensorBeatDetector::getBPM() {
   return(BPM);
@@ -83,19 +65,21 @@ int PulseSensorBeatDetector::getIBI() {
  * 
  * Used in the original code to drive an LED.
  */
-boolean PulseSensorBeatDetector::isPulse() {
+boolean PulseSensorBeatDetector::isBeat() {
   return(Pulse);
 }
 
 /*
- * Reads and processes a sample from the Pulse Sensor.
+ * Processes a sample from the Pulse Sensor.
  * Returns true if the start of a pulse was found
  * (the variable QS in the original code), false otherwise.
+ * 
+ * This is the main pulse detection algorithm.
  */
-	boolean PulseSensorBeatDetector::readSensor() {
+	boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
   boolean QS = false;                        // value to return. True if we found the start of a pulse.
   
-  Signal = analogRead(pinPulse);             // read a sample from the pulse sensor
+  Signal = analogValue;                      // Record this sample from the pulse sensor
   
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise

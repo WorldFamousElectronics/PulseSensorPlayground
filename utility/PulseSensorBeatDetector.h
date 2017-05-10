@@ -11,7 +11,7 @@
  * Source, etc. available at
  * https://github.com/bneedhamia/PulseSensorBeatDetector
  * 
- * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon
+ * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
  * @bneedhamia, https://bluepapertech.com
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
@@ -24,29 +24,24 @@
 #include <Arduino.h>
 
 /*
- * PulseAmpedSensorVersion = binary version number of this library.
- *   rightmost (lsb) 4 hexidecimal digits = minor version number;
- *   next left 4 digits = major version number.
+ * Default expected time between samples from the PulseSensor.
  */
-#define PULSE_SENSOR_BEAT_DETECTOR_VERSION 0x00010000L
+const long DEFAULT_SAMPLE_INTERVAL_MS = 2L;
 
 class PulseSensorBeatDetector {
   public:
-    static long getVersion();
-    PulseSensorBeatDetector(int pulse_pin, unsigned long sample_interval_ms);
-    int getSignal();
+    PulseSensorBeatDetector();
+    void setSampleIntervalMs(long newSampleIntervalMs);
     int getBPM();
     int getIBI();
-    boolean isPulse();
-    boolean readSensor();
+    boolean isBeat();
+    boolean addBeatValue(int analogValue);
 
   private:
-    int pinPulse;                   // Analog Input pin the Pulse Sensor is connected to.
-    
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
     volatile int BPM;                // int that holds raw Analog in 0. updated every call to readSensor()
-    volatile int Signal;             // holds the incoming raw data (0..1023)
+    volatile int Signal;             // holds the latest incoming raw data (0..1023)
     volatile int IBI;                // int that holds the time interval (ms) between beats! Must be seeded! 
     volatile boolean Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
     

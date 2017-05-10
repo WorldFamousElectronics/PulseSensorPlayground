@@ -1,19 +1,14 @@
 /*
- * Code to detect pulses from a pulse Oximeter sensor,
+ * Code to detect pulses from the PulseSensor,
  * using an ARM-based interrupt service routine.
  * Not compatible with non-ARM boards such as Arduino 101.
+ *
+ * See https://www.pulsesensor.com
  * 
  * Based on Joel Murphy and Yury Gitman's Pulse Sensor code, at
  * https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
- *
- * Example Pulse Sensors:
- *   Pulse Sensor Amped (https://www.pulsesensor.com)
- *     available through SparkFun, Adafruit, and others.
- *   
- * This code has been tested with the Pulse Sensor Amped
- * and Arduino Uno.
  * 
- * Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
+ * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
  * @bneedhamia, https://bluepapertech.com
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
@@ -43,7 +38,9 @@ const int PIN_FADE = 5;      // must be a pin that supports PWM. Can't be pin 3 
 
 /*
  * Planned time (microseconds) between calls to readSensor().
- * Note: interruptSetup() assumes this value is 2 milliseconds (2000 microseconds).
+ * Note: interruptSetup() is hard-coded to 2 milliseconds (2000 microseconds).
+ *
+ * If you change this value, also change the code in interruptSetup().
  */
 const unsigned long MICROS_PER_READ = 2 * 1000L;
 
@@ -63,10 +60,17 @@ PulseSensorPlayground pulseSensor;
 
 /*
  * If true, we've seen a beat that hasn't yet been printed.
- * Set in the ISR.
+ * Set in the ISR (Interrupt Service Routine).
  * Cleared in loop().
  */
 volatile boolean QS;
+
+/*
+ * the latest analog value we've read from the PulseSensor.
+ * Set in the ISR.
+ */
+volatile int lastSampleValue;
+
 
 void setup() {
   /*
@@ -85,15 +89,16 @@ void setup() {
   if (HAS_A_REF) {
     analogReference(EXTERNAL);
   }
-  // PIN_INPUT is set up by the pulseDetector constructor.
+  // PIN_INPUT needs no special setup.
   pinMode(PIN_BLINK, OUTPUT);
   digitalWrite(PIN_BLINK, LOW);
   pinMode(PIN_FADE, OUTPUT);
   fadePWM = 0;
   analogWrite(PIN_FADE, fadePWM);   // sets PWM duty cycle
 
-  // Create the beat detector
-  pulseSensor.beginBeatDetection(PIN_INPUT, MICROS_PER_READ / 1000L);
+  // Setup our pulse detector
+  pulseSensor.beginBeatDetection();
+  pulseSensor.setBeatSampleIntervalMs(MICROS_PER_READ / 1000L);
 
   QS = false;
   interruptSetup(); // start the interrupt timer.
@@ -109,7 +114,7 @@ void loop() {
   delay(20);
   
   Serial.print('S');
-  Serial.println(pulseSensor.getBeatSignal());
+  Serial.println(lastSampleValue);
 
   // Coincidentally, fade the LED a bit.
   fadePWM -= PWM_STEPS_PER_FADE;
@@ -141,7 +146,8 @@ void loop() {
 }
 
 /*
- * Sets up a Timer Interrupt for every 2ms
+ * Sets up a Timer Interrupt for every 2ms.
+ * If you change this interval, also change the MICROS_PER_READ value.
  */
 void interruptSetup(){     
   // Initializes Timer2 to throw an interrupt every 2mS.
@@ -156,10 +162,15 @@ void interruptSetup(){
 // Timer 2 makes sure that we take a reading every 2 miliseconds
 ISR(TIMER2_COMPA_vect){                    // triggered when Timer2 counts to 124
   cli();                                   // disable interrupts while we do this
-  if (pulseSensor.readPulseSensor()) {
+
+  // Read the voltage from the PulseSensor
+  lastSampleValue = analogRead(PIN_INPUT);
+
+  // Give that voltage to the pulse detector.
+  if (pulseSensor.addBeatValue(lastSampleValue)) {
     QS = true;
   }
+
   sei();                                   // enable interrupts when youre done!
+
 }// end isr
-
-
