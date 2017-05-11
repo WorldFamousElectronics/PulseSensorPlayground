@@ -5,11 +5,10 @@
  *
  * See https://www.pulsesensor.com
  * 
- * Based on Joel Murphy and Yury Gitman's Pulse Sensor code, at
- * https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
- * 
+ * Based on Pulse Sensor Amped 1.5.0 by Joel Murphy and Yury Gitman.
  * Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
  * @bneedhamia, https://bluepapertech.com
+ *
  * Licensed under the MIT License, a copy of which
  * should have been included with this software.
  * 
@@ -17,6 +16,18 @@
  */
  
 #include <PulseSensorPlayground.h>
+
+/*
+ * The format of our output.
+ *
+ * Set this to PROCESSING_VISUALIZER if you're going to run
+ *  the Processing Visualizer Sketch.
+ *  See https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer
+ * 
+ * Set this to SERIAL_PLOTTER if you're going to run
+ *  the Arduino IDE's Serial Plotter.
+ */
+const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
 
 /*
  * Pinout:
@@ -54,7 +65,7 @@ const int PWM_STEPS_PER_FADE = 12;
 int fadePWM;
 
 /*
- * The per-sample processing code.
+ * All the PulseSensor Playground functions.
  */
 PulseSensorPlayground pulseSensor;
 
@@ -71,7 +82,6 @@ volatile boolean QS;
  */
 volatile int lastSampleValue;
 
-
 void setup() {
   /*
    * Use 115200 baud because that's what the Processing Sketch expects to read,
@@ -83,6 +93,7 @@ void setup() {
    * not work properly.
    */
   Serial.begin(115200);
+  pulseSensor.beginSerialOutput(OUTPUT_TYPE);
 
   // Set up the I/O pins
   
@@ -106,22 +117,9 @@ void setup() {
 
 void loop() {
   
-  /*
-   * Every so often, send the latest Sample to the Processing Sketch.
-   * We don't print every sample, because our baud rate
-   * won't support that much I/O.
-   */
-  delay(20);
-  
-  Serial.print('S');
-  Serial.println(lastSampleValue);
-
-  // Coincidentally, fade the LED a bit.
-  fadePWM -= PWM_STEPS_PER_FADE;
-  if (fadePWM < 0) {
-    fadePWM = 0;
-  }
-  analogWrite(PIN_FADE, fadePWM);
+  pulseSensor.output(lastSampleValue
+    , pulseSensor.getBeatsPerMinute()
+    , pulseSensor.getInterBeatIntervalMs());
 
   // Blink the non-fading LED when the start of a pulse is detected.
   if (pulseSensor.isBeat()) {
@@ -133,16 +131,28 @@ void loop() {
   // If the ISR has seen a beat, print the per-beat information.
   if (QS) {
     fadePWM = 255;  // start fading on the start of each beat.
-    analogWrite(PIN_FADE, fadePWM);
     
-    Serial.print('B');
-    Serial.println(pulseSensor.getBeatsPerMinute());
-    Serial.print('Q');
-    Serial.println(pulseSensor.getInterBeatIntervalMs());
+    // Output the per-beat measurements.
+    pulseSensor.outputBeat(
+      pulseSensor.getBeatsPerMinute()
+     , pulseSensor.getInterBeatIntervalMs());
     
-    QS = false;
+    QS = false;     // get ready for the next beat.
   }
 
+  // fade the LED a bit.
+  fadePWM -= PWM_STEPS_PER_FADE;
+  if (fadePWM < 0) {
+    fadePWM = 0;
+  }
+  analogWrite(PIN_FADE, fadePWM);
+
+  /*
+   * Wait a bit.
+   * We don't output every sample, because our baud rate
+   * won't support that much I/O.
+   */
+   delay(20);
 }
 
 /*
