@@ -97,9 +97,12 @@ void setup() {
 
   // Set up the I/O pins
   
+#if !defined (__arc__) // EXTERNAL causes a compile error on Arduino 101.
   if (HAS_A_REF) {
     analogReference(EXTERNAL);
   }
+#endif
+
   // PIN_INPUT needs no special setup.
   pinMode(PIN_BLINK, OUTPUT);
   digitalWrite(PIN_BLINK, LOW);
