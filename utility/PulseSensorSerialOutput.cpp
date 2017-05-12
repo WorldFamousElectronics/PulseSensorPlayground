@@ -63,8 +63,17 @@ void PulseSensorSerialOutput::output(int signal, int bpm, int ibi) {
    and the current one.
 */
 void PulseSensorSerialOutput::outputBeat(int bpm, int ibi) {
-  outputToSerial('B', bpm);
-  outputToSerial('Q', ibi);
+  switch (OutputType) {
+    case PROCESSING_VISUALIZER:
+      outputToSerial('B', bpm);
+      outputToSerial('Q', ibi);
+      break;
+    case SERIAL_PLOTTER:
+      // We already reported bpm and ibi in the per-sample report.
+      break;
+    default: // Unknown output type. Do nothing.
+      break;
+  }    
 }
 
 /*
