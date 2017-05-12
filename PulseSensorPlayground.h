@@ -16,12 +16,17 @@
 #include <Arduino.h>
 #include "utility/PulseSensorBeatDetector.h"
 #include "utility/PulseSensorSerialOutput.h"
+#include "utility/PulseSensorTimingStatistics.h"
 
 class PulseSensorPlayground {
   public:
-    // We create these in begin() functions to minimize our memory footprint.
+    /*
+     * We fill these pointers in separate begin() functions
+     * to minimize our memory footprint.
+     */
     PulseSensorBeatDetector *pBeat;
     PulseSensorSerialOutput *pSerial;
+    PulseSensorTimingStatistics *pTiming;
 
     /*
      * Beat detection functions
@@ -53,6 +58,26 @@ class PulseSensorPlayground {
     void outputBeat(int bpm, int ibi) {
       pSerial->outputBeat(bpm, ibi);
     }
-};
 
+    /*
+     * Timing Statistics functions
+     */
+    void beginTimingStatistics(long sampleIntervalMicros, int samplesToMeasure) {
+      pTiming = new PulseSensorTimingStatistics(
+          sampleIntervalMicros
+          , samplesToMeasure);
+    }
+    void resetStatistics() {
+      pTiming->resetStatistics();
+    }
+    int recordSampleTime() {
+      return pTiming->recordSampleTime();
+    }
+    void outputStatistics() { pTiming->outputStatistics(); }
+    int getMinJitterMicros() { return pTiming->getMinJitterMicros(); }
+    int getMaxJitterMicros() { return pTiming->getMaxJitterMicros(); }
+    int getAverageOffsetMicros() {
+      return pTiming->getAverageOffsetMicros();
+    }
+};
 #endif // PULSE_SENSOR_PLAYGROUND_H

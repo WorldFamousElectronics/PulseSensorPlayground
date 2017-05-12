@@ -28,7 +28,7 @@
 
 class PulseSensorSerialOutput {
   public:
-    PulseSensorSerialOutput::PulseSensorSerialOutput(int outputType);
+    PulseSensorSerialOutput(int outputType);
     void output(int signal, int bpm, int ibi);
     void outputBeat(int bpm, int ibi);
   
