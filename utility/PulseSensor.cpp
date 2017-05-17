@@ -1,27 +1,34 @@
 /*
-   PulseSensor Heart Rate Calculation library.
-   Based on Pulse Sensor Amped 1.4 by Joel Murphy and Yury Gitman
-   See https://www.pulsesensor.com
-   and https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
+   PulseSensor measurement manager.
+   See https://www.pulsesensor.com to get started.
 
-   Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
-   @bneedhamia, https://bluepapertech.com
+   Copyright World Famous Electronics LLC - see LICENSE
+   Contributors:
+     Joel Murphy, https://pulsesensor.com
+     Yury Gitman, https://pulsesensor.com
+     Bradford Needham, @bneedhamia, https://bluepapertech.com
+
    Licensed under the MIT License, a copy of which
    should have been included with this software.
 
    This software is not intended for medical use.
 */
-
-#include <PulseSensorBeatDetector.h>
+#include <PulseSensor.h>
 
 /*
    Constructs a Pulse detector that will process PulseSensor voltages
    that the caller reads from the PulseSensor.
 */
-PulseSensorBeatDetector::PulseSensorBeatDetector() {
+PulseSensor::PulseSensor() {
+  // Initialize the default configuration
+  InputPin = A0;
+  BlinkPin = -1;
+  FadePin = -1;
 
   // Initialize (seed) the pulse detector
-  sampleIntervalMs = DEFAULT_SAMPLE_INTERVAL_MS;
+  QS = false;
+  sampleIntervalMs = PulseSensorPlayground::MICROS_PER_READ;
+  BPM = 0;
   IBI = 600;                  // 600ms per beat = 100 Beats Per Minute (BPM)
   Pulse = false;
   sampleCounter = 0;
@@ -34,52 +41,49 @@ PulseSensorBeatDetector::PulseSensorBeatDetector() {
   secondBeat = false;         // not yet looking for the second beat in a row
 }
 
-/*
-   Sets the expected time between calls to addBeatValue().
-   newSampleIntervalMs = the time, in milliseconds, between reads
-   of the analog value from the PulseSensor.
-*/
-void PulseSensorBeatDetector::setSampleIntervalMs(long newSampleIntervalMs) {
-  sampleIntervalMs = newSampleIntervalMs;
+void PulseSensor::analogInput(int inputPin) {
+  InputPin = inputPin;
 }
 
-/*
-   Returns the most recent BPM (Beats Per Minute) calculation.
-*/
-int PulseSensorBeatDetector::getBPM() {
-  return (BPM);
+void PulseSensor::blinkOnPulse(int blinkPin) {
+  BlinkPin = blinkPin;
 }
 
-/*
-   Returns the most recent IBI (Inter-Beat Inverval, in milliseconds)
-   calculation.
-*/
-int PulseSensorBeatDetector::getIBI() {
-  return (IBI);
+void PulseSensor::fadeOnPulse(int fadePin) {
+  FadePin = fadePin;
 }
 
-/*
-   Returns the curent state of the 'Pulse' variable,
-   which is true if we belive we're currently sampling the major pulse
-   part of the waveform.
-
-   Used in the original code to drive an LED.
-*/
-boolean PulseSensorBeatDetector::isBeat() {
-  return (Pulse);
+int PulseSensor::getLatestSample() {
+  return Signal;
 }
 
-/*
-   Processes a sample from the Pulse Sensor.
-   Returns true if the start of a pulse was found
-   (the variable QS in the original code), false otherwise.
+int PulseSensor::getBeatsPerMinute() {
+  return BPM;
+}
 
-   This is the main pulse detection algorithm.
-*/
-boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
-  boolean QS = false;                        // value to return. True if we found the start of a pulse.
+int PulseSensor::getInterBeatIntervalMs() {
+  return IBI;
+}
 
-  Signal = analogValue;                      // Record this sample from the pulse sensor
+boolean PulseSensor::sawStartOfBeat() {
+  // NOTE: There's a race that could miss a QS.
+  // Should this be surrounded by interrupts off/on?
+  boolean qs = QS;
+  QS = false;
+
+  return QS;
+}
+
+boolean PulseSensor::isInsideBeat() {
+  return Pulse; //NOTE: Is that the right variable?
+}
+
+void readNextSample() {
+  // We assume assigning to an int is atomic.
+  Signal = analogRead(InputPin);
+}
+
+void PulseSensor::processLatestSample() {
 
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
@@ -113,7 +117,8 @@ boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
       if (firstBeat) {                       // if it's the first time we found a beat, if firstBeat == TRUE
         firstBeat = false;                   // clear firstBeat flag
         secondBeat = true;                   // set the second beat flag
-        return (QS);                         // IBI value is unreliable so discard it
+        // IBI value is unreliable so discard it
+        return;
       }
 
 
@@ -149,6 +154,4 @@ boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
   }
-
-  return (QS);
 }
