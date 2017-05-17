@@ -4,9 +4,9 @@
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
-     Joel Murphy, https://pulsesensor.com
-     Yury Gitman, https://pulsesensor.com
-     Bradford Needham, @bneedhamia, https://bluepapertech.com
+     Joel Murphy, https://pulsesensor.com Yury Gitman, 
+     * https://pulsesensor.com Bradford Needham, @bneedhamia, 
+     https://bluepapertech.com
 
    Licensed under the MIT License, a copy of which
    should have been included with this software.
@@ -24,6 +24,17 @@ PulseSensor::PulseSensor() {
   InputPin = A0;
   BlinkPin = -1;
   FadePin = -1;
+  
+  // Initialize the LEDs state TODO the rest of the LED management.
+  if (BlinkPin >= 0) {
+    pinMode(BlinkPin, OUTPUT);
+  }
+  if (FadePin >= 0) {
+    pinMode(FadePin, OUTPUT);
+    
+    FadePWM = 0;  // dark
+    analogWrite(FadePin, FadePWM);
+  }
 
   // Initialize (seed) the pulse detector
   QS = false;
@@ -66,10 +77,11 @@ int PulseSensor::getInterBeatIntervalMs() {
 }
 
 boolean PulseSensor::sawStartOfBeat() {
-  // NOTE: There's a race that could miss a QS.
-  // Should this be surrounded by interrupts off/on?
+  // Disable interrupts to avoid a race with the ISR.
+  cli();
   boolean qs = QS;
   QS = false;
+  sei();
 
   return QS;
 }
@@ -153,5 +165,15 @@ void PulseSensor::processLatestSample() {
     lastBeatTime = sampleCounter;          // bring the lastBeatTime up to date
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
+  }
+}
+
+void PulseSensor::updateLEDs() {
+  if (BlinkPin >= 0) {
+    digitalWrite(BlinkPin, Pulse);
+  }
+  
+  if (FadePin >= 0) {
+    //TODO need new variables for managing Fade reset and timing.
   }
 }

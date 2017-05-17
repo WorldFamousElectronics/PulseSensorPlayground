@@ -52,12 +52,15 @@ class PulseSensor {
 
     // (internal to the library) Process the latest sample.
     void processLatestSample();
+    
+    // (internal to the library) Update the Blink and Fade LED states.
+    void updateLEDs();
 
   private:
     // Configuration
-    int InputPin;                    // Analog input pin for PulseSensor.
-    int BlinkPin;                    // pin to blink in beat, or -1.
-    int FadePin;                     // pin to fade on beat, or -1.
+    volatile int InputPin;           // Analog input pin for PulseSensor.
+    volatile int BlinkPin;           // pin to blink in beat, or -1.
+    volatile int FadePin;            // pin to fade on beat, or -1.
     
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
@@ -66,6 +69,9 @@ class PulseSensor {
     volatile int IBI;                // int that holds the time interval (ms) between beats! Must be seeded!
     volatile boolean Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
     volatile boolean QS;             // The start of beat has been detected and not read by the Sketch.
+    
+    // Set in the ISR
+    volatile int FadePWM;            // (0..255) current brightness of FadePin.
 
     // Variables internal to the pulse detection algorithm.
     // Not volatile because we use them only in the pulse detection function.
