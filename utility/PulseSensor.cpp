@@ -16,6 +16,20 @@
 #include <PulseSensorPlayground.h>
 
 /*
+   Internal constants controlling the rate of fading for the FadePin.
+   
+   FADE_SCALE = FadeLevel / FADE_SCALE is the corresponding PWM value.
+   FADE_LEVEL_PER_SAMPLE = amount to decrease FadeLevel per sample.
+   MAX_FADE_LEVEL = maximum FadeLevel value.
+   
+   The time (milliseconds) to fade to black =
+     (MAX_FADE_LEVEL / FADE_LEVEL_PER_SAMPLE) * sample time (2ms)
+*/
+#define FADE_SCALE 10
+#define FADE_LEVEL_PER_SAMPLE 12
+#define MAX_FADE_LEVEL (255 * FADE_SCALE)
+
+/*
    Constructs a Pulse detector that will process PulseSensor voltages
    that the caller reads from the PulseSensor.
 */
@@ -42,6 +56,8 @@ PulseSensor::PulseSensor() {
   amp = 100;                  // beat amplitude 1/10 of input range.
   firstBeat = true;           // looking for the first beat
   secondBeat = false;         // not yet looking for the second beat in a row
+  
+  FadeLevel = 0; // LED is dark.
 }
 
 void PulseSensor::analogInput(int inputPin) {
@@ -90,6 +106,10 @@ void PulseSensor::readNextSample() {
 void PulseSensor::processLatestSample() {
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
+  
+  // Fade the Fading LED
+  FadeLevel = FadeLevel - FADE_LEVEL_PER_SAMPLE;
+  FadeLevel = constrain(FadeLevel, 0, MAX_FADE_LEVEL);
 
   //  find the peak and trough of the pulse wave
   if (Signal < thresh && N > (IBI / 5) * 3) { // avoid dichrotic noise by waiting 3/5 of last IBI
@@ -137,8 +157,9 @@ void PulseSensor::processLatestSample() {
       runningTotal += rate[9];                // add the latest IBI to runningTotal
       runningTotal /= 10;                     // average the last 10 IBI values
       BPM = 60000 / runningTotal;             // how many beats can fit into a minute? that's BPM!
-      FadePWM = 255;                          // re-light the fading LED
       QS = true;                              // set Quantified Self flag (we detected a beat)
+      
+      FadeLevel = MAX_FADE_LEVEL;             // If we're fading, re-light that LED.
     }
   }
 
@@ -167,9 +188,7 @@ void PulseSensor::initializeLEDs() {
   }
   if (FadePin >= 0) {
     pinMode(FadePin, OUTPUT);
-    
-    FadePWM = 0;  // dark
-    analogWrite(FadePin, FadePWM);
+    analogWrite(FadePin, 0); // turn off the LED.
   }
 }
 
@@ -179,7 +198,6 @@ void PulseSensor::updateLEDs() {
   }
   
   if (FadePin >= 0) {
-    analogWrite(FadePin, FadePWM);
-    //TODO need new variables for managing Fade reset and timing.
+    analogWrite(FadePin, FadeLevel / FADE_SCALE);
   }
 }

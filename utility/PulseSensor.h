@@ -73,10 +73,8 @@ class PulseSensor {
     volatile int IBI;                // int that holds the time interval (ms) between beats! Must be seeded!
     volatile boolean Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
     volatile boolean QS;             // The start of beat has been detected and not read by the Sketch.
+    volatile int FadeLevel;         // brightness of the FadePin, in scaled PWM units. See FADE_SCALE
     
-    // Set in the ISR
-    volatile int FadePWM;            // (0..255) current brightness of FadePin.
-
     // Variables internal to the pulse detection algorithm.
     // Not volatile because we use them only internally to the pulse detection.
     unsigned long sampleIntervalMs;  // expected time between calls to readSensor(), in milliseconds.
