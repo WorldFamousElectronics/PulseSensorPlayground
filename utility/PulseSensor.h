@@ -47,20 +47,24 @@ class PulseSensor {
     // Returns true if this PulseSensor signal is inside a beat vs. outside.
     boolean isInsideBeat();
 
+    //COULD move these to private by having a single public function the ISR calls.
     // (internal to the library) Read a sample from this PulseSensor.
     void readNextSample();
 
     // (internal to the library) Process the latest sample.
     void processLatestSample();
     
+    // (internal to the library) Set up any LEDs the user wishes.
+    void initializeLEDs();
+    
     // (internal to the library) Update the Blink and Fade LED states.
     void updateLEDs();
 
   private:
     // Configuration
-    volatile int InputPin;           // Analog input pin for PulseSensor.
-    volatile int BlinkPin;           // pin to blink in beat, or -1.
-    volatile int FadePin;            // pin to fade on beat, or -1.
+    int InputPin;           // Analog input pin for PulseSensor.
+    int BlinkPin;           // pin to blink in beat, or -1.
+    int FadePin;            // pin to fade on beat, or -1.
     
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
@@ -74,7 +78,7 @@ class PulseSensor {
     volatile int FadePWM;            // (0..255) current brightness of FadePin.
 
     // Variables internal to the pulse detection algorithm.
-    // Not volatile because we use them only in the pulse detection function.
+    // Not volatile because we use them only internally to the pulse detection.
     unsigned long sampleIntervalMs;  // expected time between calls to readSensor(), in milliseconds.
     int rate[10];                    // array to hold last ten IBI values (ms)
     unsigned long sampleCounter;     // used to determine pulse timing. Milliseconds since we started.

@@ -24,21 +24,13 @@ PulseSensor::PulseSensor() {
   InputPin = A0;
   BlinkPin = -1;
   FadePin = -1;
-  
-  // Initialize the LEDs state TODO the rest of the LED management.
-  if (BlinkPin >= 0) {
-    pinMode(BlinkPin, OUTPUT);
-  }
-  if (FadePin >= 0) {
-    pinMode(FadePin, OUTPUT);
-    
-    FadePWM = 0;  // dark
-    analogWrite(FadePin, FadePWM);
-  }
 
   // Initialize (seed) the pulse detector
+  sampleIntervalMs = PulseSensorPlayground::MICROS_PER_READ / 1000;
+  for (int i = 0; i < 10; ++i) {
+    rate[i] = 0;
+  }
   QS = false;
-  sampleIntervalMs = PulseSensorPlayground::MICROS_PER_READ;
   BPM = 0;
   IBI = 600;                  // 600ms per beat = 100 Beats Per Minute (BPM)
   Pulse = false;
@@ -79,15 +71,15 @@ int PulseSensor::getInterBeatIntervalMs() {
 boolean PulseSensor::sawStartOfBeat() {
   // Disable interrupts to avoid a race with the ISR.
   cli();
-  boolean qs = QS;
+  boolean started = QS;
   QS = false;
   sei();
 
-  return QS;
+  return started;
 }
 
 boolean PulseSensor::isInsideBeat() {
-  return Pulse; //NOTE: Is that the right variable?
+  return Pulse;
 }
 
 void PulseSensor::readNextSample() {
@@ -96,7 +88,6 @@ void PulseSensor::readNextSample() {
 }
 
 void PulseSensor::processLatestSample() {
-
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
 
@@ -146,6 +137,7 @@ void PulseSensor::processLatestSample() {
       runningTotal += rate[9];                // add the latest IBI to runningTotal
       runningTotal /= 10;                     // average the last 10 IBI values
       BPM = 60000 / runningTotal;             // how many beats can fit into a minute? that's BPM!
+      FadePWM = 255;                          // re-light the fading LED
       QS = true;                              // set Quantified Self flag (we detected a beat)
     }
   }
@@ -168,12 +160,26 @@ void PulseSensor::processLatestSample() {
   }
 }
 
+void PulseSensor::initializeLEDs() {
+  if (BlinkPin >= 0) {
+    pinMode(BlinkPin, OUTPUT);
+    digitalWrite(BlinkPin, LOW);
+  }
+  if (FadePin >= 0) {
+    pinMode(FadePin, OUTPUT);
+    
+    FadePWM = 0;  // dark
+    analogWrite(FadePin, FadePWM);
+  }
+}
+
 void PulseSensor::updateLEDs() {
   if (BlinkPin >= 0) {
     digitalWrite(BlinkPin, Pulse);
   }
   
   if (FadePin >= 0) {
+    analogWrite(FadePin, FadePWM);
     //TODO need new variables for managing Fade reset and timing.
   }
 }

@@ -31,6 +31,10 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
 }
 
 boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
+  
+  for (int i = 0; i < SensorCount; ++i) {
+    Sensors[i].initializeLEDs();
+  }
 
   // Note the time, for non-interrupt sampling and for timing statistics.
   NextSampleMicros = micros() + MICROS_PER_READ;
@@ -107,6 +111,28 @@ boolean PulseSensorPlayground::sawNewSample() {
   return true;
 }
 
+void PulseSensorPlayground::onSampleTime() {
+  // Typically called from the ISR.
+
+  /*
+     Read the voltage from each PulseSensor.
+     We do this separately from processing the voltages
+     to minimize jitter in acquiring the signal.
+  */
+  for (int i = 0; i < SensorCount; ++i) {
+    Sensors[i].readNextSample();
+  }
+
+  // Process those voltages.
+  for (int i = 0; i < SensorCount; ++i) {
+    Sensors[i].processLatestSample();
+    Sensors[i].updateLEDs();
+  }
+
+  // Set the flag that says we've read a sample since the Sketch checked.
+  SawNewSample = true;
+ }
+
 int PulseSensorPlayground::getLatestSample(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
     return -1; // out of range.
@@ -169,26 +195,8 @@ void PulseSensorPlayground::setupInterrupt() {
 ISR(TIMER2_COMPA_vect) {                   // triggered when Timer2 counts to 124
   cli();                                   // disable interrupts while we do this
   
-  PulseSensorPlayground *myThis = PulseSensorPlayground::OurThis;
-
-  /*
-     Read the voltage from each PulseSensor.
-     We do this separately from processing the voltages
-     to minimize jitter in acquiring the signal.
-  */
-  for (int i = 0; i < myThis->SensorCount; ++i) {
-    myThis->Sensors[i].readNextSample();
-  }
-
-  // Process those voltages.
-  for (int i = 0; i < myThis->SensorCount; ++i) {
-    myThis->Sensors[i].processLatestSample();
-    myThis->Sensors[i].updateLEDs();
-  }
-
-  // Set the flag that says we've read a sample since the Sketch checked.
-  myThis->SawNewSample = true;
-  
+  PulseSensorPlayground::OurThis->onSampleTime();
+ 
   sei();                                   // enable interrupts when youre done
 
 }// end isr

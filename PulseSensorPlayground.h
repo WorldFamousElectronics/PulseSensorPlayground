@@ -128,6 +128,13 @@ class PulseSensorPlayground {
          of the PulseSensor to configure.
     */
     void fadeOnPulse(int fadePin, int sensorIndex = 0);
+    
+    /*
+       (Internal to library - do no call from a Sketch)
+       Perform all the processing necessary when it's time to
+       read from all the PulseSensors and process their signals.
+    */
+    void onSampleTime();
 
     /*
        Returns the most recently read analog value from the given PulseSensor
@@ -175,7 +182,6 @@ class PulseSensorPlayground {
          of the PulseSensor of interest.
     */
     boolean sawStartOfBeat(int sensorIndex = 0);
-    //TODO test and clear volatile QS, that is set by the beat detection.
 
     /*
        Returns true if the given PulseSensor signal is currently
@@ -234,18 +240,6 @@ class PulseSensorPlayground {
     // (internal to the library) "this" pointer for the ISR.
     static PulseSensorPlayground *OurThis;
     
-    // (internal to the library) number of PulseSensors in Sensors[].
-    byte SensorCount;
-    
-    // (internal to the library) use Sensors[idx] to access a sensor.
-    PulseSensor *Sensors;
-    
-    // (internal to the library) Desired time to sample next.
-    volatile unsigned long NextSampleMicros;
-    
-    // (internal to the library) "A sample has arrived from the ISR"
-    volatile boolean SawNewSample;
-
   private:
   
     /*
@@ -253,7 +247,11 @@ class PulseSensorPlayground {
        Call only if UsingInterrupts is true.
     */
     void setupInterrupt();
-        
+    
+    byte SensorCount;              // number of PulseSensors in Sensors[].
+    PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
+    volatile unsigned long NextSampleMicros; // Desired time to sample next.
+    volatile boolean SawNewSample; // "A sample has arrived from the ISR"
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
     boolean UsingInterrupts;          // sample with interrupts or not.
 };
