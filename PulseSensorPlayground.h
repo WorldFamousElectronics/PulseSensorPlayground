@@ -21,6 +21,17 @@
 #include "utility/PulseSensorSerialOutput.h"
 #include "utility/PulseSensorTimingStatistics.h" // makes TimingStatistics class visible.
 
+// Macros to link to interrupt disable/enable only if they exist
+// The name is long to avoid collisions with Sketch and Library symbols.
+#if defined(__arc__)
+  // Arduino 101 doesn't have cli() and sei().
+#define DISABLE_PULSE_SENSOR_INTERRUPTS
+#define ENABLE_PULSE_SENSOR_INTERRUPTS
+#else
+#define DISABLE_PULSE_SENSOR_INTERRUPTS cli()
+#define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
+#endif
+
 class PulseSensorPlayground {
   public:
     static const unsigned long MICROS_PER_READ = (2 * 1000L); // usecs per sample.
@@ -130,7 +141,7 @@ class PulseSensorPlayground {
     void fadeOnPulse(int fadePin, int sensorIndex = 0);
     
     /*
-       (Internal to library - do no call from a Sketch)
+       (Internal to library - do not call from a Sketch)
        Perform all the processing necessary when it's time to
        read from all the PulseSensors and process their signals.
     */

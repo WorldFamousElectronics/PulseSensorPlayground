@@ -86,10 +86,10 @@ int PulseSensor::getInterBeatIntervalMs() {
 
 boolean PulseSensor::sawStartOfBeat() {
   // Disable interrupts to avoid a race with the ISR.
-  cli();
+  DISABLE_PULSE_SENSOR_INTERRUPTS;
   boolean started = QS;
   QS = false;
-  sei();
+  ENABLE_PULSE_SENSOR_INTERRUPTS;
 
   return started;
 }
