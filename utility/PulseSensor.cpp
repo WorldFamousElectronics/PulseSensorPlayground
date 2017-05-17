@@ -1,27 +1,51 @@
 /*
-   PulseSensor Heart Rate Calculation library.
-   Based on Pulse Sensor Amped 1.4 by Joel Murphy and Yury Gitman
-   See https://www.pulsesensor.com
-   and https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
+   PulseSensor measurement manager.
+   See https://www.pulsesensor.com to get started.
 
-   Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
-   @bneedhamia, https://bluepapertech.com
+   Copyright World Famous Electronics LLC - see LICENSE
+   Contributors:
+     Joel Murphy, https://pulsesensor.com
+     Yury Gitman, https://pulsesensor.com
+     Bradford Needham, @bneedhamia, https://bluepapertech.com
+
    Licensed under the MIT License, a copy of which
    should have been included with this software.
 
    This software is not intended for medical use.
 */
+#include <PulseSensorPlayground.h>
 
-#include <PulseSensorBeatDetector.h>
+/*
+   Internal constants controlling the rate of fading for the FadePin.
+   
+   FADE_SCALE = FadeLevel / FADE_SCALE is the corresponding PWM value.
+   FADE_LEVEL_PER_SAMPLE = amount to decrease FadeLevel per sample.
+   MAX_FADE_LEVEL = maximum FadeLevel value.
+   
+   The time (milliseconds) to fade to black =
+     (MAX_FADE_LEVEL / FADE_LEVEL_PER_SAMPLE) * sample time (2ms)
+*/
+#define FADE_SCALE 10
+#define FADE_LEVEL_PER_SAMPLE 12
+#define MAX_FADE_LEVEL (255 * FADE_SCALE)
 
 /*
    Constructs a Pulse detector that will process PulseSensor voltages
    that the caller reads from the PulseSensor.
 */
-PulseSensorBeatDetector::PulseSensorBeatDetector() {
+PulseSensor::PulseSensor() {
+  // Initialize the default configuration
+  InputPin = A0;
+  BlinkPin = -1;
+  FadePin = -1;
 
   // Initialize (seed) the pulse detector
-  sampleIntervalMs = DEFAULT_SAMPLE_INTERVAL_MS;
+  sampleIntervalMs = PulseSensorPlayground::MICROS_PER_READ / 1000;
+  for (int i = 0; i < 10; ++i) {
+    rate[i] = 0;
+  }
+  QS = false;
+  BPM = 0;
   IBI = 600;                  // 600ms per beat = 100 Beats Per Minute (BPM)
   Pulse = false;
   sampleCounter = 0;
@@ -32,57 +56,60 @@ PulseSensorBeatDetector::PulseSensorBeatDetector() {
   amp = 100;                  // beat amplitude 1/10 of input range.
   firstBeat = true;           // looking for the first beat
   secondBeat = false;         // not yet looking for the second beat in a row
+  
+  FadeLevel = 0; // LED is dark.
 }
 
-/*
-   Sets the expected time between calls to addBeatValue().
-   newSampleIntervalMs = the time, in milliseconds, between reads
-   of the analog value from the PulseSensor.
-*/
-void PulseSensorBeatDetector::setSampleIntervalMs(long newSampleIntervalMs) {
-  sampleIntervalMs = newSampleIntervalMs;
+void PulseSensor::analogInput(int inputPin) {
+  InputPin = inputPin;
 }
 
-/*
-   Returns the most recent BPM (Beats Per Minute) calculation.
-*/
-int PulseSensorBeatDetector::getBPM() {
-  return (BPM);
+void PulseSensor::blinkOnPulse(int blinkPin) {
+  BlinkPin = blinkPin;
 }
 
-/*
-   Returns the most recent IBI (Inter-Beat Inverval, in milliseconds)
-   calculation.
-*/
-int PulseSensorBeatDetector::getIBI() {
-  return (IBI);
+void PulseSensor::fadeOnPulse(int fadePin) {
+  FadePin = fadePin;
 }
 
-/*
-   Returns the curent state of the 'Pulse' variable,
-   which is true if we belive we're currently sampling the major pulse
-   part of the waveform.
-
-   Used in the original code to drive an LED.
-*/
-boolean PulseSensorBeatDetector::isBeat() {
-  return (Pulse);
+int PulseSensor::getLatestSample() {
+  return Signal;
 }
 
-/*
-   Processes a sample from the Pulse Sensor.
-   Returns true if the start of a pulse was found
-   (the variable QS in the original code), false otherwise.
+int PulseSensor::getBeatsPerMinute() {
+  return BPM;
+}
 
-   This is the main pulse detection algorithm.
-*/
-boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
-  boolean QS = false;                        // value to return. True if we found the start of a pulse.
+int PulseSensor::getInterBeatIntervalMs() {
+  return IBI;
+}
 
-  Signal = analogValue;                      // Record this sample from the pulse sensor
+boolean PulseSensor::sawStartOfBeat() {
+  // Disable interrupts to avoid a race with the ISR.
+  DISABLE_PULSE_SENSOR_INTERRUPTS;
+  boolean started = QS;
+  QS = false;
+  ENABLE_PULSE_SENSOR_INTERRUPTS;
 
+  return started;
+}
+
+boolean PulseSensor::isInsideBeat() {
+  return Pulse;
+}
+
+void PulseSensor::readNextSample() {
+  // We assume assigning to an int is atomic.
+  Signal = analogRead(InputPin);
+}
+
+void PulseSensor::processLatestSample() {
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
+  
+  // Fade the Fading LED
+  FadeLevel = FadeLevel - FADE_LEVEL_PER_SAMPLE;
+  FadeLevel = constrain(FadeLevel, 0, MAX_FADE_LEVEL);
 
   //  find the peak and trough of the pulse wave
   if (Signal < thresh && N > (IBI / 5) * 3) { // avoid dichrotic noise by waiting 3/5 of last IBI
@@ -113,7 +140,8 @@ boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
       if (firstBeat) {                       // if it's the first time we found a beat, if firstBeat == TRUE
         firstBeat = false;                   // clear firstBeat flag
         secondBeat = true;                   // set the second beat flag
-        return (QS);                         // IBI value is unreliable so discard it
+        // IBI value is unreliable so discard it
+        return;
       }
 
 
@@ -130,6 +158,8 @@ boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
       runningTotal /= 10;                     // average the last 10 IBI values
       BPM = 60000 / runningTotal;             // how many beats can fit into a minute? that's BPM!
       QS = true;                              // set Quantified Self flag (we detected a beat)
+      
+      FadeLevel = MAX_FADE_LEVEL;             // If we're fading, re-light that LED.
     }
   }
 
@@ -149,6 +179,25 @@ boolean PulseSensorBeatDetector::addBeatValue(int analogValue) {
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
   }
+}
 
-  return (QS);
+void PulseSensor::initializeLEDs() {
+  if (BlinkPin >= 0) {
+    pinMode(BlinkPin, OUTPUT);
+    digitalWrite(BlinkPin, LOW);
+  }
+  if (FadePin >= 0) {
+    pinMode(FadePin, OUTPUT);
+    analogWrite(FadePin, 0); // turn off the LED.
+  }
+}
+
+void PulseSensor::updateLEDs() {
+  if (BlinkPin >= 0) {
+    digitalWrite(BlinkPin, Pulse);
+  }
+  
+  if (FadePin >= 0) {
+    analogWrite(FadePin, FadeLevel / FADE_SCALE);
+  }
 }

@@ -1,91 +1,74 @@
 /*
-   PulseSensor serial output class.
+   Formatting of Serial output from PulseSensors.
+   See https://www.pulsesensor.com to get started.
 
-   See https://www.pulsesensor.com
-   and https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino
-
-   Based on Pulse Sensor Amped 1.5.0 by Joel Murphy and Yury Gitman.
-   Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
-   @bneedhamia, https://bluepapertech.com
+   Copyright World Famous Electronics LLC - see LICENSE
+   Contributors:
+     Joel Murphy, https://pulsesensor.com
+     Yury Gitman, https://pulsesensor.com
+     Bradford Needham, @bneedhamia, https://bluepapertech.com
 
    Licensed under the MIT License, a copy of which
    should have been included with this software.
 
    This software is not intended for medical use.
 */
-
 #include <PulseSensorSerialOutput.h>
 
-/*
-   Constructs an object that will output serial data to the given destination.
+PulseSensorSerialOutput::PulseSensorSerialOutput() {
+  OutputType = SERIAL_PLOTTER;
+}
 
-   outputType = PROCESSING_VISUALIZER or SERIAL_PLOTTER.
-*/
-PulseSensorSerialOutput::PulseSensorSerialOutput(int outputType) {
+void PulseSensorSerialOutput::setOutputType(byte outputType) {
   OutputType = outputType;
 }
 
-/*
-   Outputs the given signal value, and optionally the heartbeat rate.
-
-   signal = the analogRead() values from the PulseSensor (0..1023).
-   bpm = the current beats per minute calculation result.
-   ibi = the inter-beat-interval, in milliseconds, between the previous beat
-   and the current one.
-*/
-void PulseSensorSerialOutput::output(int signal, int bpm, int ibi) {
+void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors) {
   switch (OutputType) {
-    case PROCESSING_VISUALIZER:
-      outputToSerial('S', signal);
-      // Ignore bpm and ibi for this output.
-      break;
-
     case SERIAL_PLOTTER:
-      Serial.print(bpm);
-      Serial.print(",");
-      Serial.print(ibi);
-      Serial.print(",");
-      Serial.println(signal);
+      if (numSensors == 1) {
+        Serial.print(sensors[0].getBeatsPerMinute());
+        Serial.print(",");
+        Serial.print(sensors[0].getInterBeatIntervalMs());
+        Serial.print(",");
+        Serial.println(sensors[0].getLatestSample());
+      } else {
+        //TODO: support 2 or more sensors.
+      }
       break;
-
-    default: // Unknown output type. Do nothing.
+    case PROCESSING_VISUALIZER:
+      if (numSensors == 1) {
+        outputToSerial('S', sensors[0].getLatestSample());
+        // Ignore bpm and ibi for this output.
+      } else {
+        //TODO: support 2 or more sensors.
+      }
+      break;
+    default:
+      // unknown output type: no output
       break;
   }
 }
 
-/*
-   Output the heartbeat timing measurement lines.
-   Usually called on detection of a beat.
-   Currently appropriate only for PROCESSING_VISUALIZER output.
-
-   bpm = the current beats per minute calculation result.
-   ibi = the inter-beat-interval, in milliseconds, between the previous beat
-   and the current one.
-*/
-void PulseSensorSerialOutput::outputBeat(int bpm, int ibi) {
+void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors) {
   switch (OutputType) {
-    case PROCESSING_VISUALIZER:
-      outputToSerial('B', bpm);
-      outputToSerial('Q', ibi);
-      break;
     case SERIAL_PLOTTER:
-      // We already reported bpm and ibi in the per-sample report.
+      // We've already printed this info in outputSample().
       break;
-    default: // Unknown output type. Do nothing.
+    case PROCESSING_VISUALIZER:
+      if (numSensors == 1) {
+        outputToSerial('B', sensors[0].getBeatsPerMinute());
+        outputToSerial('Q', sensors[0].getInterBeatIntervalMs());
+      } else {
+        //TODO: support 2 or more sensors.
+      }
       break;
-  }    
+    default:
+      // unknown output type: no output
+      break;
+  }
 }
 
-/*
-   Output a single piece of information, along with a single character
-    that says what data it is, and and end-of-line.
-
-   symbol = the one-character variable name. For the PROCESSING_VISUALIZER,
-     possible values are:
-     'S' = signal (PulseSensor data),
-     'B' = Beats per minute,
-     'Q' = IBI (Inter-beat interval), in milliseconds.
-*/
 void PulseSensorSerialOutput::outputToSerial(char symbol, int data) {
   Serial.print(symbol);
   Serial.println(data);
