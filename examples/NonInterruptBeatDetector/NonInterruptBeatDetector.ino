@@ -6,10 +6,13 @@
    doesn't yet support your Arduino model
    or you don't feel comfortable using interrrupts.
 
-   See https://pulsesensor.com
+   See https://www.pulsesensor.com to get started.
 
-   Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
-   @bneedhamia, https://bluepapertech.com
+   Copyright World Famous Electronics LLC - see LICENSE
+   Contributors:
+     Joel Murphy, https://pulsesensor.com
+     Yury Gitman, https://pulsesensor.com
+     Bradford Needham, @bneedhamia, https://bluepapertech.com
 
    Licensed under the MIT License, a copy of which
    should have been included with this software.

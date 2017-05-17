@@ -3,17 +3,19 @@
    Designed to provide insite into the timing accuracy of
    programs that read data from a PulseSensor.
 
-   See https://www.pulsesensor.com
-   and https://github.com/WorldFamousElectronics/PulseSensorPlayground
+   See https://www.pulsesensor.com to get started.
 
-   Portions Copyright (c) 2016, 2017 Bradford Needham, North Plains, Oregon, USA
-   @bneedhamia, https://bluepapertech.com
+   Copyright World Famous Electronics LLC - see LICENSE
+   Contributors:
+     Joel Murphy, https://pulsesensor.com
+     Yury Gitman, https://pulsesensor.com
+     Bradford Needham, @bneedhamia, https://bluepapertech.com
+
    Licensed under the MIT License, a copy of which
    should have been included with this software.
 
    This software is not intended for medical use.
 */
-
 #include <PulseSensorTimingStatistics.h>
 
 /*

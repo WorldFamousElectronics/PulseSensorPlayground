@@ -1,5 +1,5 @@
 /*
-   A central Playground object to manage the PulseSensor.
+   A central Playground object to manage a set of PulseSensors.
    See https://www.pulsesensor.com to get started.
 
    Copyright World Famous Electronics LLC - see LICENSE
