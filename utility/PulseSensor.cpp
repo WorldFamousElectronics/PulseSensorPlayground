@@ -13,7 +13,7 @@
 
    This software is not intended for medical use.
 */
-#include <PulseSensor.h>
+#include <PulseSensorPlayground.h>
 
 /*
    Constructs a Pulse detector that will process PulseSensor voltages
@@ -90,7 +90,7 @@ boolean PulseSensor::isInsideBeat() {
   return Pulse; //NOTE: Is that the right variable?
 }
 
-void readNextSample() {
+void PulseSensor::readNextSample() {
   // We assume assigning to an int is atomic.
   Signal = analogRead(InputPin);
 }

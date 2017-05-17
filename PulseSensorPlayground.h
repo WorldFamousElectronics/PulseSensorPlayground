@@ -232,9 +232,19 @@ class PulseSensorPlayground {
     void outputBeat();
     
     // (internal to the library) "this" pointer for the ISR.
-    static volatile PulseSensorPlayground *OurThis;
+    static PulseSensorPlayground *OurThis;
     
-    // (internal to the library)
+    // (internal to the library) number of PulseSensors in Sensors[].
+    byte SensorCount;
+    
+    // (internal to the library) use Sensors[idx] to access a sensor.
+    PulseSensor *Sensors;
+    
+    // (internal to the library) Desired time to sample next.
+    volatile unsigned long NextSampleMicros;
+    
+    // (internal to the library) "A sample has arrived from the ISR"
+    volatile boolean SawNewSample;
 
   private:
   
@@ -244,12 +254,7 @@ class PulseSensorPlayground {
     */
     void setupInterrupt();
         
-    //TODO fix scope errors in ISR.
-    volatile byte SensorCount;        // number of PulseSensors in Sensors[].
-    volatile PulseSensor *Sensors;    // use Sensors[idx] to access a sensor.
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
     boolean UsingInterrupts;          // sample with interrupts or not.
-    volatile unsigned long NextSampleMicros; // Desired time to sample next.
-    volatile boolean SawNewSample;    // A sample has arrived from the ISR.
 };
 #endif // PULSE_SENSOR_PLAYGROUND_H

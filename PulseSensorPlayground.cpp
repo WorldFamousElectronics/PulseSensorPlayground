@@ -15,6 +15,9 @@
 */
 #include <PulseSensorPlayground.h>
 
+// Define the "this" pointer for the ISR
+PulseSensorPlayground *PulseSensorPlayground::OurThis;
+
 PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   // Save a static pointer to our playground so the ISR can read it.
   OurThis = this;
@@ -165,24 +168,26 @@ void PulseSensorPlayground::setupInterrupt() {
 // Timer 2 makes sure that we take a reading every 2 miliseconds
 ISR(TIMER2_COMPA_vect) {                   // triggered when Timer2 counts to 124
   cli();                                   // disable interrupts while we do this
+  
+  PulseSensorPlayground *myThis = PulseSensorPlayground::OurThis;
 
   /*
      Read the voltage from each PulseSensor.
      We do this separately from processing the voltages
      to minimize jitter in acquiring the signal.
   */
-  for (int i = 0; i < PulseSensorPlayground::OurThis->SensorCount; ++i) {
-    PulseSensorPlayground::OurThis->Sensors[i].readNextSample();
+  for (int i = 0; i < myThis->SensorCount; ++i) {
+    myThis->Sensors[i].readNextSample();
   }
 
   // Process those voltages.
-  for (int i = 0; i < PulseSensorPlayground::OurThis->SensorCount; ++i) {
-    PulseSensorPlayground::OurThis->Sensors[i].processLatestSample();
-    PulseSensorPlayground::OurThis->Sensors[i].updateLEDs();
+  for (int i = 0; i < myThis->SensorCount; ++i) {
+    myThis->Sensors[i].processLatestSample();
+    myThis->Sensors[i].updateLEDs();
   }
 
   // Set the flag that says we've read a sample since the Sketch checked.
-  PulseSensorPlayground::OurThis->SawNewSample = true;
+  myThis->SawNewSample = true;
   
   sei();                                   // enable interrupts when youre done
 

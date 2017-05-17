@@ -23,7 +23,7 @@ void PulseSensorSerialOutput::setOutputType(byte outputType) {
   OutputType = outputType;
 }
 
-void PulseSensorSerialOutput::output(PulseSensor sensors[], int numSensors) {
+void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors) {
   switch (OutputType) {
     case SERIAL_PLOTTER:
       if (numSensors == 1) {
@@ -56,7 +56,7 @@ void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors) 
       // We've already printed this info in outputSample().
       break;
     case PROCESSING_VISUALIZER:
-      if (NumSensors == 1) {
+      if (numSensors == 1) {
         outputToSerial('B', sensors[0].getBeatsPerMinute());
         outputToSerial('Q', sensors[0].getInterBeatIntervalMs());
       } else {
