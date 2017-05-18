@@ -102,9 +102,15 @@ void setup() {
        likely because our Arduino platform interrupts
        aren't supported yet.
 
-       If your Sketch hangs here, try USE_INTERRUPS = false
+       If your Sketch hangs here, try changing USE_INTERRUPTS to false.
     */
-    for (;;);
+    for(;;) {
+      // Flash the led to show things didn't work.
+      digitalWrite(PIN_BLINK, LOW);
+      delay(50);
+      digitalWrite(PIN_BLINK, HIGH);
+      delay(50);
+    }
   }
 }
 
