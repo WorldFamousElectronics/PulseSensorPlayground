@@ -32,6 +32,15 @@
 #define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
 #endif
 
+/*
+   (internal to the library)
+   Sets up the sample timer interrupt for this Arduino Platform.
+   
+   Returns true if successful, false if we don't yet support
+   the timer interrupt on this Arduino.
+*/
+boolean PulseSensorPlaygroundSetupInterrupt();
+
 class PulseSensorPlayground {
   public:
     static const unsigned long MICROS_PER_READ = (2 * 1000L); // usecs per sample.

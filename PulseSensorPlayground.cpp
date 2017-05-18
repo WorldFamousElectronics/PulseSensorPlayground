@@ -45,9 +45,14 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
   // Lastly, set up and turn on the interrupts.
   
   if (UsingInterrupts) {
-    setupInterrupt();
+    // If this Arduino's interrupt isn't supported, don't use it.
+    if (!PulseSensorPlaygroundSetupInterrupt()) {
+      UsingInterrupts = false;
+      
+      // The user requested interrupts, but didn't get them. Say so.
+      return false;
+    }
   }
-
 
   return true;
 }
@@ -175,30 +180,3 @@ void PulseSensorPlayground::outputSample() {
 void PulseSensorPlayground::outputBeat() {
   SerialOutput.outputBeat(Sensors, SensorCount);
 }
-
-void PulseSensorPlayground::setupInterrupt() {
-  // No support for Arduino 101 (arc) yet.
-#if !defined(__arc__)
-  //TODO: attachInterrupt(digitalPinToInterrupt(pin), ISR, mode);	?
-  // Initializes Timer2 to throw an interrupt every 2mS.
-  TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
-  TCCR2B = 0x06;     // DON'T FORCE COMPARE, 256 PRESCALER
-  OCR2A = 0X7C;      // SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
-  TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
-  ENABLE_PULSE_SENSOR_INTERRUPTS; // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
-#endif
-}
-
-// No support for Arduino 101 (arc) yet.
-#if !defined(__arc__)
-// THIS IS THE TIMER 2 INTERRUPT SERVICE ROUTINE.
-// Timer 2 makes sure that we take a reading every 2 miliseconds
-ISR(TIMER2_COMPA_vect) {                   // triggered when Timer2 counts to 124
-  DISABLE_PULSE_SENSOR_INTERRUPTS;                                   // disable interrupts while we do this
-  
-  PulseSensorPlayground::OurThis->onSampleTime();
- 
-  ENABLE_PULSE_SENSOR_INTERRUPTS;                                   // enable interrupts when youre done
-
-}// end isr
-#endif
