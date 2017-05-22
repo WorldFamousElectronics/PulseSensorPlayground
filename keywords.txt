@@ -23,6 +23,7 @@ isInsideBeat	KEYWORD2
 outputBeat	KEYWORD2
 outputSample	KEYWORD2
 sawNewSample	KEYWORD2
+setSerial	KEYWORD2
 setOutputType	KEYWORD2
 sawStartOfBeat	KEYWORD2
 useInterrupts	KEYWORD2

@@ -35,6 +35,12 @@ class PulseSensorSerialOutput {
        Constructs a default Serial output manager.
     */
     PulseSensorSerialOutput();
+    
+    /*
+       Tells the library what Serial output to use,
+       such as Serial, Serial1, or a SoftwareSerial.
+    */
+    void setSerial(Stream &output);
 
     /*
        Sets the format (destination) of the Serial Output:
@@ -54,6 +60,9 @@ class PulseSensorSerialOutput {
     void outputBeat(PulseSensor sensors[], int numberOfSensors);
 
   private:
+    // If non-null, the output stream to print to. If null, don't print.
+    Stream *pOutput;
+    
     // The destination of data: PROCESSING_VISUALIZER or SERIAL_PLOTTER
     int OutputType;
 

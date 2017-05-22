@@ -169,6 +169,10 @@ boolean PulseSensorPlayground::isInsideBeat(int sensorIndex) {
   return Sensors[sensorIndex].isInsideBeat();
 }
 
+void PulseSensorPlayground::setSerial(Stream &output) {
+  SerialOutput.setSerial(output);
+}
+
 void PulseSensorPlayground::setOutputType(byte outputType) {
   SerialOutput.setOutputType(outputType);
 }

@@ -16,7 +16,12 @@
 #include "PulseSensorSerialOutput.h"
 
 PulseSensorSerialOutput::PulseSensorSerialOutput() {
+  pOutput = NULL;
   OutputType = SERIAL_PLOTTER;
+}
+
+void PulseSensorSerialOutput::setSerial(Stream &output) {
+  pOutput = &output;
 }
 
 void PulseSensorSerialOutput::setOutputType(byte outputType) {
@@ -24,14 +29,18 @@ void PulseSensorSerialOutput::setOutputType(byte outputType) {
 }
 
 void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors) {
+  if (!pOutput) {
+    return;  // no serial output object has been set.
+  }
+
   switch (OutputType) {
     case SERIAL_PLOTTER:
       if (numSensors == 1) {
-        Serial.print(sensors[0].getBeatsPerMinute());
-        Serial.print(",");
-        Serial.print(sensors[0].getInterBeatIntervalMs());
-        Serial.print(",");
-        Serial.println(sensors[0].getLatestSample());
+        pOutput->print(sensors[0].getBeatsPerMinute());
+        pOutput->print(",");
+        pOutput->print(sensors[0].getInterBeatIntervalMs());
+        pOutput->print(",");
+        pOutput->println(sensors[0].getLatestSample());
       } else {
         //TODO: support 2 or more sensors.
       }
@@ -51,6 +60,10 @@ void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors
 }
 
 void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors) {
+  if (!pOutput) {
+    return;  // no serial output object has been set.
+  }
+
   switch (OutputType) {
     case SERIAL_PLOTTER:
       // We've already printed this info in outputSample().
@@ -70,6 +83,10 @@ void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors) 
 }
 
 void PulseSensorSerialOutput::outputToSerial(char symbol, int data) {
-  Serial.print(symbol);
-  Serial.println(data);
+  if (!pOutput) {
+    return;  // no serial output object has been set.
+  }
+
+  pOutput->print(symbol);
+  pOutput->println(data);
 }

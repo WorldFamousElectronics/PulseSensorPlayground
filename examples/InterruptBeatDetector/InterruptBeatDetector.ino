@@ -64,6 +64,7 @@ void setup() {
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
+  pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
 
   // Now that everything is ready, start reading the PulseSensor signal.

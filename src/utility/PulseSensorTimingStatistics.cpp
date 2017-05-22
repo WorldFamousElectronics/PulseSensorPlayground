@@ -79,11 +79,13 @@ int PulseSensorTimingStatistics::recordSampleTime() {
    Serial prints the sample timing statistics.
 */
 void PulseSensorTimingStatistics::outputStatistics() {
+#ifdef NOTDEF //TODO temporarily disabled to compile on Gemma.
   Serial.print(MinJitterMicros);
   Serial.print(" ");
   Serial.print(getAverageOffsetMicros());
   Serial.print(" ");
   Serial.println(MaxJitterMicros);
+#endif
 }
 
 /*
