@@ -24,6 +24,10 @@ void PulseSensorSerialOutput::setSerial(Stream &output) {
   pOutput = &output;
 }
 
+Stream *PulseSensorSerialOutput::getSerial() {
+  return pOutput;
+}
+
 void PulseSensorSerialOutput::setOutputType(byte outputType) {
   OutputType = outputType;
 }

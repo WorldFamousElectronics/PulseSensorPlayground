@@ -60,6 +60,32 @@
 #define PULSE_SENSOR_TIMING_ANALYSIS false
 //#define PULSE_SENSOR_TIMING_ANALYSIS true
 
+/*
+   If you wish to print the amount of memory used before your Sketch
+   starts:
+   
+   Uncomment the line below: #define PULSE_SENSOR_MEMORY_USAGE true
+   Restart your Arduino IDE
+   Compile and download your Sketch.
+   Start the Arduino IDE Serial Monitor
+   Your Sketch will start normally, then print memory usage, then hang.
+       
+   The memory usage consists of five numbers:
+   data = bytes of global, uninitialized data storage (int x;)
+   bss = bytes of global, initialized data storage (int x = 5;)
+   heap = bytes of dynamically allocated memory (new Stream;)
+   stack = bytes of local variables (those defined within a function)
+   total = the total of data, bss, heap, and stack memory used.
+       
+   The amount of flash memory used is printed by the Arduino IDE
+   when compilation finishes, with a printout such as:
+     Sketch uses 5036 bytes (15%) of program storage space.
+   
+   NOTE: you must call pulse.setSerial(Serial) in your Sketch's setup().
+*/
+#define PULSE_SENSOR_MEMORY_USAGE false
+//#define PULSE_SENSOR_MEMORY_USAGE true
+
 #include <Arduino.h>
 #include "utility/Interrupts.h"
 #include "utility/PulseSensor.h"
@@ -306,6 +332,14 @@ class PulseSensorPlayground {
     */
     void setupInterrupt();
     
+    
+#if PULSE_SENSOR_MEMORY_USAGE
+    /*
+       Print our RAM usage. See PULSE_SENSOR_MEMORY_USAGE
+    */
+    void printMemoryUsage();
+#endif // PULSE_SENSOR_MEMORY_USAGE
+
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
