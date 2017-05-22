@@ -118,7 +118,7 @@ boolean PulseSensorPlayground::sawNewSample() {
   
 #if PULSE_SENSOR_TIMING_ANALYSIS
   if (pTiming->recordSampleTime() <= 0) {
-    pTiming->outputStatistics();
+    pTiming->outputStatistics(SerialOutput.getSerial());
     for (;;); // Hang because we've disturbed the timing.
   }
 #endif // PULSE_SENSOR_TIMING_ANALYSIS

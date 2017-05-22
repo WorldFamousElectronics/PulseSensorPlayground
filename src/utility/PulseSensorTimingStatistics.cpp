@@ -59,16 +59,15 @@ int PulseSensorTimingStatistics::recordSampleTime() {
   return (SamplesDesired - SamplesSeen);
 }
 
-void PulseSensorTimingStatistics::outputStatistics() {
-  // Compile Serial only if we're doing timing analysis
-  // so that compilation succeeds on Software-Serial-only Arduinos.
-#if PULSE_SENSOR_TIMING_ANALYSIS
-  Serial.print(MinJitterMicros);
-  Serial.print(" ");
-  Serial.print(getAverageOffsetMicros());
-  Serial.print(" ");
-  Serial.println(MaxJitterMicros);
-#endif // PULSE_SENSOR_TIMING_ANALYSIS
+void PulseSensorTimingStatistics::outputStatistics(Stream *pOut) {
+  if (!pOut) {
+    return; // not configured for Serial output.
+  }
+  pOut->print(MinJitterMicros);
+  pOut->print(" ");
+  pOut->print(getAverageOffsetMicros());
+  pOut->print(" ");
+  pOut->println(MaxJitterMicros);
 }
 
 int PulseSensorTimingStatistics::getAverageOffsetMicros() {
