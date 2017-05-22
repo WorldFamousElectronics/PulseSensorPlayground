@@ -67,7 +67,7 @@ class PulseSensorTimingStatistics {
     /*
        Serial prints the sample timing statistics.
     */
-    void outputStatistics();
+    void outputStatistics(Stream *pOut);
 
     int getMinJitterMicros() {
       return MinJitterMicros;
