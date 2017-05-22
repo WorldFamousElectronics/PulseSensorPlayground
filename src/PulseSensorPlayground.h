@@ -202,12 +202,25 @@ class PulseSensorPlayground {
     boolean isInsideBeat(int sensorIndex = 0);
 
     //---------- Serial Output functions
+    
+    /*
+       By default, the Playround doesn't output serial data automatically.
+       
+       If you want to output serial pulse data, call pulse.setSerial(Serial),
+       pulse.setSerial(Serial1), or whatever Serial stream you like.
+       
+       output = the Stream to write data to. Serial, Serial1, Serial2,
+       etc., and a SoftwareSerial are valid parameters to pass.
+    */
+    void setSerial(Stream &output);
 
     /*
-       By default, the Playground outputs in SERIAL_PLOTTER format.
+       By default, Playground output is in SERIAL_PLOTTER format.
        
        If you want output in a different format, call this function once
        sometime before calling pulse.begin().
+       
+       Remember to call pulse.setSerial() if you want serial output.
 
        outputType = SERIAL_PLOTTER to output to the Arduino Serial Plotter,
        PROCESSSING_VISUALIZER to output to the Processing Sketch
