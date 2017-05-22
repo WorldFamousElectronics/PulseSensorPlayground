@@ -46,6 +46,12 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
   NextSampleMicros = micros() + MICROS_PER_READ;
   
   SawNewSample = false;
+  
+#if PULSE_SENSOR_MEMORY_USAGE
+  // Report the RAM usage and hang.
+  printMemoryUsage();
+  for (;;);
+#endif // PULSE_SENSOR_MEMORY_USAGE
 
   // Lastly, set up and turn on the interrupts.
   
@@ -196,3 +202,37 @@ void PulseSensorPlayground::outputSample() {
 void PulseSensorPlayground::outputBeat() {
   SerialOutput.outputBeat(Sensors, SensorCount);
 }
+
+#if PULSE_SENSOR_MEMORY_USAGE
+void PulseSensorPlayground::printMemoryUsage() {
+  char stack = 1;
+  extern char *__data_start;
+  extern char *__data_end;
+  extern char *__bss_start;
+  extern char *__bss_end;
+  extern char *__heap_start;
+  extern char *__heap_end;
+
+  int	data_size	=	(int)&__data_end - (int)&__data_start;
+  int	bss_size	=	(int)&__bss_end - (int)&__data_end;
+  int	heap_end	=	(int)&stack - (int)&__malloc_margin;
+  int	heap_size	=	heap_end - (int)&__bss_end;
+  int	stack_size	=	RAMEND - (int)&stack + 1;
+  int	available	=	(RAMEND - (int)&__data_start + 1);	
+  available	-=	data_size + bss_size + heap_size + stack_size;
+
+  Stream *pOut = SerialOutput.getSerial();
+  if (pOut) {
+    pOut->print(F("data "));
+    pOut->println(data_size);
+    pOut->print(F("bss "));
+    pOut->println(bss_size);
+    pOut->print(F("heap "));
+    pOut->println(heap_size);
+    pOut->print(F("stack "));
+    pOut->println(stack_size);
+    pOut->print(F("total "));
+    pOut->println(data_size + bss_size + heap_size + stack_size);
+  }
+}
+#endif // PULSE_SENSOR_MEMORY_USAGE

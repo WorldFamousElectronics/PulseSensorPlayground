@@ -41,6 +41,15 @@ class PulseSensorSerialOutput {
        such as Serial, Serial1, or a SoftwareSerial.
     */
     void setSerial(Stream &output);
+    
+    /*
+       Find what Serial stream we are configured to print to.
+       
+       Returns a pointer to the Serial we're configured for
+       (for example Serial, Serial1, or a SoftwareSerial object),
+       or NULL if no Serial output has been set up.
+    */
+    Stream *getSerial();
 
     /*
        Sets the format (destination) of the Serial Output:
