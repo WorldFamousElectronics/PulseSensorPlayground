@@ -13,7 +13,7 @@
 
    This software is not intended for medical use.
 */
-#include <PulseSensorSerialOutput.h>
+#include "PulseSensorSerialOutput.h"
 
 PulseSensorSerialOutput::PulseSensorSerialOutput() {
   OutputType = SERIAL_PLOTTER;

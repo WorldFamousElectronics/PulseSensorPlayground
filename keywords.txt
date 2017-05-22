@@ -1,0 +1,39 @@
+#######################################
+# Syntax Coloring Map PulseSensor Playground
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+PulseSensorPlayground	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+analogInput	KEYWORD2
+begin	KEYWORD2
+blinkOnPulse	KEYWORD2
+fadeOnPulse	KEYWORD2
+getBeatsPerMinute	KEYWORD2
+getInterBeatIntervalMs	KEYWORD2
+getLatestSample	KEYWORD2
+isInsideBeat	KEYWORD2
+outputBeat	KEYWORD2
+outputSample	KEYWORD2
+sawNewSample	KEYWORD2
+setOutputType	KEYWORD2
+sawStartOfBeat	KEYWORD2
+useInterrupts	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+PROCESSING_VISUALIZER	LITERAL1
+SERIAL_PLOTTER	LITERAL1

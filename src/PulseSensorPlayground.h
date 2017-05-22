@@ -17,20 +17,10 @@
 #define PULSE_SENSOR_PLAYGROUND_H
 
 #include <Arduino.h>
+#include "utility/Interrupts.h"
 #include "utility/PulseSensor.h"
 #include "utility/PulseSensorSerialOutput.h"
 #include "utility/PulseSensorTimingStatistics.h" // makes TimingStatistics class visible.
-
-// Macros to link to interrupt disable/enable only if they exist
-// The name is long to avoid collisions with Sketch and Library symbols.
-#if defined(__arc__)
-  // Arduino 101 doesn't have cli() and sei().
-#define DISABLE_PULSE_SENSOR_INTERRUPTS
-#define ENABLE_PULSE_SENSOR_INTERRUPTS
-#else
-#define DISABLE_PULSE_SENSOR_INTERRUPTS cli()
-#define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
-#endif
 
 class PulseSensorPlayground {
   public:

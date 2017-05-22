@@ -16,7 +16,7 @@
 
    This software is not intended for medical use.
 */
-#include <PulseSensorTimingStatistics.h>
+#include "PulseSensorTimingStatistics.h"
 
 /*
    Constructs an object for measuring statistics about the timing
