@@ -29,6 +29,11 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   // Dynamically create the array to minimize ram usage.
   SensorCount = (byte) numberOfSensors;
   Sensors = new PulseSensor[SensorCount];
+  
+#if PULSE_SENSOR_TIMING_ANALYSIS
+  // We want sample timing analysis, so we construct it.
+  pTiming = new PulseSensorTimingStatistics(MICROS_PER_READ, 500 * 30L);
+#endif // PULSE_SENSOR_TIMING_ANALYSIS
 }
 
 boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
@@ -104,6 +109,13 @@ boolean PulseSensorPlayground::sawNewSample() {
     return false;  // not time yet.
   }
   NextSampleMicros = nowMicros + MICROS_PER_READ;
+  
+#if PULSE_SENSOR_TIMING_ANALYSIS
+  if (pTiming->recordSampleTime() <= 0) {
+    pTiming->outputStatistics();
+    for (;;); // Hang because we've disturbed the timing.
+  }
+#endif // PULSE_SENSOR_TIMING_ANALYSIS
 
   // Act as if the ISR was called.
   onSampleTime();
@@ -114,7 +126,7 @@ boolean PulseSensorPlayground::sawNewSample() {
 
 void PulseSensorPlayground::onSampleTime() {
   // Typically called from the ISR.
-
+  
   /*
      Read the voltage from each PulseSensor.
      We do this separately from processing the voltages

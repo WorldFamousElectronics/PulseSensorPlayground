@@ -16,11 +16,55 @@
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
 
+/*
+   If you wish to perform timing statistics on your non-interrupt Sketch:
+   
+   Uncomment the line below: #define PULSE_SENSOR_TIMING_ANALYSIS true
+   Restart your Arduino IDE.
+   Compile and download your Sketch.
+   Start the Arduino IDE Serial Monitor.
+   Wait about 30 seconds. The Sketch should then print 3 numbers and hang.
+   The three numbers are:
+     Minimum variation (microseconds) from the 2 millisecond sample time.
+     Average variation in that number.
+     Maximum variation in that number.
+   For example and output of -4 0 18 says that samples were made between
+   4 microseconds short of 2 milliseconds, and 18 microseconds longer,
+   with an average sample time right at 2 milliseconds (0 microseconds offset).
+   
+   If the average number is larger than, say, 50 microseconds, your Sketch
+   is taking too much time per loop(), causing inaccuracies in the
+   measured signal, heart rate, and inter-beat interval.
+   
+   You should aim for an average offset of under 50 microseconds.
+   
+   NOTES:
+   
+   1) This is an approximate measure, because interrupts can occur that
+   the timing statistics cannot measure.
+   
+   2) These statistics compile only for non-interrupt Sketches. If your
+   Sketch uses Interrupts to sample the PulseSensor signal, enabling
+   this timing analysis will have no effect and will print nothing.
+   
+   3) Because timing analysis results are printed on Serial, you cannot
+   use the Arduino IDE Serial Plotter or the Processing Visualizer to
+   examine output when timing analysis is enabled.
+   
+   4) If the average is a negative number, your assumed Arduino clock
+   speed may be incorrect. For example, if you compiled for an 8MHz clock
+   and your Arduino actually runs at 16MHz, you would likely see an
+   average offset of something like -1000.
+   
+*/
+#define PULSE_SENSOR_TIMING_ANALYSIS false
+//#define PULSE_SENSOR_TIMING_ANALYSIS true
+
 #include <Arduino.h>
 #include "utility/Interrupts.h"
 #include "utility/PulseSensor.h"
 #include "utility/PulseSensorSerialOutput.h"
-#include "utility/PulseSensorTimingStatistics.h" // makes TimingStatistics class visible.
+#include "utility/PulseSensorTimingStatistics.h"
 
 class PulseSensorPlayground {
   public:
@@ -268,5 +312,8 @@ class PulseSensorPlayground {
     volatile boolean SawNewSample; // "A sample has arrived from the ISR"
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
     boolean UsingInterrupts;          // sample with interrupts or not.
+#if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
+    PulseSensorTimingStatistics *pTiming;
+#endif // PULSE_SENSOR_TIMING_ANALYSIS
 };
 #endif // PULSE_SENSOR_PLAYGROUND_H
