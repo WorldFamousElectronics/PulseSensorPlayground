@@ -16,31 +16,49 @@
 #include <PulseSensorPlayground.h>
 
 boolean PulseSensorPlaygroundSetupInterrupt() {
-  // No support for Arduino 101 (arc) yet.
-#if !defined(__arc__)
-  //TODO: attachInterrupt(digitalPinToInterrupt(pin), ISR, mode);	?
-  // Initializes Timer2 to throw an interrupt every 2mS.
-  TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
-  TCCR2B = 0x06;     // DON'T FORCE COMPARE, 256 PRESCALER
-  OCR2A = 0X7C;      // SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
-  TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
-  ENABLE_PULSE_SENSOR_INTERRUPTS; // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
-  return true;
-#endif
+  #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+    // Initializes Timer1 to throw an interrupt every 2mS.
+    // Interferes with PWM on pins 9 and 10
+    TCCR1A = 0x00; // DISABLE OUTPUTS AND PWM ON DIGITAL PINS 9 & 10
+    TCCR1C = 0x00; // DON'T FORCE COMPARE
+    #if F_CPU == 16000000L   //  if using 16MHz crystal
+      TCCR1B = 0x0C; // GO INTO 'CTC' MODE, PRESCALER = 265
+      OCR1A = 0x007C;  // TRIGGER TIMER INTERRUPT EVERY 2mS
+    #elif F_CPU == 8000000L  // if using 8MHz crystal
+      TCCR1B = 0x0B; // prescaler = 64
+      OCR1A = 0x00F9;  // count to 249 for 2mS interrupt
+    #endif
+    TIMSK1 = 0x02; // ENABLE OCR1A MATCH INTERRUPT
+    ENABLE_PULSE_SENSOR_INTERRUPTS;
+    return true;
 
-  return false;      // unknown or unsupported platform.
+
+  #elif defined(__AVR_ATtiny85__)
+    GTCCR &= 0x81;     // Disable PWM, don't connect pins to events
+    OCR1C = 0x7C;      // Set the top of the count to  124 TEST VALUE
+    OCR1A = 0x7C;      // Set the timer to interrupt after counting to TEST VALUE
+    #if F_CPU == 16000000L
+      TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
+    #elif F_CPU == 8000000L
+      TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
+    #endif
+    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
+    ENABLE_PULSE_SENSOR_INTERRUPTS;
+    return true;
+
+  #else
+    return false;      // unknown or unsupported platform.
+  #endif
 }
 
-// No support for Arduino 101 (arc) yet.
-#if !defined(__arc__)
-// THIS IS THE TIMER 2 INTERRUPT SERVICE ROUTINE.
-// Timer 2 makes sure that we take a reading every 2 miliseconds
-ISR(TIMER2_COMPA_vect) {                   // triggered when Timer2 counts to 124
+#if defined(__AVR__)
+ISR(TIMER1_COMPA_vect)
+{
   DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
   
   PulseSensorPlayground::OurThis->onSampleTime();
  
   ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-
-}// end isr
+}
 #endif
+
