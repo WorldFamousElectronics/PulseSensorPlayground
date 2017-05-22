@@ -2,6 +2,7 @@
    Sample time statistics functions.
    Designed to provide insite into the timing accuracy of
    programs that read data from a PulseSensor.
+   See PulseSensorPlayground.h PULSE_SENSOR_TIMING_ANALYSIS
 
    See https://www.pulsesensor.com to get started.
 
@@ -16,15 +17,8 @@
 
    This software is not intended for medical use.
 */
-#include "PulseSensorTimingStatistics.h"
+#include <PulseSensorPlayground.h>
 
-/*
-   Constructs an object for measuring statistics about the timing
-   of samples from the PulseSensor.
-
-   sampleIntervalMicros = expected time between samples, in microseconds.
-   samplesToMeasure = number of samples to measure timing over.
-*/
 PulseSensorTimingStatistics::PulseSensorTimingStatistics(
   long sampleIntervalMicros, int samplesToMeasure) {
   SamplesDesired = samplesToMeasure;
@@ -33,9 +27,6 @@ PulseSensorTimingStatistics::PulseSensorTimingStatistics(
   resetStatistics();
 }
 
-/*
-   (re)start the collection of timing statistics.
-*/
 void PulseSensorTimingStatistics::resetStatistics() {
   SamplesSeen = 0;
   MinJitterMicros = 0;
@@ -44,13 +35,6 @@ void PulseSensorTimingStatistics::resetStatistics() {
   LastSampleMicros = 0L;
 }
 
-/*
-   Record the fact that we just now read the PulseSensor output.
-
-   Returns the number of samples remaining to be recorded.
-   The caller should stop calling recordSampleTime() once
-   this function returns 0.
-*/
 int PulseSensorTimingStatistics::recordSampleTime() {
   unsigned long nowMicros = micros();
 
@@ -75,22 +59,18 @@ int PulseSensorTimingStatistics::recordSampleTime() {
   return (SamplesDesired - SamplesSeen);
 }
 
-/*
-   Serial prints the sample timing statistics.
-*/
 void PulseSensorTimingStatistics::outputStatistics() {
-#ifdef NOTDEF //TODO temporarily disabled to compile on Gemma.
+  // Compile Serial only if we're doing timing analysis
+  // so that compilation succeeds on Software-Serial-only Arduinos.
+#if PULSE_SENSOR_TIMING_ANALYSIS
   Serial.print(MinJitterMicros);
   Serial.print(" ");
   Serial.print(getAverageOffsetMicros());
   Serial.print(" ");
   Serial.println(MaxJitterMicros);
-#endif
+#endif // PULSE_SENSOR_TIMING_ANALYSIS
 }
 
-/*
-   Returns the average offset seen so far, in microseconds.
-*/
 int PulseSensorTimingStatistics::getAverageOffsetMicros() {
   // the number of offsets is the number of samples - 1.
   if (SamplesSeen - 1 <= 0) {

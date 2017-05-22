@@ -39,9 +39,34 @@
 */
 class PulseSensorTimingStatistics {
   public:
+    /*
+       Constructs an object for measuring statistics about the timing
+       of samples from the PulseSensor.
+
+       sampleIntervalMicros = expected time between samples, in microseconds.
+       samplesToMeasure = number of samples to measure timing over.
+    */
     PulseSensorTimingStatistics(long sampleIntervalMicros, int samplesToMeasure);
+    
+    /*
+       (re)start the collection of timing statistics.
+       Called automatically by the PulseSensorTimingStatistics constructor.
+    */
     void resetStatistics();
-    int recordSampleTime();  // returns the number of samples remaining.
+
+
+    /*
+       Record the fact that we just now read the PulseSensor output.
+
+       Returns the number of samples remaining to be recorded.
+       The caller should stop calling recordSampleTime() once
+       this function returns 0.
+    */
+    int recordSampleTime();
+
+    /*
+       Serial prints the sample timing statistics.
+    */
     void outputStatistics();
 
     int getMinJitterMicros() {
@@ -50,6 +75,10 @@ class PulseSensorTimingStatistics {
     int getMaxJitterMicros() {
       return MaxJitterMicros;
     }
+    
+    /*
+       Returns the average offset seen so far, in microseconds.
+    */
     int getAverageOffsetMicros();
 
   private:
