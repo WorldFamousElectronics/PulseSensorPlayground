@@ -62,16 +62,20 @@ const int PULSE_SENSOR_COUNT = 2;
 
      PIN_POWER1, PIN_INPUT1, etc. = the corresponding pins for
       the second PulseSensor.
+     
+     NOTE: PIN_FADE0 and PIN_FADE1 must be pins that support PWM.
+       If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PIN_FADE0
+       or PIN_FADE1, because those pins' PWM interferes with the sample timer.
 */
 const int PIN_POWER0 = 7;
 const int PIN_INPUT0 = A0;
 const int PIN_BLINK0 = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE0 = 5;      // must be a pin that supports PWM. Can't be pin 9 or 10 (see ISR()).
+const int PIN_FADE0 = 5;
 
 const int PIN_POWER1 = 8;
 const int PIN_INPUT1 = A1;
 const int PIN_BLINK1 = 12;
-const int PIN_FADE1 = 11;      // must be a pin that supports PWM. Can't be pin 9 or 10 (see ISR()).
+const int PIN_FADE1 = 11;
 
 /*
    samplesUntilReport = the number of samples remaining to read

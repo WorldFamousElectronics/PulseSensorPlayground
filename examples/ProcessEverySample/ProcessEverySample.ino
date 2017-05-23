@@ -50,12 +50,15 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
       purple (signal) wire.
      PIN_BLINK = digital Output. Connected to an LED (and 220 ohm resistor)
       that will flash on each detected pulse.
-     PIN_FADE = digital Output. Connected to an LED (and resistor)
+     PIN_FADE = digital Output. PWM pin onnected to an LED (and resistor)
       that will smoothly fade with each pulse.
+      NOTE: PIN_FADE must be a pin that supports PWM.
+       If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PIN_FADE,
+       because those pins' PWM interferes with the sample timer.
 */
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE = 5;      // must be a pin that supports PWM. Can't be pin 3 or 11 (see ISR()).
+const int PIN_FADE = 5;
 
 /*
    samplesUntilReport = the number of samples remaining to read

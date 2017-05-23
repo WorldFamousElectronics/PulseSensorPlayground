@@ -36,7 +36,7 @@ const int PIN_TX = 8;
 
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE = 5;      // must be a pin that supports PWM. Can't be pin 3 or 11 (see ISR()).
+const int PIN_FADE = 5;      // Must be a PWM pin other than 9 or 10.
 
 /*
    Our software serial controller.

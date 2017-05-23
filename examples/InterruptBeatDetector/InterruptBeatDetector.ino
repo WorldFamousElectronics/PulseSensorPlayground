@@ -38,10 +38,12 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
       that will flash on each detected pulse.
      PIN_FADE = digital Output. PWM pin onnected to an LED (and resistor)
       that will smoothly fade with each pulse.
+      NOTE: PIN_FADE must be a pin that supports PWM. Do not use
+      pin 9 or 10, because those pins' PWM interferes with the sample timer.
 */
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE = 5;      // must be a pin that supports PWM. Can't be pin 3 or 11 (see ISR()).
+const int PIN_FADE = 5;
 
 /*
    All the PulseSensor Playground functions.
