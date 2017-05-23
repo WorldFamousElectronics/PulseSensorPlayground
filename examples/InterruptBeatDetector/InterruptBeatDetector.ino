@@ -70,12 +70,13 @@ void setup() {
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
     /*
-     * PulseSensor initialization failed,
-     * likely because our particular Arduino platform interrupts
-     * aren't supported yet.
-     * 
-     * If your Sketch hangs here, try NonInterruptBeatDetector.ino
-     */
+       PulseSensor initialization failed,
+       likely because our particular Arduino platform interrupts
+       aren't supported yet.
+
+       If your Sketch hangs here, try ProcessEverySample.ino,
+       which doesn't use interrupts.
+    */
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PIN_BLINK, LOW);

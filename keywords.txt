@@ -36,5 +36,6 @@ useInterrupts	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
+MICROS_PER_READ	LITERAL1
 PROCESSING_VISUALIZER	LITERAL1
 SERIAL_PLOTTER	LITERAL1
