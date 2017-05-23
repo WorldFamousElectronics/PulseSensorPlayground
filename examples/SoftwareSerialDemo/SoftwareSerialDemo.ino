@@ -1,0 +1,85 @@
+/*
+   Code to detect pulses from the PulseSensor,
+   using an interrupt service routine and
+   using SoftwareSerial for Serial output.
+
+   See https://www.pulsesensor.com
+   
+   Copyright World Famous Electronics LLC - see LICENSE
+   Contributors:
+     Joel Murphy, https://pulsesensor.com
+     Yury Gitman, https://pulsesensor.com
+     Bradford Needham, @bneedhamia, https://bluepapertech.com
+
+   Licensed under the MIT License, a copy of which
+   should have been included with this software.
+
+   This software is not intended for medical use.
+*/
+
+#include <PulseSensorPlayground.h>
+#include <SoftwareSerial.h>
+
+const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+
+/*
+     PIN_RX = Serial Receive pin (input into Arduino)
+     PIN_TX = Serial Transmit pin (output from Arduino)
+
+     In most cases, you'll want to wire the Arduino PIN_RX
+     to the TRANSMIT pin of the external serial device,
+     and the Arduino PIN_TX to the RECEIVE pin of the
+     external device.
+*/
+const int PIN_RX = 7;
+const int PIN_TX = 8;
+
+const int PIN_INPUT = A0;
+const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
+const int PIN_FADE = 5;      // must be a pin that supports PWM. Can't be pin 3 or 11 (see ISR()).
+
+/*
+   Our software serial controller.
+ */
+SoftwareSerial ourSerial(PIN_RX, PIN_TX);
+
+PulseSensorPlayground pulseSensor;
+
+void setup() {
+
+  ourSerial.begin(115200);
+
+  // Configure the PulseSensor manager.
+  pulseSensor.analogInput(PIN_INPUT);
+  pulseSensor.blinkOnPulse(PIN_BLINK);
+  pulseSensor.fadeOnPulse(PIN_FADE);
+  pulseSensor.setSerial(ourSerial);
+  pulseSensor.setOutputType(OUTPUT_TYPE);
+
+  if (!pulseSensor.begin()) {
+    /*
+     * PulseSensor initialization failed,
+     * likely because our particular Arduino platform interrupts
+     * aren't supported yet.
+     * 
+     * If your Sketch hangs here, try ProcessEverySample.ino
+     */
+    for(;;) {
+      // Flash the led to show things didn't work.
+      digitalWrite(PIN_BLINK, LOW);
+      delay(50);
+      digitalWrite(PIN_BLINK, HIGH);
+      delay(50);
+    }
+  }
+}
+
+void loop() {
+  delay(20);
+
+  pulseSensor.outputSample();
+
+  if (pulseSensor.sawStartOfBeat()) {
+    pulseSensor.outputBeat();
+  }
+}
