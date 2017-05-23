@@ -319,7 +319,7 @@ class PulseSensorPlayground {
            pulse.outputBeat();
          }
     */
-    void outputBeat();
+    void outputBeat(int sensorIndex = 0);
     
     // (internal to the library) "this" pointer for the ISR.
     static PulseSensorPlayground *OurThis;

@@ -41,45 +41,66 @@ void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors
     case SERIAL_PLOTTER:
       if (numSensors == 1) {
         pOutput->print(sensors[0].getBeatsPerMinute());
-        pOutput->print(",");
+        pOutput->print(F(","));
         pOutput->print(sensors[0].getInterBeatIntervalMs());
-        pOutput->print(",");
+        pOutput->print(F(","));
         pOutput->println(sensors[0].getLatestSample());
       } else {
-        //TODO: support 2 or more sensors.
+        for (int i = 0; i < numSensors; ++i) {
+          if (i != 0) {
+            pOutput->print(F(","));
+          }
+          pOutput->print(sensors[i].getLatestSample());
+          // Could output BPM and IBI here.
+        }
+        pOutput->println();
       }
       break;
+      
     case PROCESSING_VISUALIZER:
+      // Don't print bpm and ibi here; they're printed per-beat.
       if (numSensors == 1) {
         outputToSerial('S', sensors[0].getLatestSample());
-        // Ignore bpm and ibi for this output.
       } else {
-        //TODO: support 2 or more sensors.
+        // PulseSensor 0 = a; #1 = b; #2 = c, etc.
+        for(int i = 0; i < numSensors; ++i){
+          outputToSerial('a' + i, sensors[i].getLatestSample());
+        }
       }
       break;
+      
     default:
       // unknown output type: no output
       break;
   }
 }
 
-void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors) {
+void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors, int sensorIndex) {
   if (!pOutput) {
     return;  // no serial output object has been set.
   }
 
   switch (OutputType) {
     case SERIAL_PLOTTER:
-      // We've already printed this info in outputSample().
+      /*
+         The plotter doesn't understand occasionally-printed data,
+         so we print nothing per-beat.
+      */
       break;
+      
     case PROCESSING_VISUALIZER:
       if (numSensors == 1) {
-        outputToSerial('B', sensors[0].getBeatsPerMinute());
-        outputToSerial('Q', sensors[0].getInterBeatIntervalMs());
+        outputToSerial('B', sensors[sensorIndex].getBeatsPerMinute());
+        outputToSerial('Q', sensors[sensorIndex].getInterBeatIntervalMs());
       } else {
-        //TODO: support 2 or more sensors.
+        // PulseSensor 0 = A, M; #1 = B, N; etc.
+        outputToSerial('A' + sensorIndex
+          , sensors[sensorIndex].getBeatsPerMinute());
+        outputToSerial('M' + sensorIndex
+          , sensors[sensorIndex].getInterBeatIntervalMs());
       }
       break;
+      
     default:
       // unknown output type: no output
       break;

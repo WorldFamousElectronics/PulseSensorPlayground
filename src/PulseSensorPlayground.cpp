@@ -199,8 +199,8 @@ void PulseSensorPlayground::outputSample() {
   SerialOutput.outputSample(Sensors, SensorCount);
 }
 
-void PulseSensorPlayground::outputBeat() {
-  SerialOutput.outputBeat(Sensors, SensorCount);
+void PulseSensorPlayground::outputBeat(int sensorIndex) {
+  SerialOutput.outputBeat(Sensors, SensorCount, sensorIndex);
 }
 
 #if PULSE_SENSOR_MEMORY_USAGE

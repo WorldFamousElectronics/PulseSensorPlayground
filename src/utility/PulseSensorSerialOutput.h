@@ -64,9 +64,12 @@ class PulseSensorSerialOutput {
 
     /*
        Output the per-beat data (Beats per Minute, Inter-beat Interval)
-       for all PulseSensors
+       for the given PulseSensor.
+       
+       sensorIndex = the sensor to output beat information about.
+         Usually is the PulseSensor that a beat was detected on.
     */
-    void outputBeat(PulseSensor sensors[], int numberOfSensors);
+    void outputBeat(PulseSensor sensors[], int numberOfSensors, int sensorIndex);
 
   private:
     // If non-null, the output stream to print to. If null, don't print.
