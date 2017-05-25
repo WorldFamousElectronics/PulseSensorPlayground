@@ -15,21 +15,28 @@
    This software is not intended for medical use.
 */
 
-#include <PulseSensorPlayground.h>
-
 /*
-   Set to true if you want the PulseSensor Playground
-   to use interrupts to read from the PulseSensor.
+   Every Sketch that uses the PulseSensor Playground must
+   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
+   Here, #define USE_ARDUINO_INTERRUPTS false tells the library to
+   not use interrupts to read data from the PulseSensor.
+   
+   If you want to use interrupts, simply change the line below
+   to read:
+     #define USE_ARDUINO_INTERRUPTS true
 
-   Set to false if either
+   Set US_PS_INTERRUPTS to false if either
    1) Your Arduino platform's interrupts aren't yet supported
    by PulseSensor Playground, or
-   2) You don't wish to use interrupts.
+   2) You don't wish to use interrupts because of the side effects.
 
-   NOTE: if USE_INTERRUPTS is false, your Sketch must
-   call pulse.sawNewSample() at least once every 2 milliseconds.
+   NOTE: if US_PS_INTERRUPTS is false, your Sketch must
+   call pulse.sawNewSample() at least once every 2 milliseconds
+   to accurately read the PulseSensor signal.
 */
-#define USE_INTERRUPTS false
+#define USE_ARDUINO_INTERRUPTS false
+#include <PulseSensorPlayground.h>
+
 
 /*
    The format of our output.
@@ -131,7 +138,6 @@ void setup() {
   pulseSensor.blinkOnPulse(PIN_BLINK1, 1);
   pulseSensor.fadeOnPulse(PIN_FADE1, 1);
 
-  pulseSensor.useInterrupts(USE_INTERRUPTS);
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
 
@@ -145,7 +151,7 @@ void setup() {
        likely because our Arduino platform interrupts
        aren't supported yet.
 
-       If your Sketch hangs here, try changing USE_INTERRUPTS to false.
+       If your Sketch hangs here, try changing USE_ARDUINO_INTERRUPTS to false.
     */
     for (;;) {
       // Flash the led to show things didn't work.
@@ -159,23 +165,8 @@ void setup() {
 
 void loop() {
 
-  /*
-     See if a sample is ready from the PulseSensor.
-
-     If USE_INTERRUPTS is true, the PulseSensor Playground
-     will automatically read and process samples from
-     the PulseSensor.
-
-     If USE_INTERRUPTS is false, this call to sawNewSample()
-     will, if enough time has passed, read and process a
-     sample (analog voltage) from the PulseSensor.
-  */
   if (pulseSensor.sawNewSample()) {
-    /*
-       Every so often, send the latest Sample.
-       We don't print every sample, because our baud rate
-       won't support that much I/O.
-    */
+
     if (--samplesUntilReport == (byte) 0) {
       samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
 
@@ -186,6 +177,7 @@ void loop() {
          since we last checked, write the per-beat information
          about that PulseSensor to Serial.
       */
+      
       for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
         if (pulseSensor.sawStartOfBeat(i)) {
           pulseSensor.outputBeat(i);

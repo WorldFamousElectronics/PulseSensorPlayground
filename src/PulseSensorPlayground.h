@@ -13,6 +13,38 @@
 
    This software is not intended for medical use.
 */
+
+/*
+  NOTE: Every Sketch that uses the PulseSensor Playground
+  must define the variable USE_ARDUINO_INTERRUPTS *before* including
+  PulseSensorPlayground.h. If you don't, you will get a compiler error
+  about "undefined reference to `PulseSensorPlayground::UsingInterrupts".
+ 
+  In particular, if your Sketch wants the Playground to use interrupts
+  to read and process PulseSensor data, your Sketch must contain the
+  following two lines, in order:
+    #define USE_ARDUINO_INTERRUPTS true
+    #include <PulseSensorPlayground.h>
+  
+  If, instead, your Sketch does not use interrupts to read PulseSensor
+  data,  your Sketch must instead contain the
+  following two lines, in order:
+    #define USE_ARDUINO_INTERRUPTS false
+    #include <PulseSensorPlayground.h>
+  
+  See utility/interrupts.h for details.
+  
+  Internal, developer note: in the Playground code, don't use
+  USE_ARDUINO_INTERRUPTS as a variable; instead, refer to
+  PulseSensorPlayground::UsingInterrupts, which is a static variable
+  that reflects what the Sketch defined USE_ARDUINO_INTERRUPTS to.
+  Because USE_ARDUINO_INTERRUPTS is defined *only* in the user's Sketch,
+  it doesn't exist when the various Playground modules are compiled.
+  
+  See further notes in interrupts.h
+*/
+
+
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
 
@@ -20,7 +52,6 @@
    If you wish to perform timing statistics on your non-interrupt Sketch:
    
    Uncomment the line below: #define PULSE_SENSOR_TIMING_ANALYSIS true
-   Restart your Arduino IDE.
    Compile and download your Sketch.
    Start the Arduino IDE Serial Monitor.
    Wait about 30 seconds. The Sketch should then print 3 numbers and hang.
@@ -65,7 +96,6 @@
    starts:
    
    Uncomment the line below: #define PULSE_SENSOR_MEMORY_USAGE true
-   Restart your Arduino IDE
    Compile and download your Sketch.
    Start the Arduino IDE Serial Monitor
    Your Sketch will start normally, then print memory usage, then hang.
@@ -86,14 +116,20 @@
 #define PULSE_SENSOR_MEMORY_USAGE false
 //#define PULSE_SENSOR_MEMORY_USAGE true
 
+
 #include <Arduino.h>
-#include "utility/Interrupts.h"
 #include "utility/PulseSensor.h"
 #include "utility/PulseSensorSerialOutput.h"
 #include "utility/PulseSensorTimingStatistics.h"
 
 class PulseSensorPlayground {
   public:
+    /*
+       The number of microseconds per sample of data from the PulseSensor.
+       1 millisecond is 1,000 microseconds.
+       
+       Refer to this value as PulseSensorPlayground::MICROS_PER_READ
+    */
     static const unsigned long MICROS_PER_READ = (2 * 1000L); // usecs per sample.
 
     //---------- PulseSensor Manager functions
@@ -106,18 +142,10 @@ class PulseSensorPlayground {
 
        For example:
          PulseSensorPlayground pulse();
+       or
+         PulseSensorPlayground pulse(2); // for 2 PulseSensors.
     */
     PulseSensorPlayground(int numberOfSensors = 1);
-
-    /*
-       By default the library attempts to use interrupts
-       to read and process the PulseSensor analog signal.
-       To not use interrupts, call useInterrtups(false) sometime before begin().
-       Useful if PulseSensor doesn't yet support interrupts on your Arduino.
-    */
-    void useInterrupts(boolean useInterrupts) {
-      UsingInterrupts = useInterrupts;
-    }
 
     /*
        Start reading and processing data from the PulseSensors.
@@ -125,15 +153,22 @@ class PulseSensorPlayground {
        Your Sketch should make all necessary PulseSensor configuration calls
        before calling begin().
 
-       If useInterrupt(false) hasn't been called, this function
+       If the Sketch defined USE_ARDUINO_INTERRUPTS as true, this function
        sets up and turns on interrupts for the PulseSensor.
-       Otherwise it initializes what's necessary for the Sketch to process
+       
+       If instead the Sketch defined USE_ARDUINO_INTERRUPTS as false,
+       it initializes what's necessary for the Sketch to process
        PulsSensor signals. See sawNewSample(), below.
 
        Returns true if successful, false if unsuccessful.
        Returns false if PulseSensorPlayground doesn't yet support
-       interrupts on this Arduino and useInterrupts(false) was not called
-       before begin().
+       interrupts on this Arduino platform and the user's Sketch
+       did a #define USE_ARDUINO_INTERRUPTS true.
+       
+       If begin() returns false, you can either use a different
+       type of Arduino platform, or you can change your Sketch's
+       definition of USE_ARDUINO_INTERRUPTS to false:
+         #define USE_ARDUINO_INTERRUPTS false
     */
     boolean begin();
 
@@ -144,10 +179,11 @@ class PulseSensorPlayground {
        PulseSensor signals, or 2) your Sketch doesn't use interrupts
        to read from the PulseSensors.
 
-       If your Sketch called useInterrupts(false), you must call
-       pulse.sawNewSample() frequently (at least once every 2 milliseconds)
-       to assure that PulseSensor signals are read accurately.
-       A typical non-interrupt loop() will contain:
+       NOTE: If your Sketch defined USE_ARDUINO_INTERRUPTS as false,
+       you must call pulse.sawNewSample() frequently (at least
+       once every 2 milliseconds) to assure that PulseSensor signals
+       are read accurately.
+       A typical loop() that doesn't use interrupts will contain:
          if (pulse.sawNewSample()) {
            int latest = pulse.getLatestSample();
            ...do whatever you want with the sample read from the PulseSensor.
@@ -158,7 +194,7 @@ class PulseSensorPlayground {
     //---------- Per-PulseSensor functions
 
     /*
-       By default, the Playground assumes the input pin = A0.
+       By default, the Playground assumes the PulseSensor is connected to A0.
        If your PulseSensor is connected to a different analog input pin,
        call pulse.analogInput(pin) or pulse.analogInput(pin, sensorIndex).
 
@@ -328,7 +364,9 @@ class PulseSensorPlayground {
   
     /*
        Configure and enable interrupts to read samples.
-       Call only if UsingInterrupts is true.
+       Call only if PulseSensorPlayground::UsingInterrupts is true.
+       
+       This function is defined (vs. declared here) in interrupts.h
     */
     void setupInterrupt();
     
@@ -340,14 +378,28 @@ class PulseSensorPlayground {
     void printMemoryUsage();
 #endif // PULSE_SENSOR_MEMORY_USAGE
 
+    /*
+       If true, the Sketch wants to use interrupts to read the PulseSensor(s).
+       
+       This variable is defined (vs. declared here) in interrupts.h
+    */
+    static boolean UsingInterrupts;
+
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
     volatile boolean SawNewSample; // "A sample has arrived from the ISR"
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
-    boolean UsingInterrupts;          // sample with interrupts or not.
 #if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS
 };
+
+/*
+   We include interrupts.h here instead of above
+   because it depends on variables and functions we declare (vs. define)
+   in PulseSensorPlayground.h.
+*/
+#include "utility/Interrupts.h"
+
 #endif // PULSE_SENSOR_PLAYGROUND_H

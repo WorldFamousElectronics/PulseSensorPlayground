@@ -17,21 +17,28 @@
    This software is not intended for medical use.
 */
 
-#include <PulseSensorPlayground.h>
-
 /*
-   Set to true if you want the PulseSensor Playground
-   to use interrupts to read from the PulseSensor.
+   Every Sketch that uses the PulseSensor Playground must
+   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
+   Here, #define USE_ARDUINO_INTERRUPTS false tells the library to
+   not use interrupts to read data from the PulseSensor.
+   
+   If you want to use interrupts, simply change the line below
+   to read:
+     #define USE_ARDUINO_INTERRUPTS true
 
-   Set to false if either
+   Set US_PS_INTERRUPTS to false if either
    1) Your Arduino platform's interrupts aren't yet supported
    by PulseSensor Playground, or
-   2) You don't wish to use interrupts.
+   2) You don't wish to use interrupts because of the side effects.
 
-   NOTE: if USE_INTERRUPTS is false, your Sketch must
-   call pulse.sawNewSample() at least once every 2 milliseconds.
+   NOTE: if US_PS_INTERRUPTS is false, your Sketch must
+   call pulse.sawNewSample() at least once every 2 milliseconds
+   to accurately read the PulseSensor signal.
 */
-#define USE_INTERRUPTS false
+#define USE_ARDUINO_INTERRUPTS false
+#include <PulseSensorPlayground.h>
+
 /*
    The format of our output.
 
@@ -92,9 +99,9 @@ void setup() {
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
+  
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
-  pulseSensor.useInterrupts(USE_INTERRUPTS);
 
   // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
   samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
@@ -106,7 +113,7 @@ void setup() {
        likely because our Arduino platform interrupts
        aren't supported yet.
 
-       If your Sketch hangs here, try changing USE_INTERRUPTS to false.
+       If your Sketch hangs here, try changing USE_PS_INTERRUPT to false.
     */
     for(;;) {
       // Flash the led to show things didn't work.

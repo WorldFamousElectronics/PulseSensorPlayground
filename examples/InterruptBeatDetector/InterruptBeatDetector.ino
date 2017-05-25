@@ -16,6 +16,15 @@
    This software is not intended for medical use.
 */
 
+/*
+   Every Sketch that uses the PulseSensor Playground must
+   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
+   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
+   interrupts to automatically read and process PulseSensor data.
+   
+   See ProcessEverySample.ino for an example of not using interrupts.
+*/
+#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
 /*
@@ -63,9 +72,11 @@ void setup() {
   Serial.begin(115200);
 
   // Configure the PulseSensor manager.
+  
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
+  
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
 
