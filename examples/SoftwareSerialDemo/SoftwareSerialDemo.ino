@@ -17,6 +17,7 @@
    This software is not intended for medical use.
 */
 
+#define USE_ARDUINO_INTERRUPTS true    // we want the Playground to use interrupts
 #include <PulseSensorPlayground.h>
 #include <SoftwareSerial.h>
 
@@ -50,9 +51,11 @@ void setup() {
   ourSerial.begin(115200);
 
   // Configure the PulseSensor manager.
+  
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
+  
   pulseSensor.setSerial(ourSerial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
 

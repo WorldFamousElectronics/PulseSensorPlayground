@@ -23,9 +23,6 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   // Save a static pointer to our playground so the ISR can read it.
   OurThis = this;
 
-  // By default, we attempt to use interrupts to sample.
-  UsingInterrupts = true;
-
   // Dynamically create the array to minimize ram usage.
   SensorCount = (byte) numberOfSensors;
   Sensors = new PulseSensor[SensorCount];
@@ -56,11 +53,8 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
   // Lastly, set up and turn on the interrupts.
   
   if (UsingInterrupts) {
-    // If this Arduino's interrupt isn't supported, don't use it.
     if (!PulseSensorPlaygroundSetupInterrupt()) {
-      UsingInterrupts = false;
-      
-      // The user requested interrupts, but didn't get them. Say so.
+      // The user requested interrupts, but they aren't supported. Say so.
       return false;
     }
   }
