@@ -1,7 +1,13 @@
 
-/*  PulseSensor™ Starter Project   http://www.pulsesensor.com
+/*  PulseSensor™ Starter Project and Signal Tester   
+ *  The Best Way to Get Started  With, or See the Raw Signal of, your PulseSensor™ & Arduino. 
+
+ *  http://www.pulsesensor.com
  *   
-This an Arduino project. It's Best Way to Get Started with your PulseSensor™ & Arduino. 
+ *  WATCH ME (Tutorial Video):  
+ *  https://www.youtube.com/watch?v=82T_zBZQkOE 
+ *  
+ *   
 -------------------------------------------------------------
 1) This shows a live human Heartbeat Pulse. 
 2) Live visualization in Arduino's Cool "Serial Plotter".
@@ -49,7 +55,6 @@ delay(10);
    
    
 }
-
 
 
 
