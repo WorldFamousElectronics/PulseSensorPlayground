@@ -124,7 +124,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
   #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 
     // check to see if the Servo library is in use
-    #ifdef Servo_h
+    #if defined Servo_h
       // #error "Servos!! Beware" // break compiler for testing
       // Initializes Timer2 to throw an interrupt every 2mS
       // Interferes with PWM on pins 3 and 11
@@ -200,6 +200,7 @@ ISR(TIMER1_COMPA_vect)
   ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
 }
 #endif
+
 
 
 #endif // USE_ARDUINO_INTERRUPTS
