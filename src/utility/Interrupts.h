@@ -18,13 +18,13 @@
    Any Sketch using the Playground must do one of two things:
    1) #define USE_ARDUINO_INTERRUPTS true - if using interrupts;
    2) #define USE_ARDUINO_INTERRUPTS false - if not using interrupts.
-   
+
    Only the Sketch must define USE_ARDUINO_INTERRUPTS.
    If the Sketch doesn't define USE_ARDUINO_INTERRUPTS, or if some other file
    defines it as well, a link error will result.
-   
+
    See notes in PulseSensorPlayground.h
-   
+
    The code below is rather convoluted, with nested #if's.
    This structure is used to achieve two goals:
    1) Minimize the complexity the user has to deal with to use or
@@ -32,7 +32,7 @@
    2) Create an ISR() only if the Sketch uses interrupts.  Defining an
       ISR(), even if not used, may interfere with other libraries' use
       of interrupts.
-   
+
    The nesting goes something like this:
      if the Sketch is being compiled...              #if defined(USE_ARDUINO_INTERRUPTS)
        if the user wants to use interrupts...        #if USE_ARDUINO_INTERRUPTS
@@ -75,10 +75,10 @@
 /*
    (internal to the library)
    Sets up the sample timer interrupt for this Arduino Platform.
-   
+
    Returns true if successful, false if we don't yet support
    the timer interrupt on this Arduino.
-   
+
    NOTE: This is the declaration (vs. definition) of this function.
    See the definition (vs. declaration) of this function, below.
 */
@@ -89,14 +89,14 @@ boolean PulseSensorPlaygroundSetupInterrupt();
 
 /*
    (internal to the library) True if the Sketch uses interrupts to
-   sample 
+   sample
    We need to define US_PS_INTERRUPTS once per Sketch, whether or not
    the Sketch uses interrupts.
    Not doing this or doing it for every file that includes interrupts.h
    would cause a link error.
-   
+
    To refer to this variable, use "PulseSensorPlayground::UsingInterrupts".
-   
+
    See PulseSensorPlayground.h
 */
 boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
@@ -109,8 +109,8 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
      so we won't waste Flash space and create complexity
      by adding interrupt-setup code.
   */
-  return true; 
-  
+  return true;
+
 #else
   // This code sets up the sample timer interrupt
   // based on the type of Arduino platform.
@@ -120,22 +120,42 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
      be sure to add similar #if's (if necessary) to the ISR() defined
      below.
   */
-  
+
   #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
-    // Initializes Timer1 to throw an interrupt every 2mS.
-    // Interferes with PWM on pins 9 and 10
-    TCCR1A = 0x00; // DISABLE OUTPUTS AND PWM ON DIGITAL PINS 9 & 10
-    TCCR1C = 0x00; // DON'T FORCE COMPARE
-    #if F_CPU == 16000000L   //  if using 16MHz crystal
-      TCCR1B = 0x0C; // GO INTO 'CTC' MODE, PRESCALER = 265
-      OCR1A = 0x007C;  // TRIGGER TIMER INTERRUPT EVERY 2mS
-    #elif F_CPU == 8000000L  // if using 8MHz crystal
-      TCCR1B = 0x0B; // prescaler = 64
-      OCR1A = 0x00F9;  // count to 249 for 2mS interrupt
+
+    // check to see if the Servo library is in use
+    #if defined Servo_h
+      // #error "Servos!! Beware" // break compiler for testing
+      // Initializes Timer2 to throw an interrupt every 2mS
+      // Interferes with PWM on pins 3 and 11
+      TCCR2A = 0x02;          // Disable PWM and go into CTC mode
+      TCCR2B = 0x05;          // don't force compare, 128 prescaler
+      #if F_CPU == 16000000L   // if using 16MHz crystal
+        OCR2A = 0XF9;         // set count to 249 for 2mS interrupt
+      #elif F_CPU == 8000000L // if using 8MHz crystal
+        OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
+      #endif
+      TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
+      // #define _useTimer2
+      return true;
+    #else
+      // Initializes Timer1 to throw an interrupt every 2mS.
+      // Interferes with PWM on pins 9 and 10
+      TCCR1A = 0x00;            // Disable PWM and go into CTC mode
+      TCCR1C = 0x00;            // don't force compare
+      #if F_CPU == 16000000L    // if using 16MHz crystal
+        TCCR1B = 0x0C;          // prescaler 256
+        OCR1A = 0x007C;         // count to 124 for 2mS interrupt
+      #elif F_CPU == 8000000L   // if using 8MHz crystal
+        TCCR1B = 0x0B;          // prescaler = 64
+        OCR1A = 0x00F9;         // count to 249 for 2mS interrupt
+      #endif
+      TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
+      return true;
     #endif
-    TIMSK1 = 0x02; // ENABLE OCR1A MATCH INTERRUPT
-    ENABLE_PULSE_SENSOR_INTERRUPTS;
-    return true;
+  // #endif
 
 
   #elif defined(__AVR_ATtiny85__)
@@ -173,15 +193,27 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
    the platform detected by PulseSensorPlaygroundSetupInterrupt(), above.
 */
 #if defined(__AVR__)
-ISR(TIMER1_COMPA_vect)
-{
-  DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
-  
-  PulseSensorPlayground::OurThis->onSampleTime();
- 
-  ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-}
+  #if defined Servo_h
+    ISR(TIMER2_COMPA_vect)
+    {
+      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+      PulseSensorPlayground::OurThis->onSampleTime();
+
+      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+    }
+  #else
+    ISR(TIMER1_COMPA_vect)
+    {
+      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+      PulseSensorPlayground::OurThis->onSampleTime();
+
+      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+    }
+  #endif
 #endif
+
 
 
 #endif // USE_ARDUINO_INTERRUPTS
@@ -189,3 +221,4 @@ ISR(TIMER1_COMPA_vect)
 #endif // defined(USE_ARDUINO_INTERRUPTS)
 
 #endif // PULSE_SENSOR_INTERRUPTS_H
+// #endif
