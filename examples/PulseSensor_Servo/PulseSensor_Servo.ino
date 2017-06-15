@@ -18,6 +18,11 @@
 */
 
 /*
+  Include Servo.h BEFORE you include PusleSensorPlayground.h
+*/
+#include <Servo.h>
+
+/*
    Every Sketch that uses the PulseSensor Playground must
    define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
    Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
@@ -25,8 +30,6 @@
 
    See ProcessEverySample.ino for an example of not using interrupts.
 */
-#include <Servo.h>
-
 #define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
@@ -60,10 +63,14 @@ const int PIN_FADE = 5;
 /*
    All the PulseSensor Playground functions.
 */
-
-Servo heart;  // make a heart servo
-
 PulseSensorPlayground pulseSensor;
+
+/*
+  Make a heart servo, the pin to control it with, and a servo position variable
+*/
+Servo heart;
+const int SERVO_PIN = 6;
+int pos = 90;
 
 void setup() {
   /*
@@ -76,9 +83,10 @@ void setup() {
      not work properly.
   */
   Serial.begin(115200);
-  // set up the heart servo
-  heart.attach(6);
-  heart.write(90);
+  // set up the heart servo on SERVO_PIN
+  // set servo position to pos (90 degrees, mid position)
+  heart.attach(SERVO_PIN);
+  heart.write(pos);
 
   // Configure the PulseSensor manager.
   pulseSensor.analogInput(PIN_INPUT);
@@ -119,6 +127,9 @@ void loop() {
   // write the latest sample to Serial.
   pulseSensor.outputSample();
 
+  // write to the hear servo
+  moveServo(pulseSensor.getLatestSample());
+
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
@@ -126,4 +137,15 @@ void loop() {
   if (pulseSensor.sawStartOfBeat()) {
     pulseSensor.outputBeat();
   }
+}
+
+/*
+  Map the Pulse Sensor Signal to the Servo range
+  Pulse Sensor = 0 <> 1020
+  Servo = 0 <> 180
+  Modify as you see fit!
+*/
+void moveServo(int value){
+  pos = map(value,0,1023,0,180);
+  heart.write(pos);
 }

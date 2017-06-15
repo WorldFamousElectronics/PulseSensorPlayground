@@ -130,13 +130,15 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
       // Interferes with PWM on pins 3 and 11
       TCCR2A = 0x02;          // Disable PWM and go into CTC mode
       TCCR2B = 0x05;          // don't force compare, 128 prescaler
-      if F_CPU == 16000000L   // if using 16MHz crystal
+      #if F_CPU == 16000000L   // if using 16MHz crystal
         OCR2A = 0XF9;         // set count to 249 for 2mS interrupt
       #elif F_CPU == 8000000L // if using 8MHz crystal
         OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
       #endif
       TIMSK2 = 0x02;          // Enable OCR2A match interrupt
       ENABLE_PULSE_SENSOR_INTERRUPTS;
+      // #define _useTimer2
+      return true;
     #else
       // Initializes Timer1 to throw an interrupt every 2mS.
       // Interferes with PWM on pins 9 and 10
@@ -191,14 +193,25 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
    the platform detected by PulseSensorPlaygroundSetupInterrupt(), above.
 */
 #if defined(__AVR__)
-ISR(TIMER1_COMPA_vect)
-{
-  DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+  #if defined Servo_h
+    ISR(TIMER2_COMPA_vect)
+    {
+      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
 
-  PulseSensorPlayground::OurThis->onSampleTime();
+      PulseSensorPlayground::OurThis->onSampleTime();
 
-  ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-}
+      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+    }
+  #else
+    ISR(TIMER1_COMPA_vect)
+    {
+      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+      PulseSensorPlayground::OurThis->onSampleTime();
+
+      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+    }
+  #endif
 #endif
 
 
