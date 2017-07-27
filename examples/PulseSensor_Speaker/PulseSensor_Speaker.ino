@@ -139,9 +139,9 @@ void loop() {
 
   /*
     The Pulse variable is true only for a short time after heartbeat detected
-    Use this to time the duration of the beep 
+    Use this to time the duration of the beep
   */
-  if(pulseSensor.Pulse = false){
+  if(pulseSensor.isInsideBeat() == false){
     noTone(PIN_SPEAKER);
   }
 
