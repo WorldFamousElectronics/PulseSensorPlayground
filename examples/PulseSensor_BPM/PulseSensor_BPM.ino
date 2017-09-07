@@ -3,7 +3,7 @@
    using an interrupt service routine.
 
    See https://www.pulsesensor.com
-   
+
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
      Joel Murphy, https://pulsesensor.com
@@ -21,7 +21,7 @@
    define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
    Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
    interrupts to automatically read and process PulseSensor data.
-   
+
    See ProcessEverySample.ino for an example of not using interrupts.
 */
 #define USE_ARDUINO_INTERRUPTS true
@@ -53,7 +53,6 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE = 5;
-
 /*
    All the PulseSensor Playground functions.
 */
@@ -72,13 +71,14 @@ void setup() {
   Serial.begin(115200);
 
   // Configure the PulseSensor manager.
-  
+
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
-  
+
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(600);
 
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
@@ -98,6 +98,7 @@ void setup() {
       delay(50);
     }
   }
+//  pulseSensor.setThreshold(550);
 }
 
 void loop() {
@@ -109,13 +110,21 @@ void loop() {
   delay(20);
 
   // write the latest sample to Serial.
-  pulseSensor.outputSample();
+//  pulseSensor.outputSample();
 
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
    */
   if (pulseSensor.sawStartOfBeat()) {
-    pulseSensor.outputBeat();
+//    pulseSensor.outputBeat();
+//    pulseSensor.printThreshSetting();
+  }
+}
+
+void serialEvent(){
+  char c = Serial.read();
+  if(c == 'r'){
+    pulseSensor.setThreshold(550);
   }
 }

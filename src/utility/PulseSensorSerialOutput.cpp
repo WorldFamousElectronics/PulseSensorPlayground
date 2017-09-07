@@ -56,7 +56,7 @@ void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors
         pOutput->println();
       }
       break;
-      
+
     case PROCESSING_VISUALIZER:
       // Don't print bpm and ibi here; they're printed per-beat.
       if (numSensors == 1) {
@@ -68,7 +68,7 @@ void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors
         }
       }
       break;
-      
+
     default:
       // unknown output type: no output
       break;
@@ -87,7 +87,7 @@ void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors, 
          so we print nothing per-beat.
       */
       break;
-      
+
     case PROCESSING_VISUALIZER:
       if (numSensors == 1) {
         outputToSerial('B', sensors[sensorIndex].getBeatsPerMinute());
@@ -100,12 +100,18 @@ void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors, 
           , sensors[sensorIndex].getInterBeatIntervalMs());
       }
       break;
-      
+
     default:
       // unknown output type: no output
       break;
   }
 }
+
+
+    // // testing feedback
+    // void printThreshSetting() {
+    //
+    // }
 
 void PulseSensorSerialOutput::outputToSerial(char symbol, int data) {
   if (!pOutput) {
