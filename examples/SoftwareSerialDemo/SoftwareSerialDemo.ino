@@ -4,7 +4,7 @@
    using SoftwareSerial for Serial output.
 
    See https://www.pulsesensor.com
-   
+
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
      Joel Murphy, https://pulsesensor.com
@@ -38,6 +38,7 @@ const int PIN_TX = 8;
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE = 5;      // Must be a PWM pin other than 9 or 10.
+const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
    Our software serial controller.
@@ -51,20 +52,21 @@ void setup() {
   ourSerial.begin(115200);
 
   // Configure the PulseSensor manager.
-  
+
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
-  
+
   pulseSensor.setSerial(ourSerial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   if (!pulseSensor.begin()) {
     /*
      * PulseSensor initialization failed,
      * likely because our particular Arduino platform interrupts
      * aren't supported yet.
-     * 
+     *
      * If your Sketch hangs here, try ProcessEverySample.ino
      */
     for(;;) {

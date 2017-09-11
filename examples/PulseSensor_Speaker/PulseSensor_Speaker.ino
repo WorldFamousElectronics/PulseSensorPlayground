@@ -56,6 +56,7 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE = 5;
+const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
    All the PulseSensor Playground functions.
@@ -94,6 +95,7 @@ void setup() {
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {

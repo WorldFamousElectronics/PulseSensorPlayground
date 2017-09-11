@@ -20,7 +20,7 @@
    define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
    Here, #define USE_ARDUINO_INTERRUPTS false tells the library to
    not use interrupts to read data from the PulseSensor.
-   
+
    If you want to use interrupts, simply change the line below
    to read:
      #define USE_ARDUINO_INTERRUPTS true
@@ -69,7 +69,7 @@ const int PULSE_SENSOR_COUNT = 2;
 
      PIN_POWER1, PIN_INPUT1, etc. = the corresponding pins for
       the second PulseSensor.
-     
+
      NOTE: PIN_FADE0 and PIN_FADE1 must be pins that support PWM.
        If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PIN_FADE0
        or PIN_FADE1, because those pins' PWM interferes with the sample timer.
@@ -83,6 +83,8 @@ const int PIN_POWER1 = 8;
 const int PIN_INPUT1 = A1;
 const int PIN_BLINK1 = 12;
 const int PIN_FADE1 = 11;
+
+const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
    samplesUntilReport = the number of samples remaining to read
@@ -140,6 +142,7 @@ void setup() {
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
   samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
@@ -177,7 +180,7 @@ void loop() {
          since we last checked, write the per-beat information
          about that PulseSensor to Serial.
       */
-      
+
       for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
         if (pulseSensor.sawStartOfBeat(i)) {
           pulseSensor.outputBeat(i);

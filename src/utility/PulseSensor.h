@@ -62,7 +62,6 @@ class PulseSensor {
 
     // (internal to the library) Updtate the thresh variables.
     void setThreshold(int threshold);
-    void printThreshSetting();
 
   private:
     // Configuration

@@ -52,8 +52,8 @@ PulseSensor::PulseSensor() {
   lastBeatTime = 0;
   P = 512;                    // peak at 1/2 the input range of 0..1023
   T = 512;                    // trough at 1/2 the input range.
-  threshSetting = 530;        // used to seed and reset the thresh variable
-  thresh = 530;     // threshold a little above the trough
+  threshSetting = 550;        // used to seed and reset the thresh variable
+  thresh = 550;     // threshold a little above the trough
   amp = 100;                  // beat amplitude 1/10 of input range.
   firstBeat = true;           // looking for the first beat
   secondBeat = false;         // not yet looking for the second beat in a row
@@ -77,8 +77,6 @@ void PulseSensor::setThreshold(int threshold) {
   DISABLE_PULSE_SENSOR_INTERRUPTS;
   threshSetting = threshold;
   thresh = threshold;
-  Serial.print("Set threshSetting ");
-  Serial.println(threshSetting);
   ENABLE_PULSE_SENSOR_INTERRUPTS;
 }
 
@@ -171,12 +169,7 @@ void PulseSensor::processLatestSample() {
       runningTotal /= 10;                     // average the last 10 IBI values
       BPM = 60000 / runningTotal;             // how many beats can fit into a minute? that's BPM!
       QS = true;                              // set Quantified Self flag (we detected a beat)
-
       FadeLevel = MAX_FADE_LEVEL;             // If we're fading, re-light that LED.
-      Serial.print("threshSetting ");
-      Serial.print(threshSetting);
-      Serial.print("\tthresh ");
-      Serial.println(thresh);
     }
   }
 
@@ -189,8 +182,6 @@ void PulseSensor::processLatestSample() {
   }
 
   if (N > 2500) {                          // if 2.5 seconds go by without a beat
-    Serial.print("resetting thresh to ");
-    Serial.println(threshSetting);
     thresh = threshSetting;                // set thresh default
     P = 512;                               // set P default
     T = 512;                               // set T default
@@ -219,10 +210,4 @@ void PulseSensor::updateLEDs() {
   if (FadePin >= 0) {
     analogWrite(FadePin, FadeLevel / FADE_SCALE);
   }
-}
-
-void PulseSensor::printThreshSetting() {
-  Serial.print(threshSetting);
-  Serial.print('\t');
-  Serial.println(thresh);
 }

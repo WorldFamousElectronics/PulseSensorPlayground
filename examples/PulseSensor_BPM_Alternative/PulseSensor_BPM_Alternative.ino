@@ -22,7 +22,7 @@
    define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
    Here, #define USE_ARDUINO_INTERRUPTS false tells the library to
    not use interrupts to read data from the PulseSensor.
-   
+
    If you want to use interrupts, simply change the line below
    to read:
      #define USE_ARDUINO_INTERRUPTS true
@@ -66,6 +66,7 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
 const int PIN_INPUT = A0;
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE = 5;
+const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
    samplesUntilReport = the number of samples remaining to read
@@ -99,9 +100,10 @@ void setup() {
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
-  
+
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
   samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;

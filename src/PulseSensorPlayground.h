@@ -340,7 +340,6 @@ class PulseSensorPlayground {
        adjust this value up in the setup function to avoid noise.
     */
     void setThreshold(int threshold, int sensorIndex = 0);
-    // void printThreshSetting();
 
     /*
        Output the current signal information for each PulseSensor,
