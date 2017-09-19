@@ -37,7 +37,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
    Pinout:
