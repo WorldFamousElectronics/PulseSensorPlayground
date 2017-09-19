@@ -53,19 +53,22 @@ class PulseSensor {
 
     // (internal to the library) Process the latest sample.
     void processLatestSample();
-    
+
     // (internal to the library) Set up any LEDs the user wishes.
     void initializeLEDs();
-    
+
     // (internal to the library) Update the Blink and Fade LED states.
     void updateLEDs();
+
+    // (internal to the library) Updtate the thresh variables.
+    void setThreshold(int threshold);
 
   private:
     // Configuration
     int InputPin;           // Analog input pin for PulseSensor.
     int BlinkPin;           // pin to blink in beat, or -1.
     int FadePin;            // pin to fade on beat, or -1.
-    
+
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
     volatile int BPM;                // int that holds raw Analog in 0. updated every call to readSensor()
@@ -74,7 +77,8 @@ class PulseSensor {
     volatile boolean Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
     volatile boolean QS;             // The start of beat has been detected and not read by the Sketch.
     volatile int FadeLevel;         // brightness of the FadePin, in scaled PWM units. See FADE_SCALE
-    
+    volatile int threshSetting;               // used to seed and reset the thresh variable
+
     // Variables internal to the pulse detection algorithm.
     // Not volatile because we use them only internally to the pulse detection.
     unsigned long sampleIntervalMs;  // expected time between calls to readSensor(), in milliseconds.

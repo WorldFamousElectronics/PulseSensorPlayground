@@ -26,7 +26,7 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   // Dynamically create the array to minimize ram usage.
   SensorCount = (byte) numberOfSensors;
   Sensors = new PulseSensor[SensorCount];
-  
+
 #if PULSE_SENSOR_TIMING_ANALYSIS
   // We want sample timing analysis, so we construct it.
   pTiming = new PulseSensorTimingStatistics(MICROS_PER_READ, 500 * 30L);
@@ -34,16 +34,16 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
 }
 
 boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
-  
+
   for (int i = 0; i < SensorCount; ++i) {
     Sensors[i].initializeLEDs();
   }
 
   // Note the time, for non-interrupt sampling and for timing statistics.
   NextSampleMicros = micros() + MICROS_PER_READ;
-  
+
   SawNewSample = false;
-  
+
 #if PULSE_SENSOR_MEMORY_USAGE
   // Report the RAM usage and hang.
   printMemoryUsage();
@@ -51,7 +51,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
 #endif // PULSE_SENSOR_MEMORY_USAGE
 
   // Lastly, set up and turn on the interrupts.
-  
+
   if (UsingInterrupts) {
     if (!PulseSensorPlaygroundSetupInterrupt()) {
       // The user requested interrupts, but they aren't supported. Say so.
@@ -83,7 +83,7 @@ void PulseSensorPlayground::fadeOnPulse(int fadePin, int sensorIndex) {
   Sensors[sensorIndex].fadeOnPulse(fadePin);
 }
 
-boolean PulseSensorPlayground::sawNewSample() { 
+boolean PulseSensorPlayground::sawNewSample() {
   /*
      If using interrupts, this function reads and clears the
      'saw a sample' flag that is set by the ISR.
@@ -91,25 +91,25 @@ boolean PulseSensorPlayground::sawNewSample() {
      When not using interrupts, this function sees whether it's time
      to sample and, if so, reads the sample and processes it.
   */
-  
+
   if (UsingInterrupts) {
     // Disable interrupts to avoid a race with the ISR.
     DISABLE_PULSE_SENSOR_INTERRUPTS;
     boolean sawOne = SawNewSample;
     SawNewSample = false;
     ENABLE_PULSE_SENSOR_INTERRUPTS;
-    
+
     return sawOne;
   }
 
   // Not using interrupts
-  
+
   unsigned long nowMicros = micros();
   if ((long) (NextSampleMicros - nowMicros) > 0L) {
     return false;  // not time yet.
   }
   NextSampleMicros = nowMicros + MICROS_PER_READ;
-  
+
 #if PULSE_SENSOR_TIMING_ANALYSIS
   if (pTiming->recordSampleTime() <= 0) {
     pTiming->outputStatistics(SerialOutput.getSerial());
@@ -126,7 +126,7 @@ boolean PulseSensorPlayground::sawNewSample() {
 
 void PulseSensorPlayground::onSampleTime() {
   // Typically called from the ISR.
-  
+
   /*
      Read the voltage from each PulseSensor.
      We do this separately from processing the voltages
@@ -157,21 +157,21 @@ int PulseSensorPlayground::getBeatsPerMinute(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
     return -1; // out of range.
   }
-  return Sensors[sensorIndex].getBeatsPerMinute(); 
+  return Sensors[sensorIndex].getBeatsPerMinute();
 }
 
 int PulseSensorPlayground::getInterBeatIntervalMs(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
     return -1; // out of range.
   }
-  return Sensors[sensorIndex].getInterBeatIntervalMs(); 
+  return Sensors[sensorIndex].getInterBeatIntervalMs();
 }
 
 boolean PulseSensorPlayground::sawStartOfBeat(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
     return false; // out of range.
   }
-  return Sensors[sensorIndex].sawStartOfBeat(); 
+  return Sensors[sensorIndex].sawStartOfBeat();
 }
 
 boolean PulseSensorPlayground::isInsideBeat(int sensorIndex) {
@@ -187,6 +187,13 @@ void PulseSensorPlayground::setSerial(Stream &output) {
 
 void PulseSensorPlayground::setOutputType(byte outputType) {
   SerialOutput.setOutputType(outputType);
+}
+
+void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
+  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+    return; // out of range.
+  }
+  Sensors[sensorIndex].setThreshold(threshold);
 }
 
 void PulseSensorPlayground::outputSample() {
@@ -212,7 +219,7 @@ void PulseSensorPlayground::printMemoryUsage() {
   int	heap_end	=	(int)&stack - (int)&__malloc_margin;
   int	heap_size	=	heap_end - (int)&__bss_end;
   int	stack_size	=	RAMEND - (int)&stack + 1;
-  int	available	=	(RAMEND - (int)&__data_start + 1);	
+  int	available	=	(RAMEND - (int)&__data_start + 1);
   available	-=	data_size + bss_size + heap_size + stack_size;
 
   Stream *pOut = SerialOutput.getSerial();

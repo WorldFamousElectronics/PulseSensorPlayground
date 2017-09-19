@@ -1,7 +1,9 @@
 /*
-   Code to detect pulses from the PulseSensor
-   and move a servo motor to the beat.
-   uses an interrupt service routine.
+   Code to detect pulses from the PulseSensor,
+   using an interrupt service routine.
+
+   >>>>  THIS EXAMPLE OUTPUTS USES TONE COMMAND <<<<
+   >>>>  TO MAKE A SPEAKER BEEP WITH HEARTBEAT! <<<<
 
    See https://www.pulsesensor.com
 
@@ -16,11 +18,6 @@
 
    This software is not intended for medical use.
 */
-
-/*
-  Include Servo.h BEFORE you include PusleSensorPlayground.h
-*/
-#include <Servo.h>
 
 /*
    Every Sketch that uses the PulseSensor Playground must
@@ -67,11 +64,16 @@ const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 PulseSensorPlayground pulseSensor;
 
 /*
-  Make a heart servo, the pin to control it with, and a servo position variable
+  Setup the things we need for driving the Speaker
+  NOTE: Speaker MUST be AC coupled! Connect PIN_SPEAKER to red speaker wire.
+        Then connect black speaker wire to + side of electrolytic capacitor.
+        Then connect - side of electrolytic capacitor to GND.
+        Capacitor value should be 1uF or higher!
+        Follow this tutorial:
+        [link]
 */
-Servo heart;
-const int SERVO_PIN = 6;
-int pos = 90;
+const int PIN_SPEAKER = 2;    // speaker on pin2 makes a beep with heartbeat
+
 
 void setup() {
   /*
@@ -84,12 +86,9 @@ void setup() {
      not work properly.
   */
   Serial.begin(115200);
-  // set up the heart servo on SERVO_PIN
-  // set servo position to pos (90 degrees, mid position)
-  heart.attach(SERVO_PIN);
-  heart.write(pos);
 
   // Configure the PulseSensor manager.
+
   pulseSensor.analogInput(PIN_INPUT);
   pulseSensor.blinkOnPulse(PIN_BLINK);
   pulseSensor.fadeOnPulse(PIN_FADE);
@@ -129,25 +128,23 @@ void loop() {
   // write the latest sample to Serial.
   pulseSensor.outputSample();
 
-  // write to the hear servo
-  moveServo(pulseSensor.getLatestSample());
-
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
+     write a frequency to the PIN_SPEAKER
+     NOTE: Do not set the optional duration of tone! That is blocking!
    */
   if (pulseSensor.sawStartOfBeat()) {
     pulseSensor.outputBeat();
+    tone(PIN_SPEAKER,1047);              // tone(pin,frequency)
   }
-}
 
-/*
-  Map the Pulse Sensor Signal to the Servo range
-  Pulse Sensor = 0 <> 1020
-  Servo = 0 <> 180
-  Modify as you see fit!
-*/
-void moveServo(int value){
-  pos = map(value,0,1023,0,180);
-  heart.write(pos);
+  /*
+    The Pulse variable is true only for a short time after heartbeat detected
+    Use this to time the duration of the beep
+  */
+  if(pulseSensor.isInsideBeat() == false){
+    noTone(PIN_SPEAKER);
+  }
+
 }

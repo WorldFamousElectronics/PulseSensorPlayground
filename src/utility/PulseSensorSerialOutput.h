@@ -35,16 +35,16 @@ class PulseSensorSerialOutput {
        Constructs a default Serial output manager.
     */
     PulseSensorSerialOutput();
-    
+
     /*
        Tells the library what Serial output to use,
        such as Serial, Serial1, or a SoftwareSerial.
     */
     void setSerial(Stream &output);
-    
+
     /*
        Find what Serial stream we are configured to print to.
-       
+
        Returns a pointer to the Serial we're configured for
        (for example Serial, Serial1, or a SoftwareSerial object),
        or NULL if no Serial output has been set up.
@@ -65,16 +65,20 @@ class PulseSensorSerialOutput {
     /*
        Output the per-beat data (Beats per Minute, Inter-beat Interval)
        for the given PulseSensor.
-       
+
        sensorIndex = the sensor to output beat information about.
          Usually is the PulseSensor that a beat was detected on.
     */
     void outputBeat(PulseSensor sensors[], int numberOfSensors, int sensorIndex);
 
+        //
+        // // testing feedback
+        // void printThreshSetting();
+
   private:
     // If non-null, the output stream to print to. If null, don't print.
     Stream *pOutput;
-    
+
     // The destination of data: PROCESSING_VISUALIZER or SERIAL_PLOTTER
     int OutputType;
 
