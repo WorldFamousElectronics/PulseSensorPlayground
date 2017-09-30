@@ -21,7 +21,17 @@
 #include <PulseSensorPlayground.h>
 #include <SoftwareSerial.h>
 
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+/*
+   The format of our output.
+
+   Set this to PROCESSING_VISUALIZER if you're going to run
+    the Processing Visualizer Sketch.
+    See https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer
+
+   Set this to SERIAL_PLOTTER if you're going to run
+    the Arduino IDE's Serial Plotter.
+*/
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
      PIN_RX = Serial Receive pin (input into Arduino)
