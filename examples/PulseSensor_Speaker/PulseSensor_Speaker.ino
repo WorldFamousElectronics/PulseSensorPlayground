@@ -140,7 +140,7 @@ void loop() {
   }
 
   /*
-    The Pulse variable is true only for a short time after heartbeat detected
+    The Pulse variable is true only for a short time after the heartbeat is detected
     Use this to time the duration of the beep
   */
   if(pulseSensor.isInsideBeat() == false){
