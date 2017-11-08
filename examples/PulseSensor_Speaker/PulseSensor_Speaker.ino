@@ -5,7 +5,8 @@
    >>>>  THIS EXAMPLE OUTPUTS USES TONE COMMAND <<<<
    >>>>  TO MAKE A SPEAKER BEEP WITH HEARTBEAT! <<<<
 
-   See https://www.pulsesensor.com
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -40,7 +41,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
    Pinout:
@@ -140,7 +141,7 @@ void loop() {
   }
 
   /*
-    The Pulse variable is true only for a short time after heartbeat detected
+    The Pulse variable is true only for a short time after the heartbeat is detected
     Use this to time the duration of the beep
   */
   if(pulseSensor.isInsideBeat() == false){

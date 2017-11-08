@@ -3,7 +3,8 @@
    Typically used when you don't want to use interrupts
    to read PulseSensor voltages.
 
-   See https://www.pulsesensor.com to get started.
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/getting-advanced
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -49,7 +50,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
    Pinout:

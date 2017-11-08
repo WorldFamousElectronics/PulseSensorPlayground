@@ -3,7 +3,8 @@
    using an interrupt service routine and
    using SoftwareSerial for Serial output.
 
-   See https://www.pulsesensor.com
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/software-serial-example
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -21,7 +22,17 @@
 #include <PulseSensorPlayground.h>
 #include <SoftwareSerial.h>
 
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+/*
+   The format of our output.
+
+   Set this to PROCESSING_VISUALIZER if you're going to run
+    the Processing Visualizer Sketch.
+    See https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer
+
+   Set this to SERIAL_PLOTTER if you're going to run
+    the Arduino IDE's Serial Plotter.
+*/
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
      PIN_RX = Serial Receive pin (input into Arduino)

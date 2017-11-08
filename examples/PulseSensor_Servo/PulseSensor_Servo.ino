@@ -3,7 +3,8 @@
    and move a servo motor to the beat.
    uses an interrupt service routine.
 
-   See https://www.pulsesensor.com
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/pulse-sensor-servo-tutorial
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -43,7 +44,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
    Pinout:
@@ -129,7 +130,7 @@ void loop() {
   // write the latest sample to Serial.
   pulseSensor.outputSample();
 
-  // write to the hear servo
+  // write the latest analog value to the heart servo
   moveServo(pulseSensor.getLatestSample());
 
   /*
@@ -143,7 +144,7 @@ void loop() {
 
 /*
   Map the Pulse Sensor Signal to the Servo range
-  Pulse Sensor = 0 <> 1020
+  Pulse Sensor = 0 <> 1023
   Servo = 0 <> 180
   Modify as you see fit!
 */
