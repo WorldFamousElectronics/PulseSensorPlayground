@@ -3,7 +3,8 @@
    and move a servo motor to the beat.
    uses an interrupt service routine.
 
-   See https://www.pulsesensor.com
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/pulse-sensor-servo-tutorial
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:

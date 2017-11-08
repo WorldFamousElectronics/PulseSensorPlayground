@@ -1,7 +1,8 @@
 /*
    Arduino Sketch to detect pulses from two PulseSensors.
 
-   See https://www.pulsesensor.com to get started.
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/two-or-more-pulse-sensors
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:

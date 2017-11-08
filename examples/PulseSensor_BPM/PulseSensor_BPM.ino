@@ -2,7 +2,8 @@
    Code to detect pulses from the PulseSensor,
    using an interrupt service routine.
 
-   See https://www.pulsesensor.com
+   Here is a link to the tutorial\
+   https://pulsesensor.com/pages/getting-advanced
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:

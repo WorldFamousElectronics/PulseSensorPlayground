@@ -5,7 +5,8 @@
    >>>>  THIS EXAMPLE OUTPUTS USES TONE COMMAND <<<<
    >>>>  TO MAKE A SPEAKER BEEP WITH HEARTBEAT! <<<<
 
-   See https://www.pulsesensor.com
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:

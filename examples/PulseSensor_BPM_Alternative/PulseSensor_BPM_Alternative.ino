@@ -3,7 +3,8 @@
    Typically used when you don't want to use interrupts
    to read PulseSensor voltages.
 
-   See https://www.pulsesensor.com to get started.
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/getting-advanced
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
