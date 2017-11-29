@@ -32,7 +32,7 @@ int Threshold = 550;            // Determine which Signal to "count as a beat", 
 // The SetUp Function:
 void setup() {
   pinMode(LED13,OUTPUT);         // pin that will blink to your heartbeat!
-   Serial.begin(115200);         // Set's up Serial Communication at certain speed.
+   Serial.begin(9600);         // Set's up Serial Communication at certain speed.
 
 }
 
