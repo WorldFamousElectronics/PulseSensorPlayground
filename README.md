@@ -6,7 +6,7 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 
 - The playgroud includes a number of projects, with the code already written-out and commented! 🤘 
 - Use this code to get started quickly, or do advanced stuff. 👍
-- Once you download the playground, you can simply access each project's code inside the Arduino IDE (software). 💻
+- Switch between project right in the Arduino IDE (software). 💻
 - Contritube your project code back to the GitHub hive-mind. 🐝
 ```
 ___
