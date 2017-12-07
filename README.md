@@ -13,24 +13,25 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 ## Playground Projects Include: 
 ### Start Here:  
   Plug your sensor in for the first time!  See the best practises to get the best signal.  
-  Project Page: https://pulsesensor.com/pages/code-and-guide
+- Project Page: https://pulsesensor.com/pages/code-and-guide
   
   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
 
-  
-  ![Picture]  <img height='300' src(https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png)
-  ![ScreenShot]<img height='300' alt='ScreenShopt'src='https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png'> 
-
 
 ### Calculate BPM:  
-  Need to get the user's heartrate BPM (Beats Per Minute)?  Use this project.   
--  Project Page: https://pulsesensor.com/pages/code-and-guide
-  <img height='300' alt='GrandCentralBoard image 1' src='https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png'%3E 
- ### Processing Visualizer:  
+  Focus-in on the code that calculates a user's HeartRate Beats Per Minute, "BPM".    
   Plug your sensor in for the first time!  See the best practises to get the best signal.  
-  [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
-![ScreenShot](screenshot-threshold-arrows.png)
-  Project Page: https://pulsesensor.com/pages/code-and-guide
+- Project Page: https://pulsesensor.com/pages/code-and-guide
+  
+  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
+
+
+
+ ### Processing Visualizer:  
+  Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
+- Project Page: https://pulsesensor.com/pages/code-and-guide
+  
+  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
   
 
 
