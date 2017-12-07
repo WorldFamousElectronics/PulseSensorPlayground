@@ -1,6 +1,7 @@
 # [PulseSensor.com](https://pulsesensor.com) Playground
 
-A collection of the most popular and useful applicaton of PulseSensor and Arduino.  Use this code to get started quickly. Or contribute your own code.   
+A collection of code demo'ing the most popular uses of PulseSensor and Arduino.  
+Use this code to get started quickly.  Your code contributions are welcome.   
 
 
 ## Playground Projects   
