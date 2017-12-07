@@ -6,7 +6,7 @@ Use this code to get started quickly.  Or contribute your code to the Playground
 
 ## Playground Projects   
  
-- Artsy Shows: Art shows 
+- Getting Started  
 
  <img height='300' alt='Artsy Shows image 1' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/featured.png'> <img height='300' alt='Artsy Shows image 2' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/show.png'> 
 
@@ -17,7 +17,7 @@ Use this code to get started quickly.  Or contribute your code to the Playground
 
 - GrandCentralBoard: Hang a TV in your open space / team room to show everyone what's up & get them up to speed  
  
-  https://github.com/macoscope/GrandCentralBoard<br>  Added April 29, 2016<br>  License: [`gpl-3.0`](http://choosealicense.com/licenses/gpl-3.0/)
+  https://github.com/macoscope/GrandCentralBoard<br> 
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
 - hexclock: Minimal hexadecimal clock [` App Store`](https://itunes.apple.com/app/hex-color-clock/id1207660670)  
