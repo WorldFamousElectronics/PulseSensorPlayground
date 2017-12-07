@@ -10,27 +10,16 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 - Contritube your project code back to the GitHub hive-mind. 🐝
 
 
-## Playground Projects   
- 
-
- <img height='300' alt='Artsy Shows image 1' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/featured.png'> <img height='300' alt='Artsy Shows image 2' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/show.png'> 
-
-
-- EX Player: Watch videos from EX.UA file sharing  
-<img height='300' alt='EX Player image 1' src='https://raw.githubusercontent.com/IGRSoft/exTVPlayer/master/Screenshots/4.png'> 
-
-
-### "Start Here" Project:  
+## Playground Projects Include: 
+### Start Here:  
   Plug your sensor in for the first time!  See the best practises to get the best signal.  
-  [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
-![ScreenShot](screenshot-threshold-arrows.png)
   Project Page: https://pulsesensor.com/pages/code-and-guide
   
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
 ### Calculate BPM:  
   Need to get the user's heartrate BPM (Beats Per Minute)?  Use this project.   
-  ![ScreenShot](screenshot-threshold-arrows.png)
+  ![ScreenShot](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png)
   Project Page: https://pulsesensor.com/pages/code-and-guide
   
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
