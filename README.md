@@ -5,6 +5,8 @@ A collection of Arduino source code for some of the most popular and useful Pule
 
 
 
+[![GitHub issue last update](https://img.shields.io/github/issues/detail/last-update/badges/shields/979.svg)]()
+
 ```
  Easy: 🤓
  Intermediate: 🤓🤓
