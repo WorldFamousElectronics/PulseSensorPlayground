@@ -10,9 +10,9 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 - Contritube your project code back to the GitHub hive-mind. 🐝
 
 
-## Playground Projects Include: 
+## Playground Project Descriptions: 
 ### Start Here:  
-  Plug your sensor in for the first time!  See the best practises to get the best signal.  
+  Plug your sensor in for the first time!  Blink an LED with your pulse, live. 
 - Project Page: https://pulsesensor.com/pages/code-and-guide
   
   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
@@ -21,17 +21,16 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 ### Calculate BPM:  
   Focus-in on the code that calculates a user's HeartRate Beats Per Minute, "BPM".    
   Plug your sensor in for the first time!  See the best practises to get the best signal.  
-- Project Page: https://pulsesensor.com/pages/code-and-guide
+- Project Page: https://pulsesensor.com/pages/getting-advanced
   
-  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
-
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingAdvanced_bb_1024x1024.png?v=1511986194" width="400">
 
 
  ### Processing Visualizer:  
   Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
-- Project Page: https://pulsesensor.com/pages/code-and-guide
+- Project Page: https://pulsesensor.com/pages/getting-advanced
   
-  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
   
 
 
