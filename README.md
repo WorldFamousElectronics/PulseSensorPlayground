@@ -79,7 +79,10 @@ ___
 
 ---
 ## Connecting the Harware 😎
-  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
+  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">   <img src="https://cdn.shopify.com/s/files/1/0100/6632/products/PulseSensorKit-Labeled-Contents_1_2048x2048.jpg?v=1348506345" width="400">   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
+  
+  
+  https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/connections.png
 
 ---
 ## Give and Get Feedback
