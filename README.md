@@ -9,8 +9,10 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 - Once you download the playground, you can simply access each project's code inside the Arduino IDE (software). 💻
 - Contritube your project code back to the GitHub hive-mind. 🐝
 
-
+___
 ## Playground Project Descriptions: 
+
+
 ### Start Here:  
   Plug your sensor in for the first time!  Blink an LED with your pulse, live. 
 - Project Page: https://pulsesensor.com/pages/code-and-guide
