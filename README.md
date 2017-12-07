@@ -1,14 +1,14 @@
 
 ![logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200) 
 # [PulseSensor.com](https://pulsesensor.com) Playground
-
+```
 This Playground is a collection of code for the most popular uses of PulseSensor and Arduino.  
 
 - The playgroud includes a number of projects, with the code already written-out and commented! 🤘 
 - Use this code to get started quickly, or do advanced stuff. 👍
 - Once you download the playground, you can simply access each project's code inside the Arduino IDE (software). 💻
 - Contritube your project code back to the GitHub hive-mind. 🐝
-
+```
 ___
 ## Playground Project Descriptions: 
 
@@ -32,7 +32,7 @@ ___
   Transform the heartbeat into a live "beep" with a speaker and piezo.   
 - Project Page: https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial
   
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Speaker_bb_61a0333f-e868-4123-961d-7456a31fa928_1024x1024.png?v=1510863829" width="400">
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingStarted_bb_1024x1024.png?v=1511986616" width="400">
 ---  
   
   ### Move a Motor to a live Heartbeat:  
@@ -49,8 +49,14 @@ ___
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
 ---  
 
+### TroubleShoot Your Signal:  
+  Plug your sensor in for the first time!  Blink an LED with your pulse, live. 
+- Project Page: https://pulsesensor.com/pages/code-and-guide
+  
+  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
 
-## How to Download and Install 🤨 
+
+## Installing the Software 🤓 
  
  1. Install [Arduino IDE](https://www.arduino.cc/en/Main/Software) and [Processing](https://processing.org/)
 2. Download the .ZIP file of this library.
@@ -65,7 +71,10 @@ ___
   * **Note**: In the Processing code, the line "println(Serial.list());" isn't compatible with Processing 3.0.  You'll need to change that line to "printArray(Serial.list());"
   * **Note2**: The [Arduino 101 specs page](https://www.arduino.cc/en/Main/ArduinoBoard101) says the analog input is "...from ground to 3.3 volts", so experiment with powering the PulseSensor from 3.3V vs. 5V and see which works better for you.
 
- 
+
+## Connecting the Harware 😎
+  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
+
  ## Physical Connections 👩‍💻👨‍💻 
  
  1. A computer that can run the: [Arduino IDE](https://www.arduino.cc/en/Main/Software) and 
