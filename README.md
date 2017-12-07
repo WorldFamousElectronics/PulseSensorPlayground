@@ -8,7 +8,7 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 - Once you download the playground, you can simply access each project's code inside the Arduino IDE (software). 💻
 - The playgroud includes a number of projects, with the code already written out and commented! 🤘 
 - Use this code to get started quickly. 👍
-- Contritube your project code back into the GitHub hivemind. 🐝
+- Contritube your project code back into the GitHub hive-mind. 🐝
 
 
 ## Playground Projects   
@@ -29,15 +29,14 @@ This Playground is a collection of code for the most popular uses of PulseSensor
   
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
-### "Start Here" Project:  
-  Plug your sensor in for the first time!  See the best practises to get the best signal.  
-  [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
-![ScreenShot](screenshot-threshold-arrows.png)
+### Calculate BPM:  
+  Need to get the user's heartrate BPM (Beats Per Minute)?  Use this project.   
+  ![ScreenShot](screenshot-threshold-arrows.png)
   Project Page: https://pulsesensor.com/pages/code-and-guide
   
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
  
- ### "Start Here" Project:  
+ ### Processing Visualizer:  
   Plug your sensor in for the first time!  See the best practises to get the best signal.  
   [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
 ![ScreenShot](screenshot-threshold-arrows.png)
