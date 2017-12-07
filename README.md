@@ -12,17 +12,13 @@ A collection of Arduino source code for some of the most popular and useful Pule
 
 ```
 
-## Project Directory  
- 
-[back to top](#readme) 
+## Playground Projects   
  
 - Artsy Shows: Art shows [` App Store`](https://itunes.apple.com/by/app/artsy-shows/id1044690553)  
   <details><summary><code>swift</code> <code>cocoapodskeys</code> 🔥🔥</summary>
 
-  https://github.com/artsy/Emergence<br>  Added November  6, 2015<br>  License: [`mit`](http://choosealicense.com/licenses/mit/)
-  <div><img height='300' alt='Artsy Shows image 1' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/featured.png'> <img height='300' alt='Artsy Shows image 2' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/show.png'> 
-</div>
-  </details>
+ <img height='300' alt='Artsy Shows image 1' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/featured.png'> <img height='300' alt='Artsy Shows image 2' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/show.png'> 
+
 
 - EX Player: Watch videos from EX.UA file sharing  
   <details><summary><code>objc</code> </summary>
