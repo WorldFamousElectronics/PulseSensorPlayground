@@ -58,7 +58,7 @@ ___
 
 
 ---
-## Installing the Software 🤓 
+## Installing the Arduino Playground 🤓 
 1.  On the right side, click on the Clone or Download ZIP.
 2.  Install the PulseSensor Playground library into your Arduino libraries folder.
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
@@ -68,7 +68,7 @@ ___
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Add_ZIP_LIbrary_1024x1024.png?v=1510865023" width="400">
 
 5. Follow the instructions to install this library.
-6. Once this library is installed you will see the projects in Arduino's dropdown. 
+6. Hurray!  Once this library is installed you will see the projects in Arduino's dropdown! 
   <img src="https://github.com/yury-g/PulseSensorPlayground/blob/master/menupulldown.png" width="400">
 
 ---
