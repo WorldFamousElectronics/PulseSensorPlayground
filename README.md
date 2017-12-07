@@ -42,12 +42,6 @@ ___
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Servo_bb_87fce9fc-dc47-4208-b708-a7edb6df58a2_1024x1024.png?v=1510863990" width="400">
  ---
 
-### Arduino 101, BLE:  
-  Send a user's BPM live to a third-party Bluetooth Device.  
-- Project Page: https://pulsesensor.com/pages/getting-advanced
-  
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
----  
  
  ### Processing Visualizer:  
   Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
@@ -84,12 +78,13 @@ ___
 <img src="https://cdn.shopify.com/s/files/1/0100/6632/products/PulseSensorKit-Labeled-Contents_1_2048x2048.jpg?v=1348506345" width="400"><img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
 
 2. See the recommended wiring for your specific project
+
 <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/connections.png" width="400">    
 
 ---
 ## Give and Get Feedback
-The Issues Tab will get you the quickest way to find answers to common techinal questions. 
-https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues
+The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues
+) will get you the quickest answers to common techinal questions. 
 
 
 ---
