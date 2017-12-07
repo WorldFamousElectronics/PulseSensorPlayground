@@ -55,7 +55,7 @@ ___
   
   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
 
-
+---
 ## Installing the Software 🤓 
  
  1. Install [Arduino IDE](https://www.arduino.cc/en/Main/Software) and [Processing](https://processing.org/)
@@ -71,29 +71,16 @@ ___
   * **Note**: In the Processing code, the line "println(Serial.list());" isn't compatible with Processing 3.0.  You'll need to change that line to "printArray(Serial.list());"
   * **Note2**: The [Arduino 101 specs page](https://www.arduino.cc/en/Main/ArduinoBoard101) says the analog input is "...from ground to 3.3 volts", so experiment with powering the PulseSensor from 3.3V vs. 5V and see which works better for you.
 
-
+---
 ## Connecting the Harware 😎
   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
 
- ## Physical Connections 👩‍💻👨‍💻 
- 
- 1. A computer that can run the: [Arduino IDE](https://www.arduino.cc/en/Main/Software) and 
- 2. An Arduino Board
- 3. A PulseSensor from PulseSensor.com 
- 
-
-## Need Help?
+---
+## Give and Get Feedback?
 The Issues Tab will get you the quickest response. You might even see answers to questions there.
 
-
-## Thanks
-
-This list was inspired by [awesome-ios](https://github.com/vsouza/awesome-ios) and [awesome-swift](https://github.com/matteocrippa/awesome-swift). Thanks to all the [contributors](https://github.com/dkhamsing/open-source-ios-apps/graphs/contributors) 🎉 
-
-
-------------------------------------------------------
-#####  Legal:  PulseSensor.com™ World Famous Electronics llc. in Brooklyn, NY. USA
-------------------------------------------------------
+---
+#####  Legal:  PulseSensor.com® World Famous Electronics llc. in Brooklyn, NY. USA
 Made Something Awesome With the PulseSensor Code?   Send Us Some PayPal Love. ♥︎  
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=plastic)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KE4DZA5E9AJQ4) 
 
