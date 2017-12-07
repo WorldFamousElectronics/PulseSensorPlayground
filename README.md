@@ -1,14 +1,4 @@
 # [PulseSensor.com](https://pulsesensor.com) Playground
-An Arduino library and examples supporting the PulseSensor.
-
-This library shows how to use PulseSensor.
-
-This software is not intended for medical use.
-
-
-
-# PulseSensor Playground
-
 A collection of Arduino source code for some of the most popular and useful PulesSensor projects.   list of open-source `iOS`, `watchOS` and `tvOS` apps, your [contribution] is welcome :smile:
 
  ![](https://img.shields.io/badge/Updated-December%20%202,%202017-lightgrey.svg)
@@ -16,15 +6,10 @@ A collection of Arduino source code for some of the most popular and useful Pule
 
 
 ```
- 100+ Stars: 🔥
- 200+ Stars: 🔥🔥
- 500+ Stars: 🔥🔥🔥
-1000+ Stars: 🔥🔥🔥🔥
-2000+ Stars: 🔥🔥🔥🔥🔥
+ Easy: 🤓
+ Intermediate: 🤓🤓
+ Advanced: 🤓🤓🤓
 
- 
-
-Click ► to show more details
 ```
 
 ## Project Directory  
