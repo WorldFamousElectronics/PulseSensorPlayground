@@ -32,7 +32,7 @@ ___
   Transform the heartbeat into a live "beep" with a speaker and piezo.   
 - Project Page: https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial
   
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingStarted_bb_1024x1024.png?v=1511986616" width="400">
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Speaker_bb_61a0333f-e868-4123-961d-7456a31fa928_1024x1024.png?v=1510863829" width="400">
 ---  
   
   ### Move a Motor to a live Heartbeat:  
