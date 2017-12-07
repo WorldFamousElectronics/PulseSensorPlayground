@@ -2,7 +2,7 @@
 ![logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200) 
 # [PulseSensor.com](https://pulsesensor.com) Playground
 ```
-This Playground is a collection of code for the most popular uses of PulseSensor and Arduino.  
+This Playground is a collection of code of the most popular uses of PulseSensor and Arduino.  
 
 - The playgroud includes a number of projects, with the code already written-out and commented! 🤘 
 - Use this code to get started quickly, or do advanced stuff. 👍
