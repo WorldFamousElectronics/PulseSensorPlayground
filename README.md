@@ -62,3 +62,11 @@ The Issues Tab will get you the quickest response. You might even see answers to
 
 This list was inspired by [awesome-ios](https://github.com/vsouza/awesome-ios) and [awesome-swift](https://github.com/matteocrippa/awesome-swift). Thanks to all the [contributors](https://github.com/dkhamsing/open-source-ios-apps/graphs/contributors) 🎉 
 
+
+------------------------------------------------------
+#####  Legal:  PulseSensor.com™ World Famous Electronics llc. in Brooklyn, NY. USA
+------------------------------------------------------
+Made Something Awesome With the PulseSensor Code?   Send Us Some PayPal Love. ♥︎  
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=plastic)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KE4DZA5E9AJQ4) 
+
+
