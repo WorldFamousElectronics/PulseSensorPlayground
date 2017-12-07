@@ -14,27 +14,19 @@ A collection of Arduino source code for some of the most popular and useful Pule
 
 ## Playground Projects   
  
-- Artsy Shows: Art shows [` App Store`](https://itunes.apple.com/by/app/artsy-shows/id1044690553)  
-  <details><summary><code>swift</code> <code>cocoapodskeys</code> 🔥🔥</summary>
+- Artsy Shows: Art shows 
 
  <img height='300' alt='Artsy Shows image 1' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/featured.png'> <img height='300' alt='Artsy Shows image 2' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/show.png'> 
 
 
 - EX Player: Watch videos from EX.UA file sharing  
-  <details><summary><code>objc</code> </summary>
+<img height='300' alt='EX Player image 1' src='https://raw.githubusercontent.com/IGRSoft/exTVPlayer/master/Screenshots/4.png'> 
 
-  https://github.com/IGRSoft/exTVPlayer<br>  Added February  9, 2016<br>  License: [`lgpl-2.1`](http://choosealicense.com/licenses/lgpl-2.1/)
-  <div><img height='300' alt='EX Player image 1' src='https://raw.githubusercontent.com/IGRSoft/exTVPlayer/master/Screenshots/4.png'> 
-</div>
-  </details>
 
 - GrandCentralBoard: Hang a TV in your open space / team room to show everyone what's up & get them up to speed  
-  <details><summary><code>swift</code> <code>alamofire</code> <code>rxswift</code> 🔥🔥</summary>
-
+ 
   https://github.com/macoscope/GrandCentralBoard<br>  Added April 29, 2016<br>  License: [`gpl-3.0`](http://choosealicense.com/licenses/gpl-3.0/)
-  <div><img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
-</div>
-  </details>
+ <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
 - hexclock: Minimal hexadecimal clock [` App Store`](https://itunes.apple.com/app/hex-color-clock/id1207660670)  
   <details><summary><code>swift</code> </summary>
@@ -48,7 +40,7 @@ A collection of Arduino source code for some of the most popular and useful Pule
   <details><summary><code>swift</code> 🇨🇳 </summary>
 
 
-## Browser 
+## How to Download and Install 🤨 
  
 [back to top](#readme) 
  
