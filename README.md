@@ -1,12 +1,11 @@
 # [PulseSensor.com](https://pulsesensor.com) Playground
 
-A collection of code demo'ing the most popular uses of PulseSensor and Arduino.  
-Use this code to get started quickly.  Or contribute your code to the Playground.
+This Playground is a collection of code for the most popular uses of PulseSensor and Arduino.  
+Once you download the playground, you can simple access each project's code inside the Arduino IDE (software). The playgroud includes a number of projects, with the code already written out and commented.   Use this code to get started quickly.  We welcome your code/project modifcations/contributes as well!
 
 
 ## Playground Projects   
  
-- Getting Started  
 
  <img height='300' alt='Artsy Shows image 1' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/featured.png'> <img height='300' alt='Artsy Shows image 2' src='https://raw.githubusercontent.com/artsy/emergence/master/docs/screenshots/show.png'> 
 
@@ -17,6 +16,7 @@ Use this code to get started quickly.  Or contribute your code to the Playground
 
 ### Project 1:  
   One Sentnese Descprtion goes here alright, alright, alright. 
+  
   Project Page: https://github.com/macoscope/GrandCentralBoard
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
