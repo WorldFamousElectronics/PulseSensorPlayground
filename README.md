@@ -80,6 +80,7 @@ ___
 ---
 ## Connecting the Harware 😎
 1. Prepare the sensor, with the Kit parts.
+
 <img src="https://cdn.shopify.com/s/files/1/0100/6632/products/PulseSensorKit-Labeled-Contents_1_2048x2048.jpg?v=1348506345" width="400"><img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
 2. See the recommended wiring for your specific project
   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/connections.png" width="400">    
