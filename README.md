@@ -76,7 +76,7 @@ ___
   <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
 
 ---
-## Give and Get Feedback?
+## Give and Get Feedback
 The Issues Tab will get you the quickest response. You might even see answers to questions there.
 
 ---
