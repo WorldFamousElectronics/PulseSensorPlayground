@@ -15,7 +15,7 @@ Use this code to get started quickly.  Or contribute your code to the Playground
 <img height='300' alt='EX Player image 1' src='https://raw.githubusercontent.com/IGRSoft/exTVPlayer/master/Screenshots/4.png'> 
 
 
-- GrandCentralBoard: Hang a TV in your open space / team room to show everyone what's up & get them up to speed  
+### GrandCentralBoard: Hang a TV in your open space / team room to show everyone what's up & get them up to speed  
  
   https://github.com/macoscope/GrandCentralBoard<br> 
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
