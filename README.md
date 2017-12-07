@@ -56,6 +56,12 @@ A collection of Arduino source code for some of the most popular and useful Pule
   * **Note2**: The [Arduino 101 specs page](https://www.arduino.cc/en/Main/ArduinoBoard101) says the analog input is "...from ground to 3.3 volts", so experiment with powering the PulseSensor from 3.3V vs. 5V and see which works better for you.
 
  
+ ## Physical Connections 👩‍💻👨‍💻 
+ 
+ 1. Install [Arduino IDE](https://www.arduino.cc/en/Main/Software) and [Processing](https://processing.org/)
+2. Download the .ZIP file of this library.
+ 
+ 
 [back to top](#readme) 
  
 - Brave: Firefox-based browser with ad block & tracking pixel/cookie block built in [` App Store`](https://itunes.apple.com/app/brave-web-browser/id1052879175)  
