@@ -32,7 +32,13 @@ This Playground is a collection of code for the most popular uses of PulseSensor
   
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
   
-
+  
+### Make A Sound to a live Heartbeat:  
+  Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
+- Project Page: https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial
+  
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Speaker_bb_61a0333f-e868-4123-961d-7456a31fa928_1024x1024.png?v=1510863829" width="400">
+  
 
 
 ## How to Download and Install 🤨 
