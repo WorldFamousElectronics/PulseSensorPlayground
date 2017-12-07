@@ -17,7 +17,7 @@ ___
   Plug your sensor in for the first time!  Blink an LED with your pulse, live. 
 - Project Page: https://pulsesensor.com/pages/code-and-guide
   
-  <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/screenshot-threshold-arrows.png" width="400">
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingStarted_bb_1024x1024.png?v=1511986616" width="400">
 ---
 
 ### Calculate BPM:  
