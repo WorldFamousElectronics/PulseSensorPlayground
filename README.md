@@ -14,22 +14,29 @@ Once you download the playground, you can simple access each project's code insi
 <img height='300' alt='EX Player image 1' src='https://raw.githubusercontent.com/IGRSoft/exTVPlayer/master/Screenshots/4.png'> 
 
 
-### Project 1:  
-  One Sentnese Descprtion goes here alright, alright, alright. 
+### "Start Here" Project:  
+  Plug your sensor in for the first time!  See the best practises to get the best signal.  
+  [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
+![ScreenShot](screenshot-threshold-arrows.png)
+  Project Page: https://pulsesensor.com/pages/code-and-guide
   
-  Project Page: https://github.com/macoscope/GrandCentralBoard
  <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
-- hexclock: Minimal hexadecimal clock [` App Store`](https://itunes.apple.com/app/hex-color-clock/id1207660670)  
-  <details><summary><code>swift</code> </summary>
-
-  https://github.com/cfdrake/hexclock<br>  Added June 14, 2017<br>  License: `other`
-  <div><img height='300' alt='hexclock image 1' src='http://a1.mzstatic.com/us/r30/Purple122/v4/7b/e9/dd/7be9dd53-fe6b-00f7-57e6-a19e27b103de/sc720x405.jpeg'> 
-</div>
-  </details>
-
-- iCook TV: Taiwanese cuisine cooking videos  
-  <details><summary><code>swift</code> 🇨🇳 </summary>
+### "Start Here" Project:  
+  Plug your sensor in for the first time!  See the best practises to get the best signal.  
+  [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
+![ScreenShot](screenshot-threshold-arrows.png)
+  Project Page: https://pulsesensor.com/pages/code-and-guide
+  
+ <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
+ 
+ ### "Start Here" Project:  
+  Plug your sensor in for the first time!  See the best practises to get the best signal.  
+  [![Alt text](video-play.png)](https://www.youtube.com/watch?v=82T_zBZQkOE)
+![ScreenShot](screenshot-threshold-arrows.png)
+  Project Page: https://pulsesensor.com/pages/code-and-guide
+  
+ <img height='300' alt='GrandCentralBoard image 1' src='http://cdn.macoscope.com/blog/wp-content/uploads/2016/03/zegar_anim_1.gif'> 
 
 
 ## How to Download and Install 🤨 
