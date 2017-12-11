@@ -10,9 +10,9 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 - Contritube your projects code back to the GitHub hive-mind. 🐝
 ```
 ---
-## Install the PulseSensor Playground Library
+## First, install the PulseSensor Playground Library
 
-We put together a [handy guide](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/Installing Pulse Sensor Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code.
+We put together a [handy guide](https://github.com/biomurph/PulseSensorPlayground/blob/master/Installing%20Pulse%20Sensor%20Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code.
  
 ---
 ## Playground Project Descriptions: 
