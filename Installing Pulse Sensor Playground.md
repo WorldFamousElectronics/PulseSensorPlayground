@@ -1,5 +1,5 @@
 ## Installing the Pulse Sensor Playground 🤓 
-1.  On the right side of this repository, click on the green `Clone or Download ZIP` button and select `Download ZIP`. Save the `.zip` file to your computer.
+1.  On the main page of this repository, on the right side is a green button. Click on the green `Clone or Download ZIP` button and then select `Download ZIP`. Save the `.zip` file somewhere on your computer.
 
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
 
