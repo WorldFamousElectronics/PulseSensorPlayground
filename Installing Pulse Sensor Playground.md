@@ -1,0 +1,20 @@
+## Installing the Pulse Sensor Playground 🤓 
+1.  On the right side of this repository, click on the green `Clone or Download ZIP` button and select `Download ZIP`. Save the `.zip` file to your computer.
+
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
+
+2. Open up the Arduino IDE.
+
+	(**NOTE** If you do not have Arduino, you can download it [here](https://www.arduino.cc/en/Main/Software))
+
+3. Select `Sketch > Include Library > Add .ZIP Library...`
+
+	<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Add_ZIP_LIbrary_1024x1024.png?v=1510865023" width="400">
+
+5. Navigate to the location where you downloded the `.zip` file to install this library.
+6. Hurray!  Once this library is installed you will see the projects in Arduino's dropdown!
+	(**NOTE** you may need to restart Arduino)
+	
+	Now you can select any of the example sketches to get started! Go to [PulseSensor.com](https://pulsesensor.com/) and click on the `PROJECTS` link to find tutorials that go with these code examples!
+
+  ![menu pulldown](images/menupulldown.png)

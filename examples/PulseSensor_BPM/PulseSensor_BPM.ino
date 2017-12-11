@@ -101,7 +101,6 @@ void setup() {
       delay(50);
     }
   }
-//  pulseSensor.setThreshold(550);
 }
 
 void loop() {
