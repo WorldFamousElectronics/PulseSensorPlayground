@@ -3,8 +3,8 @@
    using an interrupt service routine and
    using SoftwareSerial for Serial output.
 
-   Here is a link to the tutorial
-   https://pulsesensor.com/pages/software-serial-example
+   Here is a link to the tutorial that discusses this coe
+   https://pulsesensor.com/pages/getting-advanced
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
