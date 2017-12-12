@@ -56,7 +56,7 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
   
   Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
   
-- [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
+- [**Project Page**](https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer)
   
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
 ---  
