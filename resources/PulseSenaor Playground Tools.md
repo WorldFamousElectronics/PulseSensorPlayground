@@ -1,6 +1,6 @@
 # PulseSensor Playground Tools
 
-We Created the PulseSensor Playground Library to make it easier to use and customize. This page will show you how to get the most out of the PulseSensor Playground. Let's go!
+We created the PulseSensor Playground library to make it easy to use and customize. This page will show you how to get the most out of the PulseSensor Playground. Let's go!
 
 ## Using Pulse Sensor Interrupts
 
