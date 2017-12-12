@@ -49,7 +49,7 @@ We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlaygroun
 
 ### Calculate BPM:  
   Focus-in on the code that calculates a user's HeartRate Beats Per Minute, "BPM".    
-  Plug your sensor in for the first time!  See the best practises to get the best signal.  
+  See the best practises to get the best signal.  
   
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
   
@@ -75,7 +75,7 @@ We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlaygroun
  
 ### Processing Visualizer:
   
-  Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
+  Get detailed visulization of the heart's pulse and behavior. Send the PulseSensor data into Processing! 
   
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
   
@@ -85,7 +85,7 @@ We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlaygroun
 ### TroubleShoot Your Signal:  
   If you're having trouble seeing a heartbeat, make sure that you are using 'Goldilocks' pressure on the Pulse Sensor: Not too hard, not too soft. Squeezing the Pulse Sensor too hard against your skin will make the heartbeat go away, and not enough pressure will cause too much noise to creep in!
   
-If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the `Threshold` setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
+If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the Threshold setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
   
   ![StarterThreshold](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
   
