@@ -11,10 +11,11 @@
 
 	<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Add_ZIP_LIbrary_1024x1024.png?v=1510865023" width="400">
 
-5. Navigate to the location where you downloded the `.zip` file to install this library.
-6. Hurray!  Once this library is installed you will see the projects in Arduino's dropdown!
-	(**NOTE** you may need to restart Arduino)
-	
-	Now you can select any of the example sketches to get started! Go to [PulseSensor.com](https://pulsesensor.com/) and click on the `PROJECTS` link to find tutorials that go with these code examples!
+5. Navigate to the location where you downloded the `.zip` file previously and select it to install this library. (**NOTE** you may need to restart Arduino after this step)
+6. Hurray!  Once this library is installed you will see our examples in Arduino's dropdown! To select an example sketch, go to 
 
-  ![menu pulldown](images/menupulldown.png)
+	`File > Examples > PulseSensor Playground`
+
+	
+Go to [PulseSensor.com](https://pulsesensor.com/) and click on the PROJECTS link to find tutorials that go with these code examples! 
+
