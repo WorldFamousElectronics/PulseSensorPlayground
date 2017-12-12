@@ -18,7 +18,7 @@ The sketch examples in PulseSensor Playground will output different kinds of ser
 * Our basic example sketch called [A_StarterProject_and_SignalTester.ino](https://github.com/biomurph/PulseSensorPlayground/tree/master/examples/A_StarterProject_and_SignalTester) will output a serial stream of Pulse Sensor signal data only. The signal is read in the loop function about every 10mS. This works perfectly with the Arduino Serial Plotter. Follow this [Tutorial](https://pulsesensor.com/pages/code-and-guide) to give it a go.
 
 * All the other example sketches that we have give you the option to output to the Arduino Serial Plotter, or to our [Pulse Sensor Visualizer](https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer) program. To select which one you want to output to, you will need to tell Arduino by setting the value of a variable called `OUTPUT_TYPE` at the top of the sketch. Here's an example that shows how to set the output to work with our Visualizer software.
-
+  
 ![outputType](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/outputType.png)
 	
 ## Useful Functions
