@@ -12,11 +12,7 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 ---
 ## First, install the PulseSensor Playground Library
 
-<<<<<<< HEAD
-We put together a [handy guide](https://github.com/biomurph/PulseSensorPlayground/blob/master/Installing%20Pulse%20Sensor%20Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code. We also have a [dive in](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of the library.
-=======
-We put together a [handy guide](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/Installing%20Pulse%20Sensor%20Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code.
->>>>>>> 6ae181076025cd4ca005c15beb439cebd01c357a
+We put together a [handy guide](https://github.com/biomurph/PulseSensorPlayground/blob/master/Installing%20Pulse%20Sensor%20Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code. We also have a [dive in	](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of the library.
  
 ---
 ## Playground Project Descriptions: 
@@ -60,7 +56,7 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
   
   Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
   
-- [**Project Page**](https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer)
+- [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
   
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
 ---  
@@ -68,9 +64,11 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
 ### TroubleShoot Your Signal:  
   If you're having trouble seeing a heartbeat, make sure that you are using 'Goldilocks' pressure on the Pulse Sensor: Not too hard, not too soft. Squeezing the Pulse Sensor too hard against your skin will make the heartbeat go away, and not enough pressure will cause too much noise to creep in!
   
-If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the `Threshold` setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below. In all the other examples, the `THRESHOLD` varialbe is defined at the top of the code.
+If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the `Threshold` setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
   
-  ![StarterThreshold](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
+  ![StarterThreshold](images/screenshot-threshold-arrows.png)
+  
+In the other examples, the `THRESHOLD` is defined at the top of the code.
 
 ---
 ## Connecting the Harware 😎
