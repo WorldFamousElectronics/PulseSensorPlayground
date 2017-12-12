@@ -10,11 +10,30 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 - Contritube your projects code back to the GitHub hive-mind. 🐝
 ```
 ---
-## First, install the PulseSensor Playground Library
+## Installing the Pulse Sensor Playground 🤓 
+1.  On the main page of this repository, on the right side is a green button. Click on the green `Clone or Download ZIP` button and then select `Download ZIP`. Save the `.zip` file somewhere on your computer.
 
-We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/Installing%20Pulse%20Sensor%20Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code.
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
 
-We also have a [DIVE IN](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of the library.
+2. Open up the Arduino IDE.
+
+	(**NOTE** If you do not have Arduino, you can download it [here](https://www.arduino.cc/en/Main/Software))
+
+3. Select `Sketch > Include Library > Add .ZIP Library...`
+
+	<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Add_ZIP_LIbrary_1024x1024.png?v=1510865023" width="400">
+
+5. Navigate to the location where you downloded the `.zip` file previously and select it to install this library. (**NOTE** you may need to restart Arduino after this step)
+6. Hurray!  Once this library is installed you will see our examples in Arduino's dropdown! To select an example sketch, go to 
+
+	`File > Examples > PulseSensor Playground`
+
+Go to [PulseSensor.com](https://pulsesensor.com/) and click on the PROJECTS link to find tutorials that go with these code examples! 
+
+---
+## PulseSensor Playground Tools
+
+We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
  
 ---
 ## Playground Project Descriptions: 
