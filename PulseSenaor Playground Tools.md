@@ -72,5 +72,5 @@ Returns true for the time when a measured heartbeat wave is above the value set 
 ### outputSample()
 Output the latest sample over the Serial port. If your Sketch wants to plot samples, it should call this function every so often.
 
-###outputBeat()
+### outputBeat()
 Output the latest BPM and IBI values over the Serial port.
