@@ -19,7 +19,7 @@ The sketch examples in PulseSensor Playground will output different kinds of ser
 
 * All the other example sketches that we have give you the option to output to the Arduino Serial Plotter, or to our [Pulse Sensor Visualizer](https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer) program. To select which one you want to output to, you will need to tell Arduino by setting the value of a variable called `outputType` at the top of the sketch. Here's an example that shows how to set the output to work with our Visualizer software.
 
-![outputType](https://github.com/biomurph/PulseSensorPlayground/tree/master/Images)
+![outputType](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/outputType.png)
 	
 ## Useful Functions
 
