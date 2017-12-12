@@ -66,7 +66,7 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
   
 If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the `Threshold` setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
   
-  ![StarterThreshold](images/screenshot-threshold-arrows.png)
+  ![StarterThreshold](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
   
 In the other examples, the `THRESHOLD` is defined at the top of the code.
 
