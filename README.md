@@ -39,7 +39,7 @@ We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlaygroun
 ## Playground Project Descriptions: 
 
 
-### Start Here:  
+### Getting Started Project:  
   Plug your sensor in for the first time!  Blink an LED with your pulse, live. 
   
 - [**Project Page**](https://pulsesensor.com/pages/code-and-guide)
