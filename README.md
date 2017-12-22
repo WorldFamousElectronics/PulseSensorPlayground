@@ -10,7 +10,9 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 - Contritube your projects code back to the GitHub hive-mind. 🐝
 ```
 ---
-## Installing the Pulse Sensor Playground 🤓 
+## Installing the PulseSensor Playground
+ <details><summary><code>How To Install:  </code> 🤓</summary>
+
 1.  On the main page of this repository, on the right side is a green button. Click on the green `Clone or Download ZIP` button and then select `Download ZIP`. Save the `.zip` file somewhere on your computer.
 
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
@@ -25,15 +27,17 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 
 5. Navigate to the location where you downloded the `.zip` file previously and select it to install this library. (**NOTE** you may need to restart Arduino after this step)
 6. Hurray!  Once this library is installed you will see our examples in Arduino's dropdown! To select an example sketch, go to 
-
 	`File > Examples > PulseSensor Playground`
 
-Go to [PulseSensor.com](https://pulsesensor.com/) and click on the PROJECTS link to find tutorials that go with these code examples! 
+	<img src="https://github.com/yury-g/PulseSensorPlayground/blob/master/menupulldown.png?raw=true2" width="400">
+	
+	
+  More Info On Libraries 👉    [https://www.arduino.cc/en/Guide/Libraries](https://www.arduino.cc/en/Guide/Libraries).
 
----
-## PulseSensor Playground Tools
+  
+</div>
+  </details>
 
-We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
  
 ---
 ## Playground Project Descriptions: 
@@ -71,7 +75,6 @@ We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlaygroun
 
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Servo_bb_87fce9fc-dc47-4208-b708-a7edb6df58a2_1024x1024.png?v=1510863990" width="400">
  ---
-
  
 ### Processing Visualizer:
   
@@ -80,9 +83,30 @@ We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlaygroun
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
   
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
----  
 
-### TroubleShoot Your Signal:  
+---
+
+## Connecting the Harware 😎
+1. Prepare the sensor, with the Kit parts.
+
+<img src="https://cdn.shopify.com/s/files/1/0100/6632/products/PulseSensorKit-Labeled-Contents_1_2048x2048.jpg?v=1348506345" width="400">
+
+2. See the recommended wiring for your specific project
+
+<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/connections.png" width="400">
+<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
+
+---
+
+## The Functions Guide
+
+We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
+
+--- 
+
+## Troubleshooting Your Signal: 
+
+ <details><summary><code> Ugh, Where's the Beat ? </code>😵</summary>
   If you're having trouble seeing a heartbeat, make sure that you are using 'Goldilocks' pressure on the Pulse Sensor: Not too hard, not too soft. Squeezing the Pulse Sensor too hard against your skin will make the heartbeat go away, and not enough pressure will cause too much noise to creep in!
   
 If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the Threshold setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
@@ -90,26 +114,19 @@ If you are seeing way too many Beats Per Minute, or you are getting lots of nois
   ![StarterThreshold](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
   
 In the other examples, the `THRESHOLD` is defined at the top of the code.
+  
+</div>
+   </details>
 
 ---
-## Connecting the Harware 😎
-1. Prepare the sensor, with the Kit parts.
 
-<img src="https://cdn.shopify.com/s/files/1/0100/6632/products/PulseSensorKit-Labeled-Contents_1_2048x2048.jpg?v=1348506345" width="400"><img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
-
-2. See the recommended wiring for your specific project
-
-<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/connections.png" width="400">    
-
----
 ## Give and Get Feedback
-The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues
-) will get you the quickest answers to common techinal questions. 
+The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues) will get you the quickest answers to common techinal questions. 
 
 
 ---
-#####  Legal:  PulseSensor.com® World Famous Electronics llc. in Brooklyn, NY. USA
-Made Something Awesome With the PulseSensor Code?   Send Us Some PayPal Love. ♥︎  
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=plastic)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KE4DZA5E9AJQ4) 
+
+#### Legal:  PulseSensor.com® World Famous Electronics llc. in Brooklyn, NY. USA
+
 
 
