@@ -10,9 +10,30 @@ This Playground is a collection of code of the most popular uses of PulseSensor 
 - Contritube your projects code back to the GitHub hive-mind. 🐝
 ```
 ---
-## First, install the PulseSensor Playground Library
+## Installing the Pulse Sensor Playground 🤓 
+1.  On the main page of this repository, on the right side is a green button. Click on the green `Clone or Download ZIP` button and then select `Download ZIP`. Save the `.zip` file somewhere on your computer.
 
-We put together a [handy guide](https://github.com/biomurph/PulseSensorPlayground/blob/master/Installing%20Pulse%20Sensor%20Playground.md) to walk you through getting setup with Arduino and our Pulse Sensor code. We also have a [dive in	](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of the library.
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
+
+2. Open up the Arduino IDE.
+
+	(**NOTE** If you do not have Arduino, you can download it [here](https://www.arduino.cc/en/Main/Software))
+
+3. Select `Sketch > Include Library > Add .ZIP Library...`
+
+	<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Add_ZIP_LIbrary_1024x1024.png?v=1510865023" width="400">
+
+5. Navigate to the location where you downloded the `.zip` file previously and select it to install this library. (**NOTE** you may need to restart Arduino after this step)
+6. Hurray!  Once this library is installed you will see our examples in Arduino's dropdown! To select an example sketch, go to 
+
+	`File > Examples > PulseSensor Playground`
+
+Go to [PulseSensor.com](https://pulsesensor.com/) and click on the PROJECTS link to find tutorials that go with these code examples! 
+
+---
+## PulseSensor Playground Tools
+
+We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
  
 ---
 ## Playground Project Descriptions: 
@@ -28,7 +49,7 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
 
 ### Calculate BPM:  
   Focus-in on the code that calculates a user's HeartRate Beats Per Minute, "BPM".    
-  Plug your sensor in for the first time!  See the best practises to get the best signal.  
+  See the best practises to get the best signal.  
   
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
   
@@ -54,7 +75,7 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
  
 ### Processing Visualizer:
   
-  Get detailed visulization of the heart's pulse and behavior. Take the PulseSensor date into Processing.  
+  Get detailed visulization of the heart's pulse and behavior. Send the PulseSensor data into Processing! 
   
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
   
@@ -64,7 +85,7 @@ We put together a [handy guide](https://github.com/biomurph/PulseSensorPlaygroun
 ### TroubleShoot Your Signal:  
   If you're having trouble seeing a heartbeat, make sure that you are using 'Goldilocks' pressure on the Pulse Sensor: Not too hard, not too soft. Squeezing the Pulse Sensor too hard against your skin will make the heartbeat go away, and not enough pressure will cause too much noise to creep in!
   
-If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the `Threshold` setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
+If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the Threshold setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
   
   ![StarterThreshold](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
   
