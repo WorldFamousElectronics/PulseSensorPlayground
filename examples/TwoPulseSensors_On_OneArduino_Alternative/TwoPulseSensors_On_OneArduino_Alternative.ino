@@ -35,7 +35,7 @@
    call pulse.sawNewSample() at least once every 2 milliseconds
    to accurately read the PulseSensor signal.
 */
-#define USE_ARDUINO_INTERRUPTS true
+#define USE_ARDUINO_INTERRUPTS false
 #include <PulseSensorPlayground.h>
 
 
