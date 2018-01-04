@@ -35,7 +35,7 @@
    call pulse.sawNewSample() at least once every 2 milliseconds
    to accurately read the PulseSensor signal.
 */
-#define USE_ARDUINO_INTERRUPTS true
+#define USE_ARDUINO_INTERRUPTS false
 #include <PulseSensorPlayground.h>
 
 
@@ -167,24 +167,34 @@ void setup() {
 
 void loop() {
 
-  /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
-  */
-  delay(20);
+  if (pulseSensor.sawNewSample()) {
 
-  // write the latest sample to Serial.
-  pulseSensor.outputSample();
+    if (--samplesUntilReport == (byte) 0) {
+      samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
 
-  /*
-     If a beat has happened on a given PulseSensor
-     since we last checked, write the per-beat information
-     about that PulseSensor to Serial.
-  */
-  for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
-    if (pulseSensor.sawStartOfBeat(i)) {
-      pulseSensor.outputBeat(i);
+      pulseSensor.outputSample();
+
+      /*
+         If a beat has happened on a given PulseSensor
+         since we last checked, write the per-beat information
+         about that PulseSensor to Serial.
+      */
+
+      for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
+        if (pulseSensor.sawStartOfBeat(i)) {
+          pulseSensor.outputBeat(i);
+        }
+      }
     }
+
+    /*******
+      Here is a good place to add code that could take up
+      to a millisecond or so to run.
+    *******/
   }
+
+  /******
+     Don't add code here, because it could slow the sampling
+     from the PulseSensor.
+  ******/
 }
