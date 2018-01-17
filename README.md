@@ -2,42 +2,53 @@
 ![logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200) 
 # [PulseSensor.com](https://pulsesensor.com) Playground
 ```
-This Playground is a collection of code of the most popular uses of PulseSensor and Arduino.  
+This Playground is a collection of code for the most popular uses of PulseSensor and Arduino.  
 
 - The playgroud includes a number of projects, with the code already written-out and commented! 🤘 
 - Use this code to get started quickly, or do advanced stuff. 👍
 - Switch between projects right in the Arduino IDE (software). 💻
 - Contritube your projects code back to the GitHub hive-mind. 🐝
 ```
+
 ---
-## Installing the PulseSensor Playground
+## Install the PulseSensor Playground Library ! 
  <details><summary><code>How To Install:  </code> 🤓</summary>
 
-1.  On the main page of this repository, on the right side is a green button. Click on the green `Clone or Download ZIP` button and then select `Download ZIP`. Save the `.zip` file somewhere on your computer.
+An Arduino Library is a collection of code and examples on a specific topic or device.  For example, our PulseSensor Playground Library is a collection of code and projects made just for your PulseSensor and Arduino. 
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Download_Playground_ZIP_1024x1024.png?v=1510864702" width="400">
+(**NOTE** If you do not have Arduino, you can download it [here](https://www.arduino.cc/en/Main/Software))
 
-2. Open up the Arduino IDE.
+To install the PulseSensor Playground Library, in Arduino, to go 
+`Sketch > Include Library > Manage Library...`
 
-	(**NOTE** If you do not have Arduino, you can download it [here](https://www.arduino.cc/en/Main/Software))
+<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/ManageLibraries.png" width="550">
 
-3. Select `Sketch > Include Library > Add .ZIP Library...`
+	
+In the Library Manager: Search for and Select
+`"PulseSensor.com`
 
-	<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/Add_ZIP_LIbrary_1024x1024.png?v=1510865023" width="400">
-
-5. Navigate to the location where you downloded the `.zip` file previously and select it to install this library. (**NOTE** you may need to restart Arduino after this step)
-6. Hurray!  Once this library is installed you will see our examples in Arduino's dropdown! To select an example sketch, go to 
-	`File > Examples > PulseSensor Playground`
-
-	<img src="https://github.com/yury-g/PulseSensorPlayground/blob/master/menupulldown.png?raw=true2" width="400">
+<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/SearchForPulseSensor.png" width="550">
 	
 	
-  More Info On Libraries 👉    [https://www.arduino.cc/en/Guide/Libraries](https://www.arduino.cc/en/Guide/Libraries).
+Install or update to the lastest version.👍 
+
+<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/InstallLatestVersion.png" width="550">
+
+
+Hurray!  Once this library is installed you will see our examples in Arduino's dropdown! 
+To select an example project, go to: 
+`File > Examples > PulseSensor Playground > GettingStartedProject`
+<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/ExamplesPlaygroundGettingStartedMenuPullDown.png" width="550">
+
+
+
+
+
+More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libraries](https://www.arduino.cc/en/Guide/Libraries).
 
   
 </div>
-  </details>
-
+</details> 
  
 ---
 ## Playground Project Descriptions: 
@@ -128,5 +139,5 @@ The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterPro
 
 #### Legal:  PulseSensor.com® World Famous Electronics llc. in Brooklyn, NY. USA
 
-
+ 
 
