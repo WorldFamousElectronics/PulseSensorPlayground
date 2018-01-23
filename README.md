@@ -87,6 +87,14 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Servo_bb_87fce9fc-dc47-4208-b708-a7edb6df58a2_1024x1024.png?v=1510863990" width="400">
  ---
  
+### Connect Two (or more) Pulse Sensors:  
+  Use 2 or more Pulse Sensors on one Arduino.  
+  
+- [**Project Page**](https://pulsesensor.com/pages/https://pulsesensor.com/pages/two-or-more-pulse-sensors)
+
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/2_PulseSensors_bb_grande.png?v=1516733684" width="400">
+ ---
+ 
 ### Processing Visualizer:
   
   Get detailed visulization of the heart's pulse and behavior. Send the PulseSensor data into Processing! 
