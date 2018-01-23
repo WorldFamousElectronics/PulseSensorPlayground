@@ -73,12 +73,10 @@ const int PULSE_SENSOR_COUNT = 2;
        If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PIN_FADEx
        because those pins' PWM interferes with the sample timer.
 */
-const int PIN_POWER0 = 7;
 const int PIN_INPUT0 = A0;
 const int PIN_BLINK0 = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE0 = 5;
 
-const int PIN_POWER1 = 8;
 const int PIN_INPUT1 = A1;
 const int PIN_BLINK1 = 12;
 const int PIN_FADE1 = 11;
@@ -114,16 +112,6 @@ void setup() {
      not work properly.
   */
   Serial.begin(250000);
-
-  /*
-     Set the PulseSensor power pins.
-     That is, turn on the PulseSensors.
-  */
-  pinMode(PIN_POWER0, OUTPUT);
-  digitalWrite(PIN_POWER0, HIGH);
-
-  pinMode(PIN_POWER1, OUTPUT);
-  digitalWrite(PIN_POWER1, HIGH);
 
   /*
      Configure the PulseSensor manager,
