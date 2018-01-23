@@ -92,11 +92,11 @@ int PulseSensor::getInterBeatIntervalMs() {
   return IBI;
 }
 
-int getPulseAmplitude() {
+int PulseSensor::getPulseAmplitude() {
   return amp;
 }
 
-unsigned long getLastBeatTime() {
+unsigned long PulseSensor::getLastBeatTime() {
   return lastBeatTime;
 }
 
