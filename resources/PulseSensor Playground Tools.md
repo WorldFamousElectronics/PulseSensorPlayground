@@ -28,6 +28,7 @@ Set the pin your Pulse Sensor is connected to.
 ### blinkOnPulse(int)
 Set the pin that will blink to your pulse.
 
+---
 ### fadeOnPulse(int)
 Set the pin to fade with you're heartbeat. Make sure the pin can do PWM!
 
