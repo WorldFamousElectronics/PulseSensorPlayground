@@ -351,6 +351,16 @@ class PulseSensorPlayground {
     void outputSample();
 
     /*
+        Returns the current amplitude of the pulse waveform.
+    */
+    int getPulseAmplitude(int sensorIndex = 0);
+
+    /*
+       Returns the sample number when the last beat was found. 2mS resolution.
+    */
+    unsigned long getLastBeatTime(int sensorIndex = 0);
+
+    /*
        Output the current per-beat information for each PulseSensor,
        in the previously-set outputType.
 

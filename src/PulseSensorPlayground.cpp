@@ -204,6 +204,20 @@ void PulseSensorPlayground::outputBeat(int sensorIndex) {
   SerialOutput.outputBeat(Sensors, SensorCount, sensorIndex);
 }
 
+int PulseSensorPlayground::getPulseAmplitude(int sensorIndex) {
+  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+    return; // out of range.
+  }
+  return Sensors[sensorIndex].getPulseAmplitude();
+}
+
+unsigned long PulseSensorPlayground::getLastBeatTime(int sensorIndex) {
+  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+    return; // out of range.
+  }
+  return Sensors[sensorIndex].getLastBeatTime();
+}
+
 #if PULSE_SENSOR_MEMORY_USAGE
 void PulseSensorPlayground::printMemoryUsage() {
   char stack = 1;
