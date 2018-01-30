@@ -66,11 +66,11 @@ Returns the sample number when the latest beat was found. The sample number is b
 
 ---
 ### sawStartOfBeat()
-Returns true if a new heartbeat pulse has been detected. Type = boolean.
+Returns `true` if a new heartbeat pulse has been detected. Type = boolean.
 
 ---
 ### isInsideBeat()
-Returns true for the time when a measured heartbeat wave is above the value set in setThreshold() above. Type = boolean.
+Returns `true` for the time when a measured heartbeat wave is above the value set in setThreshold() above. Type = boolean.
 
 ---
 ### outputSample()
