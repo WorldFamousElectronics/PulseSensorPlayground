@@ -81,6 +81,10 @@ Output the latest sample over the Serial port. If your Sketch wants to plot samp
 Output the latest BPM and IBI values over the Serial port.
 
 ---
+### outputToSerial(char, int)
+Output Data with a character prefix. Used exclusively with the Pulse Sensor Processing Visualizer.
+
+---
 ## Using Pulse Sensor Interrupts
 
 We want to use interrupts if we can in our Pulse Sensor code in order to get super accurate hear rate data: Beats Per Minute (BPM), and Inter-beat Interval (IBI). In the example sketch [PulseSensor_BPM.ino](https://github.com/biomurph/PulseSensorPlayground/tree/master/examples/PulseSensor_BPM) there are a couple of lines of code at the very top of the sketch that set this up:

@@ -204,6 +204,10 @@ void PulseSensorPlayground::outputBeat(int sensorIndex) {
   SerialOutput.outputBeat(Sensors, SensorCount, sensorIndex);
 }
 
+void PulseSensorPlayground::outputToSerial(char s, int d) {
+  SerialOutput.outputToSerial(s,d);
+}
+
 int PulseSensorPlayground::getPulseAmplitude(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
     return; // out of range.

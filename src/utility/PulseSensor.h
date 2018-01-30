@@ -69,6 +69,7 @@ class PulseSensor {
     // (internal to the library) Updtate the thresh variables.
     void setThreshold(int threshold);
 
+
   private:
     // Configuration
     int InputPin;           // Analog input pin for PulseSensor.

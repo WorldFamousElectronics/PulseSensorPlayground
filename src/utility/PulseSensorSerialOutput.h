@@ -71,9 +71,10 @@ class PulseSensorSerialOutput {
     */
     void outputBeat(PulseSensor sensors[], int numberOfSensors, int sensorIndex);
 
-        //
-        // // testing feedback
-        // void printThreshSetting();
+    /*
+        Write the given data prefixed by the given symbol.
+    */
+    void outputToSerial(char symbol, int data);
 
   private:
     // If non-null, the output stream to print to. If null, don't print.
@@ -82,7 +83,5 @@ class PulseSensorSerialOutput {
     // The destination of data: PROCESSING_VISUALIZER or SERIAL_PLOTTER
     int OutputType;
 
-    // Write the given data prefixed by the given symbol.
-    void outputToSerial(char symbol, int data);
 };
 #endif // PULSE_SENSOR_SERIAL_OUTPUT_H

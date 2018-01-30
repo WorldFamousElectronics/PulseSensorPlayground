@@ -51,7 +51,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = SERIAL_PLOTTER;
+const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
 
 /*
    Number of PulseSensor devices we're reading from.
@@ -95,7 +95,8 @@ PulseSensorPlayground pulseSensor(PULSE_SENSOR_COUNT);
   Variables used to determine PTT.
   NOTE: This code assumes the Pulse Sensor on analog pin 0 is closer to he heart.
 */
-
+unsigned long lastBeatSampleNumber[PULSE_SENSOR_COUNT];
+int PTT;
 
 void setup() {
   /*
@@ -168,6 +169,13 @@ void loop() {
   for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
     if (pulseSensor.sawStartOfBeat(i)) {
       pulseSensor.outputBeat(i);
+
+      lastBeatSampleNumber[i] = pulseSensor.getLastBeatTime(i);
+      if(i == 1){
+        PTT = lastBeatSampleNumber[1] - lastBeatSampleNumber[0];
+        pulseSensor.outputToSerial('|',PTT);
+      }
     }
   }
+
 }
