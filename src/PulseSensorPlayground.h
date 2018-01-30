@@ -351,6 +351,12 @@ class PulseSensorPlayground {
     void outputSample();
 
     /*
+       Serial print data with prefix.
+       Used exclusively with the Pulse Sensor Processing sketch.
+    */
+    void outputToSerial(char symbol, int data);
+
+    /*
         Returns the current amplitude of the pulse waveform.
     */
     int getPulseAmplitude(int sensorIndex = 0);

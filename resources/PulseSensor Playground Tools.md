@@ -66,11 +66,11 @@ Returns the sample number when the latest beat was found. The sample number is b
 
 ---
 ### sawStartOfBeat()
-Returns true if a new heartbeat pulse has been detected. Type = boolean.
+Returns `true` if a new heartbeat pulse has been detected. Type = boolean.
 
 ---
 ### isInsideBeat()
-Returns true for the time when a measured heartbeat wave is above the value set in setThreshold() above. Type = boolean.
+Returns `true` for the time when a measured heartbeat wave is above the value set in setThreshold() above. Type = boolean.
 
 ---
 ### outputSample()
@@ -79,6 +79,10 @@ Output the latest sample over the Serial port. If your Sketch wants to plot samp
 ---
 ### outputBeat()
 Output the latest BPM and IBI values over the Serial port.
+
+---
+### outputToSerial(char, int)
+Output Data with a character prefix. Used exclusively with the Pulse Sensor Processing Visualizer.
 
 ---
 ## Using Pulse Sensor Interrupts

@@ -97,11 +97,21 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
 
 ### Processing Visualizer:
 
-  Get detailed visulization of the heart's pulse and behavior. Send the PulseSensor data into Processing!
+  Get detailed visualization of the heart's pulse and behavior. Send the PulseSensor data into Processing!
 
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
 
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
+
+---
+
+### Pulse Transit Time:
+
+  Use two Pulse Sensors on different parts of your body to measure Pulse Transit Time!
+
+- [**Project Page**](https://pulsesensor.com/pages/pulse-transit-time)
+
+  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_PTT-17042_grande.jpg?v=1517336059" width="400">
 
 ---
 
@@ -112,7 +122,8 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
 
 2. See the recommended wiring for your specific project
 
-<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/blob/master/connections.png" width="400">
+<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/connections.png" width="400">
+
 <img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
 
 ---
