@@ -26,7 +26,11 @@ sawNewSample	KEYWORD2
 setSerial	KEYWORD2
 setOutputType	KEYWORD2
 sawStartOfBeat	KEYWORD2
-setThreshold  KEYWORD2
+setThreshold	KEYWORD2
+getLastBeatTime KEYWORD2
+outputToSerial  KEYWORD2
+getPulseAmplitude KEYWORD2
+getLastBeatTime KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

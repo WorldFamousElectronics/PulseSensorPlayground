@@ -92,6 +92,14 @@ int PulseSensor::getInterBeatIntervalMs() {
   return IBI;
 }
 
+int PulseSensor::getPulseAmplitude() {
+  return amp;
+}
+
+unsigned long PulseSensor::getLastBeatTime() {
+  return lastBeatTime;
+}
+
 boolean PulseSensor::sawStartOfBeat() {
   // Disable interrupts to avoid a race with the ISR.
   DISABLE_PULSE_SENSOR_INTERRUPTS;
