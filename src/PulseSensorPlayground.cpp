@@ -191,7 +191,7 @@ void PulseSensorPlayground::setOutputType(byte outputType) {
 
 void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
-    return -1; // out of range.
+    return; // out of range.
   }
   Sensors[sensorIndex].setThreshold(threshold);
 }
