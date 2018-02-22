@@ -210,14 +210,14 @@ void PulseSensorPlayground::outputToSerial(char s, int d) {
 
 int PulseSensorPlayground::getPulseAmplitude(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
-    return; // out of range.
+    return -1; // out of range.
   }
   return Sensors[sensorIndex].getPulseAmplitude();
 }
 
 unsigned long PulseSensorPlayground::getLastBeatTime(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
-    return; // out of range.
+    return -1; // out of range.
   }
   return Sensors[sensorIndex].getLastBeatTime();
 }
