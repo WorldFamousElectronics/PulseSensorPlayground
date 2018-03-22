@@ -70,7 +70,7 @@ Returns `true` if a new heartbeat pulse has been detected. Type = boolean.
 
 ---
 ### isInsideBeat()
-Returns `true` for the time when a measured heartbeat wave is above the value set in setThreshold() above. Type = boolean.
+Returns `true` for the time when a measured heartbeat wave is above the value set by the setThreshold() function, and `false` when it's not. Type = boolean.
 
 ---
 ### outputSample()
