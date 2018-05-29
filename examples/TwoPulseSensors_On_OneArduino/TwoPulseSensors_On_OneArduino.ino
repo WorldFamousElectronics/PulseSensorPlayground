@@ -57,29 +57,29 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PULSE_SENSOR_COUNT = 2;
 
 /*
-     PIN_POWERx = the output pin that the red (power) pin of
+     PULSE_POWERx = the output pin that the red (power) pin of
       the first PulseSensor will be connected to. PulseSensor only
       draws about 4mA, so almost any micro can power it from a GPIO.
       If you don't want to use pins to power the PulseSensors, you can remove
-      the code dealing with PIN_POWER0 and PIN_POWER1.
-     PIN_INPUTx = Analog Input. Connected to the pulse sensor
+      the code dealing with PULSE_POWER0 and PULSE_POWER1.
+     PULSE_INPUTx = Analog Input. Connected to the pulse sensor
       purple (signal) wire.
-     PIN_BLINKx = digital Output. Connected to an LED (must have at least
+     PULSE_BLINKx = digital Output. Connected to an LED (must have at least
       470 ohm resistor) that will flash on each detected pulse.
-     PIN_FADEx = digital Output. PWM pin onnected to an LED (must have
+     PULSE_FADEx = digital Output. PWM pin onnected to an LED (must have
       at least 470 ohm resistor) that will smoothly fade with each pulse.
 
-     NOTE: PIN_FADEx must be pins that support PWM.
-       If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PIN_FADEx
+     NOTE: PULSE_FADEx must be pins that support PWM.
+       If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PULSE_FADEx
        because those pins' PWM interferes with the sample timer.
 */
-const int PIN_INPUT0 = A0;
-const int PIN_BLINK0 = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE0 = 5;
+const int PULSE_INPUT0 = A0;
+const int PULSE_BLINK0 = 13;    // Pin 13 is the on-board LED
+const int PULSE_FADE0 = 5;
 
-const int PIN_INPUT1 = A1;
-const int PIN_BLINK1 = 12;
-const int PIN_FADE1 = 11;
+const int PULSE_INPUT1 = A1;
+const int PULSE_BLINK1 = 12;
+const int PULSE_FADE1 = 11;
 
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
@@ -108,13 +108,13 @@ void setup() {
      we're configuring.
   */
 
-  pulseSensor.analogInput(PIN_INPUT0, 0);
-  pulseSensor.blinkOnPulse(PIN_BLINK0, 0);
-  pulseSensor.fadeOnPulse(PIN_FADE0, 0);
+  pulseSensor.analogInput(PULSE_INPUT0, 0);
+  pulseSensor.blinkOnPulse(PULSE_BLINK0, 0);
+  pulseSensor.fadeOnPulse(PULSE_FADE0, 0);
 
-  pulseSensor.analogInput(PIN_INPUT1, 1);
-  pulseSensor.blinkOnPulse(PIN_BLINK1, 1);
-  pulseSensor.fadeOnPulse(PIN_FADE1, 1);
+  pulseSensor.analogInput(PULSE_INPUT1, 1);
+  pulseSensor.blinkOnPulse(PULSE_BLINK1, 1);
+  pulseSensor.fadeOnPulse(PULSE_FADE1, 1);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
@@ -132,9 +132,9 @@ void setup() {
     */
     for (;;) {
       // Flash the led to show things didn't work.
-      digitalWrite(PIN_BLINK0, LOW);
+      digitalWrite(PULSE_BLINK0, LOW);
       delay(50);
-      digitalWrite(PIN_BLINK0, HIGH);
+      digitalWrite(PULSE_BLINK0, HIGH);
       delay(50);
     }
   }
