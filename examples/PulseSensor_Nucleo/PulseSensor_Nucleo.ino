@@ -4,7 +4,24 @@
    to read PulseSensor voltages.
 
    Here is a link to the tutorial that discusses this code
-   https://pulsesensor.com/pages/getting-advanced
+   >> Comming Soon! <<
+
+   This example targets the Nucleo 64 F401RE
+   If you are using a different Nucleo board, you may have to change some of the
+   board parameters. Here are the drop-down selections that I used.
+
+      Board: Nucleo-64
+      Board Part Number: Nucleo F401RE
+      Serial Interface: Enable first third (USART to 3 if available)
+      USB Interace: None
+      Upload Method: STlink
+      Optimize: Smalles (-Os) defalut
+
+  This sketch uses Serial1 to communicate with your computer.
+  Attach an FTDI or other USB > Serial breakout to the pins
+
+      tx: D8 (Arduino Pin)
+      rx: D2 (Arduino Pin)
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -95,14 +112,14 @@ void setup() {
      of readSensor() calls, which would make the pulse measurement
      not work properly.
   */
-  Serial.begin(115200);
+  Serial1.begin(115200);
 
   // Configure the PulseSensor manager.
   pulseSensor.analogInput(PULSE_INPUT);
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
 
-  pulseSensor.setSerial(Serial);
+  pulseSensor.setSerial(Serial1);
   pulseSensor.setOutputType(OUTPUT_TYPE);
   pulseSensor.setThreshold(THRESHOLD);
 

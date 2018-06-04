@@ -45,18 +45,18 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
    Pinout:
-     PIN_INPUT = Analog Input. Connected to the pulse sensor
+     PULSE_INPUT = Analog Input. Connected to the pulse sensor
       purple (signal) wire.
-     PIN_BLINK = digital Output. Connected to an LED (and 220 ohm resistor)
+     PULSE_BLINK = digital Output. Connected to an LED (and 220 ohm resistor)
       that will flash on each detected pulse.
-     PIN_FADE = digital Output. PWM pin onnected to an LED (and resistor)
+     PULSE_FADE = digital Output. PWM pin onnected to an LED (and resistor)
       that will smoothly fade with each pulse.
-      NOTE: PIN_FADE must be a pin that supports PWM. Do not use
+      NOTE: PULSE_FADE must be a pin that supports PWM. Do not use
       pin 9 or 10, because those pins' PWM interferes with the sample timer.
 */
-const int PIN_INPUT = A0;
-const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE = 5;
+const int PULSE_INPUT = A0;
+const int PULSE_BLINK = 13;    // Pin 13 is the on-board LED
+const int PULSE_FADE = 5;
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
@@ -90,9 +90,9 @@ void setup() {
 
   // Configure the PulseSensor manager.
 
-  pulseSensor.analogInput(PIN_INPUT);
-  pulseSensor.blinkOnPulse(PIN_BLINK);
-  pulseSensor.fadeOnPulse(PIN_FADE);
+  pulseSensor.analogInput(PULSE_INPUT);
+  pulseSensor.blinkOnPulse(PULSE_BLINK);
+  pulseSensor.fadeOnPulse(PULSE_FADE);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
@@ -110,9 +110,9 @@ void setup() {
     */
     for(;;) {
       // Flash the led to show things didn't work.
-      digitalWrite(PIN_BLINK, LOW);
+      digitalWrite(PULSE_BLINK, LOW);
       delay(50);
-      digitalWrite(PIN_BLINK, HIGH);
+      digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
   }

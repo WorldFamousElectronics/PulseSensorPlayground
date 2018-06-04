@@ -46,9 +46,9 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PIN_RX = 7;
 const int PIN_TX = 8;
 
-const int PIN_INPUT = A0;
-const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
-const int PIN_FADE = 5;      // Must be a PWM pin other than 9 or 10.
+const int PULSE_INPUT = A0;
+const int PULSE_BLINK = 13;    // Pin 13 is the on-board LED
+const int PULSE_FADE = 5;      // Must be a PWM pin other than 9 or 10.
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
@@ -64,9 +64,9 @@ void setup() {
 
   // Configure the PulseSensor manager.
 
-  pulseSensor.analogInput(PIN_INPUT);
-  pulseSensor.blinkOnPulse(PIN_BLINK);
-  pulseSensor.fadeOnPulse(PIN_FADE);
+  pulseSensor.analogInput(PULSE_INPUT);
+  pulseSensor.blinkOnPulse(PULSE_BLINK);
+  pulseSensor.fadeOnPulse(PULSE_FADE);
 
   pulseSensor.setSerial(ourSerial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
@@ -82,9 +82,9 @@ void setup() {
      */
     for(;;) {
       // Flash the led to show things didn't work.
-      digitalWrite(PIN_BLINK, LOW);
+      digitalWrite(PULSE_BLINK, LOW);
       delay(50);
-      digitalWrite(PIN_BLINK, HIGH);
+      digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
   }
