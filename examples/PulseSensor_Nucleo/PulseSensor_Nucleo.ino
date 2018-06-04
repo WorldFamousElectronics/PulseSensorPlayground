@@ -15,7 +15,7 @@
       Serial Interface: Enable first third (USART to 3 if available)
       USB Interace: None
       Upload Method: STlink
-      Optimize: Smalles (-Os) defalut
+      Optimize: Smallest (-Os) defalut
 
   This sketch uses Serial1 to communicate with your computer.
   Attach an FTDI or other USB > Serial breakout to the pins
