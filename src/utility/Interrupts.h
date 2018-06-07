@@ -63,7 +63,7 @@
 // Macros to link to interrupt disable/enable only if they exist
 // The name is long to avoid collisions with Sketch and Library symbols.
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)
+||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
