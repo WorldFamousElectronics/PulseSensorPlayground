@@ -196,6 +196,12 @@ void PulseSensor::processLatestSample() {
     lastBeatTime = sampleCounter;          // bring the lastBeatTime up to date
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
+    QS = false;
+    BPM = 0;
+    IBI = 600;                  // 600ms per beat = 100 Beats Per Minute (BPM)
+    Pulse = false;
+    amp = 100;                  // beat amplitude 1/10 of input range.
+
   }
 }
 
