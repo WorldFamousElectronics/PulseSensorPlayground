@@ -106,7 +106,7 @@ void setup() {
        likely because our particular Arduino platform interrupts
        aren't supported yet.
 
-       If your Sketch hangs here, try ProcessEverySample.ino,
+       If your Sketch hangs here, try changing USE_ARDUINO_INTERRUPTS to false.
        which doesn't use interrupts.
     */
     for(;;) {
