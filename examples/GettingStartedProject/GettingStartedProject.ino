@@ -6,7 +6,7 @@
  *  https://pulsesensor.com/pages/code-and-guide
  *
  *  WATCH ME (Tutorial Video):
- *  https://www.youtube.com/watch?v=82T_zBZQkOE
+ *  https://www.youtube.com/watch?v=RbB8NSRa5X4
  *
  *
 -------------------------------------------------------------
