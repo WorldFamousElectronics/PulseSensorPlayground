@@ -1,5 +1,5 @@
 
-/*  PulseSensor™ Starter Project and Signal Tester
+/*  PulseSensor Starter Project and Signal Tester
  *  The Best Way to Get Started  With, or See the Raw Signal of, your PulseSensor.com™ & Arduino.
  *
  *  Here is a link to the tutorial
