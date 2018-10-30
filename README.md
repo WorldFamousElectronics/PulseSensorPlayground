@@ -159,7 +159,7 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
 
 ### The Functions Guide
 
-We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
+We put together a [HANDY GUIDE](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
 
 --- 
 
