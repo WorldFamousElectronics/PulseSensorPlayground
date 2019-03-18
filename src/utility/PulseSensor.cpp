@@ -218,8 +218,12 @@ void PulseSensor::initializeLEDs() {
 
 void PulseSensor::updateLEDs() {
   if (BlinkPin >= 0) {
-    digitalWrite(BlinkPin, Pulse);
-  }
+		if(Pulse){
+    	digitalWrite(BlinkPin, HIGH);
+  	}else{
+			digitalWrite(BlinkPin,LOW);
+		}
+	}
 
   if (FadePin >= 0) {
     analogWrite(FadePin, FadeLevel / FADE_SCALE);

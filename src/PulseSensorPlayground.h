@@ -114,7 +114,7 @@
    NOTE: you must call pulse.setSerial(Serial) in your Sketch's setup().
 */
 #define PULSE_SENSOR_MEMORY_USAGE false
-//#define PULSE_SENSOR_MEMORY_USAGE true
+// #define PULSE_SENSOR_MEMORY_USAGE true
 
 
 #include <Arduino.h>
