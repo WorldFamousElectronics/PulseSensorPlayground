@@ -54,6 +54,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
 
   if (UsingInterrupts) {
     if (!PulseSensorPlaygroundSetupInterrupt()) {
+			Serial.println("interrupts not supported");
       // The user requested interrupts, but they aren't supported. Say so.
       return false;
     }
