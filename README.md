@@ -1,7 +1,7 @@
 
 ![logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200)
 ## [PulseSensor.com](https://pulsesensor.com) Playground
-[![Alt text](https://github.com/yury-g/MyCodePlayground/blob/master/screenshot-opener-video.png?raw=true)](https://youtu.be/RbB8NSRa5X4)
+[![How To Update Your Playground Code](https://github.com/yury-g/MyCodePlayground/blob/master/images/updateLib.png?raw=true)](https://youtu.be/Pt0fJvIeryY)
 
 ```
 This Playground is a collection of code for the most popular uses of PulseSensor and Arduino.  
@@ -159,7 +159,7 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
 
 ### The Functions Guide
 
-We put together a [HANDY GUIDE](https://github.com/biomurph/PulseSensorPlayground/blob/master/resources/PulseSenaor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
+We put together a [HANDY GUIDE](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
 
 --- 
 

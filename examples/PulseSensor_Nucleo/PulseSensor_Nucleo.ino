@@ -6,6 +6,13 @@
    Here is a link to the tutorial that discusses this code
    >> Comming Soon! <<
 
+   Use this code as a basic example when targeting STM32 boards. 
+   Open your Arduino > Preferences window, and add this to your Additional Boards Manager URLs:
+   
+https://raw.githubusercontent.com/stm32duino/BoardManagerFiles/master/STM32/package_stm_index.json
+
+   Then, go to Tools > Board > Boards Manager to install the STM32 core.
+   
    This example targets the Nucleo 64 F401RE
    If you are using a different Nucleo board, you may have to change some of the
    board parameters. Here are the drop-down selections that I used.
