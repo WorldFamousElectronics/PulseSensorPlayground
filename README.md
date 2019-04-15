@@ -132,7 +132,7 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
 
   Get detailed visualization of the heart's pulse and behavior. Send the PulseSensor data into Processing!
 
-- [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
+- [**Project Page**](https://pulsesensor.com/pages/processing-visualization)
 
   <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
 
