@@ -73,6 +73,11 @@
 #endif
 
 
+//	SAVED FOR FUTURE SUPPORT OF TEENSY INTERRUPTS
+#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
+// #include <FlexiTimer2.h>
+#endif
+
 /*
    (internal to the library)
    Sets up the sample timer interrupt for this Arduino Platform.
@@ -249,6 +254,10 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
       ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
     }
   #endif
+#endif
+
+#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
+	// Interrupts not supported yet for Teensy
 #endif
 
 

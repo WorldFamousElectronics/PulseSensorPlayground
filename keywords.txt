@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-PulseSensorPlayground KEYWORD1
+PulseSensorPlayground	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
