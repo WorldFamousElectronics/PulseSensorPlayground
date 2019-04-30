@@ -282,7 +282,103 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 	// Interrupts not supported yet for Teensy
 #endif
 
+boolean PulseSensorPlaygroundDisableInterrupt(){
+#if USE_ARDUINO_INTERRUPTS
+	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+    // check to see if the Servo library is in use
+    #if defined Servo_h
+		  DISABLE_PULSE_SENSOR_INTERRUPTS;
+      TIMSK2 = 0x00;          // Disable OCR2A match interrupt
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = true;
+      return true;
+    #else
+      DISABLE_PULSE_SENSOR_INTERRUPTS;
+      TIMSK1 = 0x00;            // Disable OCR1A match interrupt
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = true;
+      return true;
+    #endif
+  #endif
 
+	#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+		// check to see if the Servo library is in use
+    #if defined Servo_h
+	    DISABLE_PULSE_SENSOR_INTERRUPTS;
+			TIMSK1 = 0x00;            // Disable OCR1A match interrupt
+			ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = true;
+			return true;
+    #else
+			DISABLE_PULSE_SENSOR_INTERRUPTS;
+			TIMSK2 = 0x00;          // Disable OCR2A match interrupt
+			ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = true;
+			return true;
+    #endif
+ 	#endif
+
+	#if defined(__AVR_ATtiny85__)
+		DISABLE_PULSE_SENSOR_INTERRUPTS;
+		bitClear(TIMSK,6);   // Disable interrupt on match between TCNT1 and OCR1A
+    ENABLE_PULSE_SENSOR_INTERRUPTS;
+		PulseSensor::Paused = true;
+    return true;
+	#endif
+
+#else
+  return false;      // unknown or unsupported platform.
+#endif
+}
+
+boolean PulseSensorPlaygroundEnableInterrupt(){
+#if USE_ARDUINO_INTERRUPTS
+	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+    // check to see if the Servo library is in use
+    #if defined Servo_h
+		  DISABLE_PULSE_SENSOR_INTERRUPTS;
+      TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = false;
+      return true;
+    #else
+      DISABLE_PULSE_SENSOR_INTERRUPTS;
+      TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = false;
+      return true;
+    #endif
+  #endif
+
+	#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+		// check to see if the Servo library is in use
+    #if defined Servo_h
+	    DISABLE_PULSE_SENSOR_INTERRUPTS;
+			TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+			ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = false;
+			return true;
+    #else
+			DISABLE_PULSE_SENSOR_INTERRUPTS;
+			TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+			ENABLE_PULSE_SENSOR_INTERRUPTS;
+			PulseSensor::Paused = false;
+			return true;
+    #endif
+ 	#endif
+
+	#if defined(__AVR_ATtiny85__)
+		DISABLE_PULSE_SENSOR_INTERRUPTS;
+		bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
+    ENABLE_PULSE_SENSOR_INTERRUPTS;
+		PulseSensor::Paused = false;
+    return true;
+	#endif
+
+#else
+  return false;      // unknown or unsupported platform.
+#endif
+}
 
 #endif // USE_ARDUINO_INTERRUPTS
 

@@ -223,6 +223,18 @@ unsigned long PulseSensorPlayground::getLastBeatTime(int sensorIndex) {
   return Sensors[sensorIndex].getLastBeatTime();
 }
 
+boolean PulseSensorPlayground::pause(void){
+	return PulseSensor.pause();
+}
+
+boolean PulseSensorPlayground::resume(void){
+	return PulseSensor.resume();
+}
+
+boolean PulseSensorPlayground::isPaused(void){
+	return PulseSensor.isPaused();
+}
+
 #if PULSE_SENSOR_MEMORY_USAGE
 void PulseSensorPlayground::printMemoryUsage() {
   char stack = 1;

@@ -380,6 +380,10 @@ class PulseSensorPlayground {
     */
     void outputBeat(int sensorIndex = 0);
 
+		boolean isPaused();
+		boolean pause();
+		boolean resume();
+
     // (internal to the library) "this" pointer for the ISR.
     static PulseSensorPlayground *OurThis;
 
