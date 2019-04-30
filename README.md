@@ -9,14 +9,14 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 - Use this code to get started quickly, or do advanced stuff. 👍
 - Playground code is already written-out and commented! 🤘 
 - Switch between projects right in the Arduino IDE (software). 💻
-- Contritube your project's code back to the GitHub hive-mind. 🐝
+- Contribute your project's code back to the GitHub hive-mind. 🐝
 ```
 
 ---
 
 ## Buy Verified "PulseSensor.com"  
  <b><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/wiki/Buy-%22Verified-PulseSensor.com%22"> Where to buy Verified Sensors 💰 </a>  </b>
- 
+
 ---
 
 
@@ -41,7 +41,7 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 
 ## Loading the Playground
  <b><details><summary><code> Steps For Loading the Playground in Arduino  </code> 🤓</summary></b>
-### 
+###
 
 An Arduino Library is a collection of code and examples on a specific topic or device.  For example, our PulseSensor Playground Library is a collection of code and projects made just for your PulseSensor and Arduino.
 
@@ -59,7 +59,7 @@ In the Library Manager: Search for and Select
 <img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/SearchForPulseSensor.png" width="500">
 
 
-Install or update to the lastest version.👍
+Install or update to the latest version.👍
 
 <img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/InstallLatestVersion.png" width="500">
 
@@ -161,32 +161,31 @@ More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libra
 
 We put together a [HANDY GUIDE](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
 
---- 
+---
 
-### Troubleshooting Your Signal: 
+### Troubleshooting Your Signal:
 
  <b><details><summary><code> Ugh, Where's the Beat ? </code>😵</summary></b>
   If you're having trouble seeing a heartbeat, make sure that you are using 'Goldilocks' pressure on the Pulse Sensor: Not too hard, not too soft. Squeezing the Pulse Sensor too hard against your skin will make the heartbeat go away, and not enough pressure will cause too much noise to creep in!
-  
+
 If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the Threshold setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
-  
+
   ![StarterThreshold](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
-  
+
 In the other examples, the `THRESHOLD` is defined at the top of the code.
-  
+
 </div>
    </details>
 
 ---
 
 ### Give and Get Feedback
-The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues) will get you the quickest answers to common techinal questions. 
+The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues) will get you the quickest answers to common techinal questions.
 
 
 ---
 
 #### Legal:  PulseSensor.com® World Famous Electronics llc. in Brooklyn, NY. USA
-  
-</div>
-</details> 
 
+</div>
+</details>
