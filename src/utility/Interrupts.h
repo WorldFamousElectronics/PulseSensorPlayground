@@ -141,7 +141,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
       #elif F_CPU == 8000000L // if using 8MHz crystal
         OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
       #endif
-      TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+      TIMSK2 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
       ENABLE_PULSE_SENSOR_INTERRUPTS;
       // #define _useTimer2
       return true;
@@ -157,7 +157,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
         TCCR1B = 0x0B;          // prescaler = 64
         OCR1A = 0x00F9;         // count to 249 for 2mS interrupt
       #endif
-      TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+      TIMSK1 = 0x02;            // Enable OCR1A match interrupt	DISABLE BY SETTING TO 0x00
       ENABLE_PULSE_SENSOR_INTERRUPTS;
       return true;
     #endif
@@ -173,7 +173,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
     #elif F_CPU == 8000000L
       TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
     #endif
-    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
+    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A DISABLE BY CLEARING THIS BIT
     ENABLE_PULSE_SENSOR_INTERRUPTS;
     return true;
 
