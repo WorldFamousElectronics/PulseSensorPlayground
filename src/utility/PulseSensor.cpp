@@ -58,7 +58,7 @@ PulseSensor::PulseSensor() {
   firstBeat = true;           // looking for the first beat
   secondBeat = false;         // not yet looking for the second beat in a row
   FadeLevel = 0; // LED is dark.
-	Pause = false;
+	// pause = false;
 }
 
 void PulseSensor::analogInput(int inputPin) {
@@ -228,34 +228,4 @@ void PulseSensor::updateLEDs() {
   if (FadePin >= 0) {
     analogWrite(FadePin, FadeLevel / FADE_SCALE);
   }
-}
-
-boolean PulseSensor::isPaused() {
-	return Paused;
-}
-
-boolean PulseSensor::pause() {
-	if (UsingInterrupts) {
-    if (!PulseSensorPlaygroundEnableInterrupt()) {
-			Serial.println("could not pause Pulse Sensor");
-      return false;
-    }
-	}else{
-		// do something here?
-		Paused = true;
-		return true;
-	}
-}
-
-boolean PulseSensor::resume() {
-	if (UsingInterrupts) {
-    if (!PulseSensorPlaygroundDisableInterrupt()) {
-			Serial.println("could not resume Pulse Sensor");
-      return false;
-    }
-	}else{
-		// do something here?
-		Paused = false;
-		return true;
-	}
 }

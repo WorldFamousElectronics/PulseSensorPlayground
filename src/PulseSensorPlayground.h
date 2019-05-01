@@ -380,9 +380,19 @@ class PulseSensorPlayground {
     */
     void outputBeat(int sensorIndex = 0);
 
+		// check to see if the library is sampling (on interrupt OR in software)
 		boolean isPaused();
+
+		// option to pause Pulse Sensor sampling in order to do other stuff
+		// this function will only tell the timer to stop interrupting
+		// does not return PWM or other fuctionality to effected pins
 		boolean pause();
+
+		// restart sampling the Pulse Sensor after a pause
 		boolean resume();
+
+		static boolean Paused;
+
 
     // (internal to the library) "this" pointer for the ISR.
     static PulseSensorPlayground *OurThis;
@@ -396,7 +406,8 @@ class PulseSensorPlayground {
        This function is defined (vs. declared here) in interrupts.h
     */
     void setupInterrupt();
-
+		boolean DisableInterrupt();
+		boolean EnableInterrupt();
 
 #if PULSE_SENSOR_MEMORY_USAGE
     /*

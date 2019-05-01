@@ -43,6 +43,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
   NextSampleMicros = micros() + MICROS_PER_READ;
 
   SawNewSample = false;
+	boolean Paused = false;
 
 #if PULSE_SENSOR_MEMORY_USAGE
   // Report the RAM usage and hang.
@@ -56,6 +57,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
     if (!PulseSensorPlaygroundSetupInterrupt()) {
 			Serial.println("interrupts not supported");
       // The user requested interrupts, but they aren't supported. Say so.
+			Paused = true;
       return false;
     }
   }
@@ -223,17 +225,40 @@ unsigned long PulseSensorPlayground::getLastBeatTime(int sensorIndex) {
   return Sensors[sensorIndex].getLastBeatTime();
 }
 
-boolean PulseSensorPlayground::pause(void){
-	return PulseSensor.pause();
+boolean PulseSensorPlayground::isPaused() {
+	return Paused;
 }
 
-boolean PulseSensorPlayground::resume(void){
-	return PulseSensor.resume();
+boolean PulseSensorPlayground::pause() {
+	if (UsingInterrupts) {
+    if (!DisableInterrupt()) {
+			Serial.println("could not pause Pulse Sensor");
+      return false;
+    }else{
+			return true;
+		}
+	}else{
+		// do something here?
+		Paused = true;
+		return true;
+	}
 }
 
-boolean PulseSensorPlayground::isPaused(void){
-	return PulseSensor.isPaused();
+boolean PulseSensorPlayground::resume() {
+	if (UsingInterrupts) {
+    if (!EnableInterrupt()) {
+			Serial.println("could not resume Pulse Sensor");
+      return false;
+    }else{
+			return true;
+		}
+	}else{
+		// do something here?
+		Paused = false;
+		return true;
+	}
 }
+
 
 #if PULSE_SENSOR_MEMORY_USAGE
 void PulseSensorPlayground::printMemoryUsage() {

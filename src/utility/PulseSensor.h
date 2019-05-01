@@ -69,21 +69,12 @@ class PulseSensor {
     // (internal to the library) Updtate the thresh variables.
     void setThreshold(int threshold);
 
-		// check to see if the library is sampling (on interrupt OR in software)
-		boolean isPaused();
-
-		// optional pause in Pulse Sensor sampling in order to do other stuff
-		boolean pause();
-
-		// restart sampling the Pulse Sensor after a pause
-		boolean resume();
 
   private:
     // Configuration
     int InputPin;           // Analog input pin for PulseSensor.
     int BlinkPin;           // pin to blink in beat, or -1.
     int FadePin;            // pin to fade on beat, or -1.
-		boolean Paused;
 
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
