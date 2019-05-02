@@ -43,7 +43,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
   NextSampleMicros = micros() + MICROS_PER_READ;
 
   SawNewSample = false;
-	boolean Paused = false;
+	Paused = false;
 
 #if PULSE_SENSOR_MEMORY_USAGE
   // Report the RAM usage and hang.
@@ -93,7 +93,10 @@ boolean PulseSensorPlayground::sawNewSample() {
 
      When not using interrupts, this function sees whether it's time
      to sample and, if so, reads the sample and processes it.
+
+		 First, check to see if the sketch has paused the Pulse Sensor sampling
   */
+	if(Paused){	return false; }
 
   if (UsingInterrupts) {
     // Disable interrupts to avoid a race with the ISR.
@@ -236,6 +239,10 @@ boolean PulseSensorPlayground::pause() {
 			// Paused = false;	// Only change this when we're successful?
       return false;
     }else{
+			// DOING THIS HEAR BECAUSE IT COULD GET CHOMPED IF WE DO WHEN ENABLING
+			for(int i=0; i<SensorCount; i++){
+				Sensors[i].resetVariables();
+			}
 			Paused = true;
 			return true;
 		}

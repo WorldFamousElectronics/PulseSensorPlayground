@@ -23,6 +23,9 @@ class PulseSensor {
     // Constructs a PulseSensor manager using a default configuration.
     PulseSensor();
 
+		// sets variables to default start values
+		void resetVariables();
+
     // Sets the analog input pin this PulseSensor is connected to.
     void analogInput(int inputPin);
 
