@@ -231,10 +231,12 @@ boolean PulseSensorPlayground::isPaused() {
 
 boolean PulseSensorPlayground::pause() {
 	if (UsingInterrupts) {
-    if (!DisableInterrupt()) {
+    if (!PulseSensorPlaygroundDisableInterrupt()) {
 			Serial.println("could not pause Pulse Sensor");
+			// Paused = false;	// Only change this when we're successful?
       return false;
     }else{
+			Paused = true;
 			return true;
 		}
 	}else{
@@ -246,10 +248,12 @@ boolean PulseSensorPlayground::pause() {
 
 boolean PulseSensorPlayground::resume() {
 	if (UsingInterrupts) {
-    if (!EnableInterrupt()) {
+    if (!PulseSensorPlaygroundEnableInterrupt()) {
 			Serial.println("could not resume Pulse Sensor");
+			// Paused = true;	// Only change this when we're successful?
       return false;
     }else{
+			Paused = false;
 			return true;
 		}
 	}else{
