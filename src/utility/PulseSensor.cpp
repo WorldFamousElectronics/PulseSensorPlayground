@@ -41,7 +41,11 @@ PulseSensor::PulseSensor() {
 
   // Initialize (seed) the pulse detector
   sampleIntervalMs = PulseSensorPlayground::MICROS_PER_READ / 1000;
-  for (int i = 0; i < 10; ++i) {
+	resetVariables();
+}
+
+void PulseSensor::resetVariables(){
+	for (int i = 0; i < 10; ++i) {
     rate[i] = 0;
   }
   QS = false;
@@ -57,7 +61,6 @@ PulseSensor::PulseSensor() {
   amp = 100;                  // beat amplitude 1/10 of input range.
   firstBeat = true;           // looking for the first beat
   secondBeat = false;         // not yet looking for the second beat in a row
-
   FadeLevel = 0; // LED is dark.
 }
 
