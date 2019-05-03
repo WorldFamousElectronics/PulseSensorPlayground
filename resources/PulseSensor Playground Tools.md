@@ -17,6 +17,20 @@ You have to create an instance that can access all the PulseSensor Playground fu
 Start reading and processing data from the Pulse Sensor!
 
 ---
+### pause()
+Turn off timer and stop reading and processing Pulse Sensor data.
+Useful if you need to do other time sensitive things. returns `true` when successful.
+
+---
+### resume()
+Turn on timer and start reading and processing Pulse Sensor data.
+Use this after calling pause() to resume Pulse Sensor. returns `true` when successful.
+
+---
+### isPaused()
+Retruns 'true' while Pulse Sensor is paused, `false` while Pulse Sensor is running.
+
+---
 ### sawNewSample()
 Will return `true` if a new sample has been read. Type = boolean.
 

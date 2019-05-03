@@ -55,7 +55,10 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
 
   if (UsingInterrupts) {
     if (!PulseSensorPlaygroundSetupInterrupt()) {
-			Serial.println("interrupts not supported");
+			Stream *pOut = SerialOutput.getSerial();
+		  if (pOut) {
+		    pOut->print(F("Interrupts not supported on this platform\n"));
+			}
       // The user requested interrupts, but they aren't supported. Say so.
 			Paused = true;
       return false;
@@ -235,11 +238,13 @@ boolean PulseSensorPlayground::isPaused() {
 boolean PulseSensorPlayground::pause() {
 	if (UsingInterrupts) {
     if (!PulseSensorPlaygroundDisableInterrupt()) {
-			Serial.println("could not pause Pulse Sensor");
-			// Paused = false;	// Only change this when we're successful?
+			Stream *pOut = SerialOutput.getSerial();
+		  if (pOut) {
+		    pOut->print(F("Could not pause Pulse Sensor\n"));
+			}
       return false;
     }else{
-			// DOING THIS HEAR BECAUSE IT COULD GET CHOMPED IF WE DO WHEN ENABLING
+			// DOING THIS HERE BECAUSE IT COULD GET CHOMPED IF WE DO IN resume BELOW
 			for(int i=0; i<SensorCount; i++){
 				Sensors[i].resetVariables();
 			}
@@ -256,8 +261,10 @@ boolean PulseSensorPlayground::pause() {
 boolean PulseSensorPlayground::resume() {
 	if (UsingInterrupts) {
     if (!PulseSensorPlaygroundEnableInterrupt()) {
-			Serial.println("could not resume Pulse Sensor");
-			// Paused = true;	// Only change this when we're successful?
+			Stream *pOut = SerialOutput.getSerial();
+		  if (pOut) {
+		    pOut->print(F("Could not resume Pulse Sensor\n"));
+			}
       return false;
     }else{
 			Paused = false;
