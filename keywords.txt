@@ -30,7 +30,9 @@ setThreshold	KEYWORD2
 getLastBeatTime	KEYWORD2
 outputToSerial	KEYWORD2
 getPulseAmplitude	KEYWORD2
-getLastBeatTime	KEYWORD2
+pause	KEYWORD2
+resume	KEYWORD2
+isPaused	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

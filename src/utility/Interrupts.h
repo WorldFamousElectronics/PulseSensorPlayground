@@ -128,7 +128,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
      below.
   */
 
-  #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 
     // check to see if the Servo library is in use
     #if defined Servo_h
@@ -224,7 +224,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 
 boolean PulseSensorPlaygroundDisableInterrupt(){
 #if USE_ARDUINO_INTERRUPTS
-	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
     #if defined Servo_h
 		  DISABLE_PULSE_SENSOR_INTERRUPTS;
@@ -324,7 +324,7 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
    NOTE: Make sure that this ISR uses the appropriate timer for
    the platform detected by PulseSensorPlaygroundSetupInterrupt(), above.
 */
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)// defined(__AVR___)
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
   #if defined Servo_h
     ISR(TIMER2_COMPA_vect)
     {
