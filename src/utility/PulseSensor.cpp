@@ -50,7 +50,7 @@ void PulseSensor::resetVariables(){
   }
   QS = false;
   BPM = 0;
-  IBI = 600;                  // 600ms per beat = 100 Beats Per Minute (BPM)
+  IBI = 750;                  // 750ms per beat = 80 Beats Per Minute (BPM)
   Pulse = false;
   sampleCounter = 0;
   lastBeatTime = 0;

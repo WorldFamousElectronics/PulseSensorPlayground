@@ -203,15 +203,15 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
  #endif
 
   #if defined(__AVR_ATtiny85__)
-    GTCCR &= 0x81;     // Disable PWM, don't connect pins to events
-    OCR1C = 0x7C;      // Set the top of the count to  124 TEST VALUE
-    OCR1A = 0x7C;      // Set the timer to interrupt after counting to TEST VALUE
+    GTCCR = 0x00;     // Disable PWM, don't connect pins to events
+		OCR1A = 0x7D;			// Set top of count to 125. Timer match throws the interrupt
+    OCR1C = 0x7D;     // Set top of the count to 125. Timer match resets the counter
     #if F_CPU == 16000000L
-      TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
+      TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 256
     #elif F_CPU == 8000000L
-      TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
+      TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128
     #endif
-    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A DISABLE BY CLEARING THIS BIT
+    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
     return true;
 
