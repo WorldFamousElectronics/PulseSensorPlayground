@@ -128,7 +128,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
      below.
   */
 
-  #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 
     // check to see if the Servo library is in use
     #if defined Servo_h
@@ -203,15 +203,15 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
  #endif
 
   #if defined(__AVR_ATtiny85__)
-    GTCCR &= 0x81;     // Disable PWM, don't connect pins to events
-    OCR1C = 0x7C;      // Set the top of the count to  124 TEST VALUE
-    OCR1A = 0x7C;      // Set the timer to interrupt after counting to TEST VALUE
+    GTCCR = 0x00;     // Disable PWM, don't connect pins to events
+		OCR1A = 0x7D;			// Set top of count to 125. Timer match throws the interrupt
+    OCR1C = 0x7D;     // Set top of the count to 125. Timer match resets the counter
     #if F_CPU == 16000000L
-      TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
+      TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 256
     #elif F_CPU == 8000000L
-      TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 128 TEST VALUE
+      TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128
     #endif
-    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A DISABLE BY CLEARING THIS BIT
+    bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
     return true;
 
@@ -224,7 +224,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 
 boolean PulseSensorPlaygroundDisableInterrupt(){
 #if USE_ARDUINO_INTERRUPTS
-	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
     #if defined Servo_h
 		  DISABLE_PULSE_SENSOR_INTERRUPTS;
@@ -324,7 +324,7 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
    NOTE: Make sure that this ISR uses the appropriate timer for
    the platform detected by PulseSensorPlaygroundSetupInterrupt(), above.
 */
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)// defined(__AVR___)
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
   #if defined Servo_h
     ISR(TIMER2_COMPA_vect)
     {
