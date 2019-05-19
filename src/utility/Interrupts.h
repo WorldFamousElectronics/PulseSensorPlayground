@@ -210,6 +210,8 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
       TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 256
     #elif F_CPU == 8000000L
       TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128
+		#elif F_CPU == 1000000L
+			TCCR1 = 0x85			// Clear Timer on Compare, Set Prescaler to 16
     #endif
     bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;

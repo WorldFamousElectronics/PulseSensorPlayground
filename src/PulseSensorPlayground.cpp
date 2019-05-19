@@ -99,7 +99,6 @@ boolean PulseSensorPlayground::sawNewSample() {
 
 		 First, check to see if the sketch has paused the Pulse Sensor sampling
   */
-	if(Paused){	return false; }
 
   if (UsingInterrupts) {
     // Disable interrupts to avoid a race with the ISR.
@@ -109,9 +108,14 @@ boolean PulseSensorPlayground::sawNewSample() {
     ENABLE_PULSE_SENSOR_INTERRUPTS;
 
     return sawOne;
-  }
+  }else{
+		if(Paused){
+			SawNewSample = false;
+			return false;
+		}
+	}
 
-  // Not using interrupts
+  // Time the sample as close as you can when not using interrupts
 
   unsigned long nowMicros = micros();
   if ((long) (NextSampleMicros - nowMicros) > 0L) {
