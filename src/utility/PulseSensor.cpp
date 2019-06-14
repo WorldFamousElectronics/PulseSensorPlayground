@@ -214,8 +214,10 @@ void PulseSensor::initializeLEDs() {
     digitalWrite(BlinkPin, LOW);
   }
   if (FadePin >= 0) {
+	#ifndef NO_ANALOG_WRITE
     pinMode(FadePin, OUTPUT);
     analogWrite(FadePin, 0); // turn off the LED.
+	#endif
   }
 }
 
@@ -229,6 +231,8 @@ void PulseSensor::updateLEDs() {
 	}
 
   if (FadePin >= 0) {
-    analogWrite(FadePin, FadeLevel / FADE_SCALE);
+		#ifndef NO_ANALOG_WRITE
+	    analogWrite(FadePin, FadeLevel / FADE_SCALE);
+		#endif
   }
 }

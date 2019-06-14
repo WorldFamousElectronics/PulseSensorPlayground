@@ -79,6 +79,11 @@
 // #include <FlexiTimer2.h>
 #endif
 
+// FOR BOARDS USING THE ESP32 WIFI MODULE
+#if defined(ARDUINO_ARCH_ESP32)
+// can't use analogWrite yet...
+#define NO_ANALOG_WRITE = 1
+#endif
 /*
    (internal to the library)
    Sets up the sample timer interrupt for this Arduino Platform.
