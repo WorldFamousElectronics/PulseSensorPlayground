@@ -101,20 +101,20 @@ Output Data with a character prefix. Used exclusively with the Pulse Sensor Proc
 ---
 ## Using Pulse Sensor Interrupts
 
-We want to use interrupts if we can in our Pulse Sensor code in order to get super accurate hear rate data: Beats Per Minute (BPM), and Inter-beat Interval (IBI). In the example sketch [PulseSensor_BPM.ino](https://github.com/biomurph/PulseSensorPlayground/tree/master/examples/PulseSensor_BPM) there are a couple of lines of code at the very top of the sketch that set this up:
+We want to use interrupts if we can in our Pulse Sensor code in order to get super accurate hear rate data: Beats Per Minute (BPM), and Inter-beat Interval (IBI). In the example sketch [PulseSensor_BPM.ino](https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/examples/PulseSensor_BPM) there are a couple of lines of code at the very top of the sketch that set this up:
 
 	#define USE_ARDUINO_INTERRUPTS true
 	#include <PulseSensorPlayground.h>
 
-While using interrupts is super cool and useful, it won't work with all of the myriad Arduino boards out there. If your board does not support interrupts yet, not to worry! We have code that works just as well without employing interrupts. It's called [PulseSensor_BPM_Alternative.ino](https://github.com/biomurph/PulseSensorPlayground/tree/master/examples/PulseSensor_BPM_Alternative).
+While using interrupts is super cool and useful, it won't work with all of the myriad Arduino boards out there. If your board does not support interrupts yet, not to worry! We have code that works just as well without employing interrupts. It's called [PulseSensor_BPM_Alternative.ino](https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/examples/PulseSensor_BPM_Alternative).
 
 ---
 ## Selecting Your Serial Output
 
 The sketch examples in PulseSensor Playground will output different kinds of serial info for visualizing your pulse waveform and Beats Per Minute data. Here's how you can choose which serial to use.
 
-* Our basic example sketch called [A_StarterProject_and_SignalTester.ino](https://github.com/biomurph/PulseSensorPlayground/tree/master/examples/A_StarterProject_and_SignalTester) will output a serial stream of Pulse Sensor signal data only. The signal is read in the loop function about every 10mS. This works perfectly with the Arduino Serial Plotter. Follow this [Tutorial](https://pulsesensor.com/pages/code-and-guide) to give it a go.
+* Our basic example sketch called [GettingStartedProject.ino](https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/examples/GettingStartedProject) will output a serial stream of Pulse Sensor signal data only. The signal is read in the loop function about every 10mS. This works perfectly with the Arduino Serial Plotter. Follow this [Tutorial](https://pulsesensor.com/pages/code-and-guide) to give it a go.
 
 * All the other example sketches that we have give you the option to output to the Arduino Serial Plotter, or to our [Pulse Sensor Visualizer](https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer) program. To select which one you want to output to, you will need to tell Arduino by setting the value of a variable called `OUTPUT_TYPE` at the top of the sketch. Here's an example that shows how to set the output to work with our Visualizer software.
 
-![outputType](https://github.com/biomurph/PulseSensorPlayground/blob/master/Images/outputType.png)
+![outputType](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/Images/outputType.png)
