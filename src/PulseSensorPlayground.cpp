@@ -257,6 +257,9 @@ boolean PulseSensorPlayground::pause() {
 		}
 	}else{
 		// do something here?
+		for(int i=0; i<SensorCount; i++){
+			Sensors[i].resetVariables();
+		}
 		Paused = true;
 		return true;
 	}
