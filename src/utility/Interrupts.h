@@ -63,7 +63,8 @@
 // Macros to link to interrupt disable/enable only if they exist
 // The name is long to avoid collisions with Sketch and Library symbols.
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)
+||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
+||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
@@ -78,6 +79,11 @@
 // #include <FlexiTimer2.h>
 #endif
 
+// FOR BOARDS USING THE ESP32 WIFI MODULE
+#if defined(ARDUINO_ARCH_ESP32)
+// can't use analogWrite yet...
+#define NO_ANALOG_WRITE = 1
+#endif
 /*
    (internal to the library)
    Sets up the sample timer interrupt for this Arduino Platform.
