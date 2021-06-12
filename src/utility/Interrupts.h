@@ -141,17 +141,31 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
       // #error "Servos!! Beware" // break compiler for testing
       // Initializes Timer2 to throw an interrupt every 2mS
       // Interferes with PWM on pins 3 and 11
-      TCCR2A = 0x02;          // Disable PWM and go into CTC mode
-      TCCR2B = 0x05;          // don't force compare, 128 prescaler
-      #if F_CPU == 16000000L   // if using 16MHz crystal
-        OCR2A = 0XF9;         // set count to 249 for 2mS interrupt
-      #elif F_CPU == 8000000L // if using 8MHz crystal
-        OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
-      #endif
-      TIMSK2 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
-      ENABLE_PULSE_SENSOR_INTERRUPTS;
-      // #define _useTimer2
-      return true;
+			#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+	      TCCR2A = 0x02;          // Disable PWM and go into CTC mode
+	      TCCR2B = 0x05;          // don't force compare, 128 prescaler
+	      #if F_CPU == 16000000L   // if using 16MHz crystal
+	        OCR2A = 0XF9;         // set count to 249 for 2mS interrupt
+	      #elif F_CPU == 8000000L // if using 8MHz crystal
+	        OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
+	      #endif
+	      TIMSK2 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
+	      ENABLE_PULSE_SENSOR_INTERRUPTS;
+	      // #define _useTimer2
+	      return true;
+			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+				TCCR3A = 0x02;          // Disable PWM and go into CTC mode
+				TCCR3B = 0x05;          // don't force compare, 128 prescaler
+				#if F_CPU == 16000000L   // if using 16MHz crystal
+					OCR3A = 0XF9;         // set count to 249 for 2mS interrupt
+				#elif F_CPU == 8000000L // if using 8MHz crystal
+					OCR3A = 0X7C;         // set count to 124 for 2mS interrupt
+				#endif
+				TIMSK3 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
+				ENABLE_PULSE_SENSOR_INTERRUPTS;
+				// #define _useTimer2
+				return true;
+			#endif
     #else
       // Initializes Timer1 to throw an interrupt every 2mS.
       // Interferes with PWM on pins 9 and 10
@@ -235,10 +249,17 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
     #if defined Servo_h
-		  DISABLE_PULSE_SENSOR_INTERRUPTS;
-      TIMSK2 = 0x00;          // Disable OCR2A match interrupt
-      ENABLE_PULSE_SENSOR_INTERRUPTS;
-      return true;
+			#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+			  DISABLE_PULSE_SENSOR_INTERRUPTS;
+	      TIMSK2 = 0x00;          // Disable OCR2A match interrupt
+	      ENABLE_PULSE_SENSOR_INTERRUPTS;
+	      return true;
+			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+				DISABLE_PULSE_SENSOR_INTERRUPTS;
+				TIMSK3 = 0x00;          // Disable OCR2A match interrupt
+				ENABLE_PULSE_SENSOR_INTERRUPTS;
+				return true;
+			#endif
     #else
       DISABLE_PULSE_SENSOR_INTERRUPTS;
       TIMSK1 = 0x00;            // Disable OCR1A match interrupt
@@ -256,7 +277,7 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 			return true;
     #else
 			DISABLE_PULSE_SENSOR_INTERRUPTS;
-			TIMSK2 = 0x00;          // Disable OCR2A match interrupt
+			TIMSK3 = 0x00;          // Disable OCR2A match interrupt
 			ENABLE_PULSE_SENSOR_INTERRUPTS;
 			return true;
     #endif
@@ -281,10 +302,17 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     // check to see if the Servo library is in use
     #if defined Servo_h
-		  DISABLE_PULSE_SENSOR_INTERRUPTS;
-      TIMSK2 = 0x02;          // Enable OCR2A match interrupt
-      ENABLE_PULSE_SENSOR_INTERRUPTS;
-      return true;
+			#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+			  DISABLE_PULSE_SENSOR_INTERRUPTS;
+	      TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+	      ENABLE_PULSE_SENSOR_INTERRUPTS;
+	      return true;
+			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+				DISABLE_PULSE_SENSOR_INTERRUPTS;
+				TIMSK3 = 0x02;          // Enable OCR2A match interrupt
+				ENABLE_PULSE_SENSOR_INTERRUPTS;
+				return true;
+			#endif
     #else
       DISABLE_PULSE_SENSOR_INTERRUPTS;
       TIMSK1 = 0x02;            // Enable OCR1A match interrupt
@@ -334,14 +362,25 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 */
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
   #if defined Servo_h
-    ISR(TIMER2_COMPA_vect)
-    {
-      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+		#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+	    ISR(TIMER2_COMPA_vect)
+	    {
+	      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
 
-      PulseSensorPlayground::OurThis->onSampleTime();
+	      PulseSensorPlayground::OurThis->onSampleTime();
 
-      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-    }
+	      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+	    }
+		#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+			ISR(TIMER3_COMPA_vect)
+			{
+				DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+				PulseSensorPlayground::OurThis->onSampleTime();
+
+				ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+			}
+		#endif
   #else
     ISR(TIMER1_COMPA_vect)
     {
