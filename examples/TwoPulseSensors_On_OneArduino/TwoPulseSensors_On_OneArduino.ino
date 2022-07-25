@@ -74,7 +74,7 @@ const int PULSE_SENSOR_COUNT = 2;
        because those pins' PWM interferes with the sample timer.
 */
 const int PULSE_INPUT0 = A0;
-const int PULSE_BLINK0 = 13;    // Pin 13 is the on-board LED
+const int PULSE_BLINK0 = LED_BUILTIN;
 const int PULSE_FADE0 = 5;
 
 const int PULSE_INPUT1 = A1;

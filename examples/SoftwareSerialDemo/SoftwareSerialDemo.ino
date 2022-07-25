@@ -47,7 +47,7 @@ const int PIN_RX = 7;
 const int PIN_TX = 8;
 
 const int PULSE_INPUT = A0;
-const int PULSE_BLINK = 13;    // Pin 13 is the on-board LED
+const int PULSE_BLINK = LED_BUILTIN;
 const int PULSE_FADE = 5;      // Must be a PWM pin other than 9 or 10.
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
