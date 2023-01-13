@@ -64,7 +64,7 @@
 // The name is long to avoid collisions with Sketch and Library symbols.
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
-||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)
+||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
@@ -236,8 +236,13 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
     bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
     return true;
+  #endif
 
-  #else
+  #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
+  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
+  ||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
+
+    #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
     return false;      // unknown or unsupported platform.
   #endif
 
