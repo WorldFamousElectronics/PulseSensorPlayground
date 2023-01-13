@@ -137,7 +137,7 @@ void loop() {
    */
   if (pulseSensor.sawStartOfBeat()) {
     pulseSensor.outputBeat();
-    tone(PIN_SPEAKER,1047);              // tone(pin,frequency)
+    tone(PIN_SPEAKER,932);              // tone(pin,frequency)
   }
 
   /*
