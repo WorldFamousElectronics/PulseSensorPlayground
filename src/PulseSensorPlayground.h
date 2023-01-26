@@ -119,7 +119,9 @@
 
 #include <Arduino.h>
 #include "utility/PulseSensor.h"
+// #ifndef NO_PULSE_SENSOR_SERIAL
 #include "utility/PulseSensorSerialOutput.h"
+// #endif
 #include "utility/PulseSensorTimingStatistics.h"
 
 class PulseSensorPlayground {
@@ -307,8 +309,16 @@ class PulseSensorPlayground {
     */
     boolean isInsideBeat(int sensorIndex = 0);
 
-    //---------- Serial Output functions
+    /*
+       By default, the threshold value is 530.
+       threshold is used to find the heartbeat
+       adjust this value up in the setup function to avoid noise.
+    */
+    void setThreshold(int threshold, int sensorIndex = 0);
 
+
+    //---------- Serial Output functions
+// #ifndef NO_PULSE_SENSOR_SERIAL
     /*
        By default, the Playround doesn't output serial data automatically.
 
@@ -335,13 +345,6 @@ class PulseSensorPlayground {
     void setOutputType(byte outputType);
 
     /*
-       By default, the threshold value is 530.
-       threshold is used to find the heartbeat
-       adjust this value up in the setup function to avoid noise.
-    */
-    void setThreshold(int threshold, int sensorIndex = 0);
-
-    /*
        Output the current signal information for each PulseSensor,
        in the previously-set outputType.
 
@@ -349,22 +352,6 @@ class PulseSensorPlayground {
        every so often.
     */
     void outputSample();
-
-    /*
-       Serial print data with prefix.
-       Used exclusively with the Pulse Sensor Processing sketch.
-    */
-    void outputToSerial(char symbol, int data);
-
-    /*
-        Returns the current amplitude of the pulse waveform.
-    */
-    int getPulseAmplitude(int sensorIndex = 0);
-
-    /*
-       Returns the sample number when the last beat was found. 2mS resolution.
-    */
-    unsigned long getLastBeatTime(int sensorIndex = 0);
 
     /*
        Output the current per-beat information for each PulseSensor,
@@ -380,16 +367,35 @@ class PulseSensorPlayground {
     */
     void outputBeat(int sensorIndex = 0);
 
-		// check to see if the library is sampling (on interrupt OR in software)
-		boolean isPaused();
+    /*
+       Serial print data with prefix.
+       Used exclusively with the Pulse Sensor Processing sketch.
+    */
+    void outputToSerial(char symbol, int data);
+// #endif
 
-		// option to pause Pulse Sensor sampling in order to do other stuff
-		// this function will only tell the timer to stop interrupting
-		// does not return PWM or other fuctionality to effected pins
-		boolean pause();
+    /*
+        Returns the current amplitude of the pulse waveform.
+    */
+    int getPulseAmplitude(int sensorIndex = 0);
 
-		// restart sampling the Pulse Sensor after a pause
-		boolean resume();
+    /*
+       Returns the sample number when the last beat was found. 2mS resolution.
+    */
+    unsigned long getLastBeatTime(int sensorIndex = 0);
+
+    
+
+	// check to see if the library is sampling (on interrupt OR in software)
+	boolean isPaused();
+
+	// option to pause Pulse Sensor sampling in order to do other stuff
+	// this function will only tell the timer to stop interrupting
+	// does not return PWM or other fuctionality to effected pins
+	boolean pause();
+
+	// restart sampling the Pulse Sensor after a pause
+	boolean resume();
 
 
     // (internal to the library) "this" pointer for the ISR.
@@ -425,7 +431,9 @@ class PulseSensorPlayground {
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
     volatile boolean SawNewSample; // "A sample has arrived from the ISR"
+// #ifndef NO_PULSE_SENSOR_SERIAL
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
+// #endif
 #if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS

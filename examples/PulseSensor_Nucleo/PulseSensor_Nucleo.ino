@@ -80,9 +80,9 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
    Pinout:
      PULSE_INPUT = Analog Input. Connected to the pulse sensor
       purple (signal) wire.
-     PULSE_BLINK = digital Output. Connected to an LED (and 220 ohm resistor)
+     PULSE_BLINK = digital Output. Connected to an LED (and 1K resistor)
       that will flash on each detected pulse.
-     PULSE_FADE = digital Output. PWM pin onnected to an LED (and resistor)
+     PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K resistor)
       that will smoothly fade with each pulse.
       NOTE: PULSE_FADE must be a pin that supports PWM.
        If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PULSE_FADE,
