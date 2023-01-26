@@ -52,19 +52,12 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
 #endif // PULSE_SENSOR_MEMORY_USAGE
 
   // Lastly, set up and turn on the interrupts.
-
   if (UsingInterrupts) {
     if (!PulseSensorPlaygroundSetupInterrupt()) {
-			Stream *pOut = SerialOutput.getSerial();
-		  if (pOut) {
-		    pOut->print(F("Interrupts not supported on this platform\n"));
-			}
-      // The user requested interrupts, but they aren't supported. Say so.
 			Paused = true;
       return false;
     }
   }
-
   return true;
 }
 
@@ -194,14 +187,6 @@ boolean PulseSensorPlayground::isInsideBeat(int sensorIndex) {
   return Sensors[sensorIndex].isInsideBeat();
 }
 
-void PulseSensorPlayground::setSerial(Stream &output) {
-  SerialOutput.setSerial(output);
-}
-
-void PulseSensorPlayground::setOutputType(byte outputType) {
-  SerialOutput.setOutputType(outputType);
-}
-
 void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
     return; // out of range.
@@ -209,17 +194,27 @@ void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
   Sensors[sensorIndex].setThreshold(threshold);
 }
 
-void PulseSensorPlayground::outputSample() {
-  SerialOutput.outputSample(Sensors, SensorCount);
-}
+// #if defined (NO_PULSE_SENSOR_SERIAL)
+  void PulseSensorPlayground::setSerial(Stream &output) {
+    SerialOutput.setSerial(output);
+  }
 
-void PulseSensorPlayground::outputBeat(int sensorIndex) {
-  SerialOutput.outputBeat(Sensors, SensorCount, sensorIndex);
-}
+  void PulseSensorPlayground::setOutputType(byte outputType) {
+    SerialOutput.setOutputType(outputType);
+  }
 
-void PulseSensorPlayground::outputToSerial(char s, int d) {
-  SerialOutput.outputToSerial(s,d);
-}
+  void PulseSensorPlayground::outputSample() {
+    SerialOutput.outputSample(Sensors, SensorCount);
+  }
+
+  void PulseSensorPlayground::outputBeat(int sensorIndex) {
+    SerialOutput.outputBeat(Sensors, SensorCount, sensorIndex);
+  }
+
+  void PulseSensorPlayground::outputToSerial(char s, int d) {
+    SerialOutput.outputToSerial(s,d);
+  }
+// #endif
 
 int PulseSensorPlayground::getPulseAmplitude(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
@@ -240,20 +235,21 @@ boolean PulseSensorPlayground::isPaused() {
 }
 
 boolean PulseSensorPlayground::pause() {
+  boolean result = true;
 	if (UsingInterrupts) {
     if (!PulseSensorPlaygroundDisableInterrupt()) {
 			Stream *pOut = SerialOutput.getSerial();
 		  if (pOut) {
 		    pOut->print(F("Could not pause Pulse Sensor\n"));
 			}
-      return false;
+      result = false;
     }else{
 			// DOING THIS HERE BECAUSE IT COULD GET CHOMPED IF WE DO IN resume BELOW
 			for(int i=0; i<SensorCount; i++){
 				Sensors[i].resetVariables();
 			}
 			Paused = true;
-			return true;
+			// result = true;
 		}
 	}else{
 		// do something here?
@@ -261,27 +257,30 @@ boolean PulseSensorPlayground::pause() {
 			Sensors[i].resetVariables();
 		}
 		Paused = true;
-		return true;
+		// result = true;
 	}
+  return result;
 }
 
 boolean PulseSensorPlayground::resume() {
+  boolean result = true;
 	if (UsingInterrupts) {
     if (!PulseSensorPlaygroundEnableInterrupt()) {
 			Stream *pOut = SerialOutput.getSerial();
 		  if (pOut) {
 		    pOut->print(F("Could not resume Pulse Sensor\n"));
 			}
-      return false;
+      result = false;
     }else{
 			Paused = false;
-			return true;
+			// result = true;
 		}
 	}else{
 		// do something here?
 		Paused = false;
-		return true;
+		// result = true;
 	}
+  return result;
 }
 
 

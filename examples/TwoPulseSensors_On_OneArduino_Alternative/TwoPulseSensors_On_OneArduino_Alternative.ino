@@ -64,10 +64,10 @@ const int PULSE_SENSOR_COUNT = 2;
       the code dealing with PULSE_POWER0 and PULSE_POWER1.
      PULSE_INPUTx = Analog Input. Connected to the pulse sensor
       purple (signal) wire.
-     PULSE_BLINKx = digital Output. Connected to an LED (must have at least
-      470 ohm resistor) that will flash on each detected pulse.
+     PULSE_BLINKx = digital Output. Connected to an LED (must have a
+      1K resistor) that will flash on each detected pulse.
      PULSE_FADEx = digital Output. PWM pin onnected to an LED (must have
-      at least 470 ohm resistor) that will smoothly fade with each pulse.
+      a 1K resistor) that will smoothly fade with each pulse.
 
      NOTE: PULSE_FADEx must be pins that support PWM.
        If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PULSE_FADEx

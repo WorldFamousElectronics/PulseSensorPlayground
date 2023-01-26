@@ -56,8 +56,7 @@ void PulseSensor::resetVariables(){
   lastBeatTime = 0;
   P = 512;                    // peak at 1/2 the input range of 0..1023
   T = 512;                    // trough at 1/2 the input range.
-  threshSetting = 550;        // used to seed and reset the thresh variable
-  thresh = 550;     // threshold a little above the trough
+  thresh = threshSetting;     // reset the thresh variable with user defined THRESHOLD
   amp = 100;                  // beat amplitude 1/10 of input range.
   firstBeat = true;           // looking for the first beat
   secondBeat = false;         // not yet looking for the second beat in a row

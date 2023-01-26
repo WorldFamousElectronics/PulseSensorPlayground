@@ -64,7 +64,8 @@
 // The name is long to avoid collisions with Sketch and Library symbols.
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
-||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
+||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)\
+||(ARDUINO_ARCH_ESP32)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
@@ -79,11 +80,7 @@
 // #include <FlexiTimer2.h>
 #endif
 
-// FOR BOARDS USING THE ESP32 WIFI MODULE
-#if defined(ARDUINO_ARCH_ESP32)
-// can't use analogWrite yet...
-#define NO_ANALOG_WRITE = 1
-#endif
+
 /*
    (internal to the library)
    Sets up the sample timer interrupt for this Arduino Platform.
@@ -115,6 +112,7 @@ boolean PulseSensorPlaygroundEnableInterrupt();
 boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
 
 boolean PulseSensorPlaygroundSetupInterrupt() {
+	boolean result = true;
 
 #if !USE_ARDUINO_INTERRUPTS
   /*
@@ -122,7 +120,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
      so we won't waste Flash space and create complexity
      by adding interrupt-setup code.
   */
-  return true;
+  return result;
 
 #else
   // This code sets up the sample timer interrupt
@@ -138,7 +136,6 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 
     // check to see if the Servo library is in use
     #if defined Servo_h
-      // #error "Servos!! Beware" // break compiler for testing
       // Initializes Timer2 to throw an interrupt every 2mS
       // Interferes with PWM on pins 3 and 11
 			#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
@@ -152,7 +149,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 	      TIMSK2 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
 	      ENABLE_PULSE_SENSOR_INTERRUPTS;
 	      // #define _useTimer2
-	      return true;
+	      result = true;
 			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 				TCCR3A = 0x02;          // Disable PWM and go into CTC mode
 				TCCR3B = 0x05;          // don't force compare, 128 prescaler
@@ -164,7 +161,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 				TIMSK3 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
 				ENABLE_PULSE_SENSOR_INTERRUPTS;
 				// #define _useTimer2
-				return true;
+				result = true;
 			#endif
     #else
       // Initializes Timer1 to throw an interrupt every 2mS.
@@ -180,7 +177,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
       #endif
       TIMSK1 = 0x02;            // Enable OCR1A match interrupt	DISABLE BY SETTING TO 0x00
       ENABLE_PULSE_SENSOR_INTERRUPTS;
-      return true;
+      result = true;
     #endif
   #endif
 
@@ -188,7 +185,6 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 
     // check to see if the Servo library is in use
     #if defined Servo_h
-    // #error "Servos!! Beware" // break compiler for testing
 		// Initializes Timer1 to throw an interrupt every 2mS.
 		// Interferes with PWM on pins 9 and 10
 		TCCR1A = 0x00;            // Disable PWM and go into CTC mode
@@ -202,7 +198,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 		#endif
 		TIMSK1 = 0x02;            // Enable OCR1A match interrupt
 		ENABLE_PULSE_SENSOR_INTERRUPTS;
-		return true;
+		result = true;
 
     #else
 		// Initializes Timer2 to throw an interrupt every 2mS
@@ -217,7 +213,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 			TIMSK2 = 0x02;          // Enable OCR2A match interrupt
 			ENABLE_PULSE_SENSOR_INTERRUPTS;
 			// #define _useTimer2
-			return true;
+			result = true;
 
     #endif
  #endif
@@ -235,18 +231,22 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
     #endif
     bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
-    return true;
+    result = true;
   #endif
+
 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
   ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
   ||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
 
     #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
-    return false;      // unknown or unsupported platform.
+    result = false;      // unknown or unsupported platform.
   #endif
 
+  Serial.println("exit setupInterrupts");
 #endif // USE_ARDUINO_INTERRUPTS
+
+  return result;
 }
 
 boolean PulseSensorPlaygroundDisableInterrupt(){
@@ -295,11 +295,15 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
     return true;
 	#endif
 
+  #if defined(ARDUINO_ARCH_ESP32)
+    timerAlarmDisable(sampleTimer);
+  #endif
+
 	// #else
 	  return false;      // unknown or unsupported platform.
 
 #endif
-}
+} // PulseSensorPlaygroundDisableInterrupt
 
 
 boolean PulseSensorPlaygroundEnableInterrupt(){
@@ -348,6 +352,10 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
     return true;
 	#endif
 
+  #if defined(ARDUINO_ARCH_ESP32)
+    timerAlarmEnable(sampleTimer);
+  #endif
+
 // #else
   return false;      // unknown or unsupported platform.
 #endif
@@ -365,10 +373,29 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
    NOTE: Make sure that this ISR uses the appropriate timer for
    the platform detected by PulseSensorPlaygroundSetupInterrupt(), above.
 */
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
-  #if defined Servo_h
-		#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
-	    ISR(TIMER2_COMPA_vect)
+	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
+	  #if defined Servo_h
+			#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+		    ISR(TIMER2_COMPA_vect)
+		    {
+		      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+		      PulseSensorPlayground::OurThis->onSampleTime();
+
+		      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+		    }
+			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+				ISR(TIMER3_COMPA_vect)
+				{
+					DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+					PulseSensorPlayground::OurThis->onSampleTime();
+
+					ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+				}
+			#endif
+	  #else
+	    ISR(TIMER1_COMPA_vect)
 	    {
 	      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
 
@@ -376,8 +403,21 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 
 	      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
 	    }
-		#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
-			ISR(TIMER3_COMPA_vect)
+	  #endif
+	#endif
+
+	#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+		#if defined Servo_h
+			ISR(TIMER1_COMPA_vect)
+			{
+				DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
+
+				PulseSensorPlayground::OurThis->onSampleTime();
+
+				ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
+			}
+		#else
+			ISR(TIMER2_COMPA_vect)
 			{
 				DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
 
@@ -386,42 +426,13 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 				ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
 			}
 		#endif
-  #else
-    ISR(TIMER1_COMPA_vect)
-    {
-      DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
-
-      PulseSensorPlayground::OurThis->onSampleTime();
-
-      ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-    }
-  #endif
-#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-	#if defined Servo_h
-		ISR(TIMER1_COMPA_vect)
-		{
-			DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
-
-			PulseSensorPlayground::OurThis->onSampleTime();
-
-			ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-		}
-	#else
-		ISR(TIMER2_COMPA_vect)
-		{
-			DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
-
-			PulseSensorPlayground::OurThis->onSampleTime();
-
-			ENABLE_PULSE_SENSOR_INTERRUPTS;          // enable interrupts when you're done
-		}
 	#endif
-#endif
 
 
-#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
-	// Interrupts not supported yet for Teensy
-#endif
+
+	#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
+		// Interrupts not supported yet for Teensy
+	#endif
 
 
 

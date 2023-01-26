@@ -26,7 +26,7 @@ int LED = LED_BUILTIN;   //  The on-board Arduion LED
 
 
 int Signal;                // holds the incoming raw data. Signal value can range from 0-1024
-int Threshold = 550;            // Determine which Signal to "count as a beat", and which to ingore.
+int Threshold = 580;       // Determine which Signal to "count as a beat", and which to ingore.
 
 
 // The SetUp Function:
