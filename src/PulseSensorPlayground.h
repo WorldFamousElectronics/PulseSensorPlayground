@@ -119,7 +119,7 @@
 /*
     Tell the compiler not to include Serial related code.
     If you are coming up against issues with the Serial class
-    removing the related code can help.
+    removing the related code here can help.
     
     When true, the library can mangage Serial output,
     and messages from libraries will be printed.

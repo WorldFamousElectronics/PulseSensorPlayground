@@ -2,6 +2,9 @@
    This example sketch is for use with the ESP32.
    The code below will serve a web page on the local network
    and will refresh the BPM with every heartbeat.
+   On startup, the ESP32 will send it's network address
+   over the serial port. Use that url in any browser
+   on the same network to connect and veiw the webpage.
    
    Code to detect pulses from the PulseSensor,
    using an interrupt service routine.
@@ -85,8 +88,8 @@ const int PULSE_FADE = 5;
 const int THRESHOLD = 685;   
 
 /*  Replace with your network credentials  */
-const char* ssid = "Tentacle"; // "SSID";
-const char* password = "5quid555"; // "PASSWORD";
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
 
 /* 
     Create AsyncWebServer object on port 80
