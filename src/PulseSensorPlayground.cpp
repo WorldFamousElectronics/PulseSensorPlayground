@@ -92,46 +92,41 @@ boolean PulseSensorPlayground::sawNewSample() {
 
 		 First, check to see if the sketch has paused the Pulse Sensor sampling
   */
+  if(!Paused){
+    if (UsingInterrupts) {
+      // Disable interrupts to avoid a race with the ISR.
+      // DISABLE_PULSE_SENSOR_INTERRUPTS;
+      boolean sawOne = SawNewSample;
+      SawNewSample = false;
+      // ENABLE_PULSE_SENSOR_INTERRUPTS;
 
-  if (UsingInterrupts) {
-    // Disable interrupts to avoid a race with the ISR.
-    DISABLE_PULSE_SENSOR_INTERRUPTS;
-    boolean sawOne = SawNewSample;
-    SawNewSample = false;
-    ENABLE_PULSE_SENSOR_INTERRUPTS;
+      return sawOne;
+    } else {  // Time the sample as close as you can when not using interrupts
+      unsigned long nowMicros = micros();
+      if ((long) (NextSampleMicros - nowMicros) > 0L) {
+        return false;  // not time yet.
+      }
+      NextSampleMicros = nowMicros + MICROS_PER_READ;
 
-    return sawOne;
-  }else{
-		if(Paused){
-			SawNewSample = false;
-			return false;
-		}
-	}
+    #if PULSE_SENSOR_TIMING_ANALYSIS
+      if (pTiming->recordSampleTime() <= 0) {
+        pTiming->outputStatistics(SerialOutput.getSerial());
+        for (;;); // Hang because we've disturbed the timing.
+      }
+    #endif // PULSE_SENSOR_TIMING_ANALYSIS
 
-  // Time the sample as close as you can when not using interrupts
-
-  unsigned long nowMicros = micros();
-  if ((long) (NextSampleMicros - nowMicros) > 0L) {
-    return false;  // not time yet.
+      // time to call the sample processor
+      onSampleTime();
+      return true;
+  	}
   }
-  NextSampleMicros = nowMicros + MICROS_PER_READ;
-
-#if PULSE_SENSOR_TIMING_ANALYSIS
-  if (pTiming->recordSampleTime() <= 0) {
-    pTiming->outputStatistics(SerialOutput.getSerial());
-    for (;;); // Hang because we've disturbed the timing.
-  }
-#endif // PULSE_SENSOR_TIMING_ANALYSIS
-
-  // Act as if the ISR was called.
-  onSampleTime();
-
-  SawNewSample = false;
-  return true;
+  
+  return false;
+  
 }
 
 void PulseSensorPlayground::onSampleTime() {
-  // Typically called from the ISR.
+  // Typically called from the ISR at 500Hz
 
   /*
      Read the voltage from each PulseSensor.
@@ -194,7 +189,8 @@ void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
   Sensors[sensorIndex].setThreshold(threshold);
 }
 
-// #if defined (NO_PULSE_SENSOR_SERIAL)
+#if USE_SERIAL
+
   void PulseSensorPlayground::setSerial(Stream &output) {
     SerialOutput.setSerial(output);
   }
@@ -214,7 +210,8 @@ void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
   void PulseSensorPlayground::outputToSerial(char s, int d) {
     SerialOutput.outputToSerial(s,d);
   }
-// #endif
+
+#endif
 
 int PulseSensorPlayground::getPulseAmplitude(int sensorIndex) {
   if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
@@ -238,18 +235,14 @@ boolean PulseSensorPlayground::pause() {
   boolean result = true;
 	if (UsingInterrupts) {
     if (!PulseSensorPlaygroundDisableInterrupt()) {
-			Stream *pOut = SerialOutput.getSerial();
-		  if (pOut) {
-		    pOut->print(F("Could not pause Pulse Sensor\n"));
-			}
+      Paused = false;
       result = false;
     }else{
-			// DOING THIS HERE BECAUSE IT COULD GET CHOMPED IF WE DO IN resume BELOW
+			// DOING THIS HERE BECAUSE IT COULD GET CHOMPED IF WE DO IN resume() BELOW
 			for(int i=0; i<SensorCount; i++){
 				Sensors[i].resetVariables();
 			}
 			Paused = true;
-			// result = true;
 		}
 	}else{
 		// do something here?
@@ -257,7 +250,6 @@ boolean PulseSensorPlayground::pause() {
 			Sensors[i].resetVariables();
 		}
 		Paused = true;
-		// result = true;
 	}
   return result;
 }
@@ -266,54 +258,50 @@ boolean PulseSensorPlayground::resume() {
   boolean result = true;
 	if (UsingInterrupts) {
     if (!PulseSensorPlaygroundEnableInterrupt()) {
-			Stream *pOut = SerialOutput.getSerial();
-		  if (pOut) {
-		    pOut->print(F("Could not resume Pulse Sensor\n"));
-			}
+      Paused = true;
       result = false;
     }else{
 			Paused = false;
-			// result = true;
 		}
 	}else{
 		// do something here?
 		Paused = false;
-		// result = true;
 	}
   return result;
 }
 
+#if USE_SERIAL
+  #if PULSE_SENSOR_MEMORY_USAGE
+    void PulseSensorPlayground::printMemoryUsage() {
+      char stack = 1;
+      extern char *__data_start;
+      extern char *__data_end;
+      extern char *__bss_start;
+      extern char *__bss_end;
+      extern char *__heap_start;
+      extern char *__heap_end;
 
-#if PULSE_SENSOR_MEMORY_USAGE
-void PulseSensorPlayground::printMemoryUsage() {
-  char stack = 1;
-  extern char *__data_start;
-  extern char *__data_end;
-  extern char *__bss_start;
-  extern char *__bss_end;
-  extern char *__heap_start;
-  extern char *__heap_end;
+      int	data_size	=	(int)&__data_end - (int)&__data_start;
+      int	bss_size	=	(int)&__bss_end - (int)&__data_end;
+      int	heap_end	=	(int)&stack - (int)&__malloc_margin;
+      int	heap_size	=	heap_end - (int)&__bss_end;
+      int	stack_size	=	RAMEND - (int)&stack + 1;
+      int	available	=	(RAMEND - (int)&__data_start + 1);
+      available	-=	data_size + bss_size + heap_size + stack_size;
 
-  int	data_size	=	(int)&__data_end - (int)&__data_start;
-  int	bss_size	=	(int)&__bss_end - (int)&__data_end;
-  int	heap_end	=	(int)&stack - (int)&__malloc_margin;
-  int	heap_size	=	heap_end - (int)&__bss_end;
-  int	stack_size	=	RAMEND - (int)&stack + 1;
-  int	available	=	(RAMEND - (int)&__data_start + 1);
-  available	-=	data_size + bss_size + heap_size + stack_size;
-
-  Stream *pOut = SerialOutput.getSerial();
-  if (pOut) {
-    pOut->print(F("data "));
-    pOut->println(data_size);
-    pOut->print(F("bss "));
-    pOut->println(bss_size);
-    pOut->print(F("heap "));
-    pOut->println(heap_size);
-    pOut->print(F("stack "));
-    pOut->println(stack_size);
-    pOut->print(F("total "));
-    pOut->println(data_size + bss_size + heap_size + stack_size);
-  }
-}
-#endif // PULSE_SENSOR_MEMORY_USAGE
+      Stream *pOut = SerialOutput.getSerial();
+      if (pOut) {
+        pOut->print(F("data "));
+        pOut->println(data_size);
+        pOut->print(F("bss "));
+        pOut->println(bss_size);
+        pOut->print(F("heap "));
+        pOut->println(heap_size);
+        pOut->print(F("stack "));
+        pOut->println(stack_size);
+        pOut->print(F("total "));
+        pOut->println(data_size + bss_size + heap_size + stack_size);
+      }
+    }
+  #endif // PULSE_SENSOR_MEMORY_USAGE
+#endif

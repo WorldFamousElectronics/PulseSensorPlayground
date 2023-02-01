@@ -114,14 +114,30 @@
    NOTE: you must call pulse.setSerial(Serial) in your Sketch's setup().
 */
 #define PULSE_SENSOR_MEMORY_USAGE false
-// #define PULSE_SENSOR_MEMORY_USAGE true
+//#define PULSE_SENSOR_MEMORY_USAGE true
 
+/*
+    Tell the compiler not to include Serial related code.
+    If you are coming up against issues with the Serial class
+    removing the related code here can help.
+    
+    When true, the library can mangage Serial output,
+    and messages from libraries will be printed.
+    
+    When false, the library will not have any access to the Serial
+    class. All the other functionality remains. 
+*/
+#define USE_SERIAL true
+// #define USE_SERIAL false 
 
+#if defined(ARDUINO_ARCH_NRF52)
+#include "Adafruit_TinyUSB.h"
+#endif
 #include <Arduino.h>
 #include "utility/PulseSensor.h"
-// #ifndef NO_PULSE_SENSOR_SERIAL
+#if USE_SERIAL
 #include "utility/PulseSensorSerialOutput.h"
-// #endif
+#endif
 #include "utility/PulseSensorTimingStatistics.h"
 
 class PulseSensorPlayground {
@@ -318,7 +334,7 @@ class PulseSensorPlayground {
 
 
     //---------- Serial Output functions
-// #ifndef NO_PULSE_SENSOR_SERIAL
+#if USE_SERIAL
     /*
        By default, the Playround doesn't output serial data automatically.
 
@@ -372,7 +388,7 @@ class PulseSensorPlayground {
        Used exclusively with the Pulse Sensor Processing sketch.
     */
     void outputToSerial(char symbol, int data);
-// #endif
+#endif
 
     /*
         Returns the current amplitude of the pulse waveform.
@@ -403,37 +419,43 @@ class PulseSensorPlayground {
 
   private:
 
-    /*
-       Configure and enable interrupts to read samples.
-       Call only if PulseSensorPlayground::UsingInterrupts is true.
+/*
+   Configure and enable interrupts to read samples.
+   Call only if PulseSensorPlayground::UsingInterrupts is true.
 
-       This function is defined (vs. declared here) in interrupts.h
-    */
+   This function is defined (vs. declared here) in interrupts.h
+*/
     // void setupInterrupt();
-		// boolean disableInterrupt();
-		// boolean enableInterrupt();
+	// boolean disableInterrupt();
+	// boolean enableInterrupt();
 
-#if PULSE_SENSOR_MEMORY_USAGE
-    /*
-       Print our RAM usage. See PULSE_SENSOR_MEMORY_USAGE
-    */
-    void printMemoryUsage();
-#endif // PULSE_SENSOR_MEMORY_USAGE
+/*
+    Don't let the library try to print stuff
+    if the serial is not passed to us
+*/
+#if USE_SERIAL
+    #if PULSE_SENSOR_MEMORY_USAGE
+        /*
+           Print our RAM usage. See PULSE_SENSOR_MEMORY_USAGE
+        */
+        void printMemoryUsage();
+    #endif // PULSE_SENSOR_MEMORY_USAGE
+#endif
 
-    /*
-       If true, the Sketch wants to use interrupts to read the PulseSensor(s).
+/*
+   If true, the Sketch wants to use interrupts to read the PulseSensor(s).
 
-       This variable is defined (vs. declared here) in interrupts.h
-    */
+   This variable is defined (vs. declared here) in interrupts.h
+*/
     static boolean UsingInterrupts;
-		boolean Paused;
+	boolean Paused;
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
     volatile boolean SawNewSample; // "A sample has arrived from the ISR"
-// #ifndef NO_PULSE_SENSOR_SERIAL
+#if USE_SERIAL
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
-// #endif
+#endif
 #if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS
