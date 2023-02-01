@@ -14,6 +14,7 @@
 
    This software is not intended for medical use.
 */
+
 #ifndef PULSE_SENSOR_SERIAL_OUTPUT_H
 #define PULSE_SENSOR_SERIAL_OUTPUT_H
 
@@ -85,3 +86,4 @@ class PulseSensorSerialOutput {
 
 };
 #endif // PULSE_SENSOR_SERIAL_OUTPUT_H
+
