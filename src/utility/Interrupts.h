@@ -64,8 +64,8 @@
 // The name is long to avoid collisions with Sketch and Library symbols.
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
-||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)\
-||(ARDUINO_ARCH_ESP32)
+||(ARDUINO_ARCH_NRF52)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)\
+||(ARDUINO_ARCH_ESP32) // ||(ARDUINO_ARCH_NRF52840)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
@@ -74,6 +74,10 @@
 #define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
 #endif
 
+// #if defined (ARDUINO_ARCH_NRF52840)
+// 	#define TIMER1_INTERVAL_US        2000 // critical fine tuning here!
+// 	NRF52Timer nRF52_Timer(NRF_TIMER_3);
+// #endif
 
 //	SAVED FOR FUTURE SUPPORT OF TEENSY INTERRUPTS
 #if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
@@ -234,16 +238,23 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
     result = true;
   #endif
 
+  #if defined(ARDUINO_ARCH_NRF52840)
+    if (nRF52_Timer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
+	    // Serial.println(F("Starting nRF52 Timer 3"));
+	  } else {
+	    // Serial.println(F("Timer 3 fail"));
+	  }
+  #endif
 
+// (ARDUINO_ARCH_NRF52) 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF5)\
-  ||(ARDUINO_ARCH_NRF52)||(ARDUINO_ARCH_NRF52840)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
+  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)\
+  ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
 
     #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
     result = false;      // unknown or unsupported platform.
   #endif
 
-  Serial.println("exit setupInterrupts");
 #endif // USE_ARDUINO_INTERRUPTS
 
   return result;
@@ -299,6 +310,9 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
     timerAlarmDisable(sampleTimer);
   #endif
 
+  #if defined(ARDUINO_ARCH_NRF52840)
+    nRF52_Timer.stopTimer();
+  #endif
 	// #else
 	  return false;      // unknown or unsupported platform.
 
@@ -354,6 +368,10 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 
   #if defined(ARDUINO_ARCH_ESP32)
     timerAlarmEnable(sampleTimer);
+  #endif
+
+  #if defined(ARDUINO_ARCH_NRF52840)
+    nRF52_Timer.restartTimer();
   #endif
 
 // #else
@@ -428,13 +446,19 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 		#endif
 	#endif
 
-
+	// #if defined (ARDUINO_ARCH_NRF52840)
+	// 		void Timer3_ISR(){
+	// 		  // thisSample = micros();
+	// 		  // isrCounter++;
+	// 			PulseSensorPlayground::OurThis->onSampleTime();
+	// 		}
+	// #endif
 
 	#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
 		// Interrupts not supported yet for Teensy
 	#endif
 
-
+  
 
 
 #endif // USE_ARDUINO_INTERRUPTS

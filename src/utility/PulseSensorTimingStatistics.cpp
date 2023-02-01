@@ -59,17 +59,19 @@ int PulseSensorTimingStatistics::recordSampleTime() {
   return (SamplesDesired - SamplesSeen);
 }
 
-void PulseSensorTimingStatistics::outputStatistics(Stream *pOut) {
-  if (!pOut) {
-    return; // not configured for Serial output.
+#if USE_SERIAL
+  void PulseSensorTimingStatistics::outputStatistics(Stream *pOut) {
+    if (!pOut) {
+      return; // not configured for Serial output.
+    }
+    pOut->print(MinJitterMicros);
+    pOut->print(" ");
+    pOut->print(getAverageOffsetMicros());
+    pOut->print(" ");
+    pOut->println(MaxJitterMicros);
   }
-  pOut->print(MinJitterMicros);
-  pOut->print(" ");
-  pOut->print(getAverageOffsetMicros());
-  pOut->print(" ");
-  pOut->println(MaxJitterMicros);
-}
-
+#endif
+  
 int PulseSensorTimingStatistics::getAverageOffsetMicros() {
   // the number of offsets is the number of samples - 1.
   if (SamplesSeen - 1 <= 0) {

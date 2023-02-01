@@ -13,6 +13,7 @@
 
    This software is not intended for medical use.
 */
+
 #include "PulseSensorSerialOutput.h"
 
 PulseSensorSerialOutput::PulseSensorSerialOutput() {
@@ -108,11 +109,6 @@ void PulseSensorSerialOutput::outputBeat(PulseSensor sensors[], int numSensors, 
 }
 
 
-    // // testing feedback
-    // void printThreshSetting() {
-    //
-    // }
-
 void PulseSensorSerialOutput::outputToSerial(char symbol, int data) {
   if (!pOutput) {
     return;  // no serial output object has been set.
@@ -121,3 +117,4 @@ void PulseSensorSerialOutput::outputToSerial(char symbol, int data) {
   pOutput->print(symbol);
   pOutput->println(data);
 }
+
