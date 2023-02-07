@@ -66,9 +66,9 @@ PulseSensorPlayground pulseSensor;
    Pinout:
      PULSE_INPUT = Analog Input. Connected to the pulse sensor
       purple (signal) wire.
-     PULSE_BLINK = digital Output. Connected to an LED (and 1K resistor)
+     PULSE_BLINK = digital Output. Connected to an LED (and 1K series resistor)
       that will flash on each detected pulse.
-     PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K esistor)
+     PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K series resistor)
       that will smoothly fade with each pulse.
       NOTE: PULSE_FADE must be a pin that supports PWM. Do not use
       pin 9 or 10, because those pins' PWM interferes with the sample timer.
@@ -195,8 +195,7 @@ void beginWiFi() {
     Serial.print(" ~");
     delay(1000);
   }
-  Serial.print("\nPulseSensor Server url: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("\nConnected");
 }
 
 
@@ -215,7 +214,8 @@ void IRAM_ATTR onSampleTime() {
 /* 
    When sendPulseSignal is true, PulseSensor Signal data
    is sent to the serial port for user monitoring.
-   Use the Serial Plotter to view the PulseSensor Signal wave
+   Modified by keys received on the Serial port.
+   Use the Serial Plotter to view the PulseSensor Signal wave.
 */
 boolean sendPulseSignal = false;
 
@@ -240,7 +240,6 @@ void setup() {
   pulseSensor.analogInput(PULSE_INPUT);
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
-
   pulseSensor.setSerial(Serial);
   pulseSensor.setThreshold(THRESHOLD);
 
@@ -255,14 +254,6 @@ void setup() {
     }
   }
   
-/*
-    This will set up and start the timer interrupt on ESP32.
-    The interrupt will occur every 2000uS or 500Hz.
-*/
-  sampleTimer = timerBegin(0, 80, true);                
-  timerAttachInterrupt(sampleTimer, &onSampleTime, true);  
-  timerAlarmWrite(sampleTimer, 2000, true);      
-  timerAlarmEnable(sampleTimer);
 
 /* 
     When the server gets a request for the root url
@@ -305,6 +296,15 @@ void setup() {
 /*  Print the control information to the serial monitor  */
   printControlInfo();
   
+/*
+    This will set up and start the timer interrupt on ESP32.
+    The interrupt will occur every 2000uS or 500Hz.
+*/
+  sampleTimer = timerBegin(0, 80, true);                
+  timerAttachInterrupt(sampleTimer, &onSampleTime, true);  
+  timerAlarmWrite(sampleTimer, 2000, true);      
+  timerAlarmEnable(sampleTimer);
+
 }
 
 void loop() {
@@ -331,7 +331,7 @@ void loop() {
       Serial.println(" bpm");
     }
   }
-/*  Check to see if there are any commands sent  */
+/*  Check to see if there are any commands sent to us  */
    serialCheck();
 }
 
@@ -351,7 +351,9 @@ void serialCheck(){
         sendPulseSignal = false;
         break;
       case '?':
-        printControlInfo();
+        if(!printControlInfo){
+          printControlInfo();
+        }
         break;
       default:
         break;
@@ -364,6 +366,8 @@ void serialCheck(){
 */
 void printControlInfo(){
   Serial.println("PulseSensor ESP32 Example");
+  Serial.print("\nPulseSensor Server url: ");
+  Serial.println(WiFi.localIP());
   Serial.println("Send 'b' to begin sending PulseSensor signal data");
   Serial.println("Send 'x' to stop sendin PulseSensor signal data");
   Serial.println("Send '?' to print this message");
