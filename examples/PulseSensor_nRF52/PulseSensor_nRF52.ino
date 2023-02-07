@@ -2,8 +2,12 @@
    Code to detect pulses from the PulseSensor,
    using an interrupt service routine.
 
-   Here is a link to the tutorial\
-   https://pulsesensor.com/pages/ATtiny
+   This example is made to target boards in the nRF52 family.
+   Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
+   When the Library Manager loads, search for NRF52_TimerInterrupt.
+   Install the latest version. At this writing it is v1.4.2
+
+   This is a prototype version of PulseSensor_nRF52.ino use at your own risk.
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -17,6 +21,12 @@
    This software is not intended for medical use.
 */
 
+
+#include "NRF52TimerInterrupt.h"
+
+#define TIMER3_INTERVAL_US        2000 // critical fine tuning here!
+
+NRF52Timer nRF52_Timer(NRF_TIMER_3);
 /*
    Every Sketch that uses the PulseSensor Playground must
    define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
@@ -27,7 +37,10 @@
 */
 #define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
-#include <SoftwareSerial.h>
+
+void Timer3_ISR(){
+  PulseSensorPlayground::OurThis->onSampleTime();
+}
 /*
    The format of our output.
 
@@ -38,7 +51,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
    Pinout:
@@ -60,30 +73,24 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
       waveform. THRESHOLD sets the default when there is no pulse present.
       Adjust as neccesary.
 */
-const int PULSE_INPUT = A1;
-const int PULSE_BLINK = 1;    // Pin 13 is the on-board LED
-const int PULSE_FADE = 0;
+const int PULSE_INPUT = A0;
+const int PULSE_BLINK = 13;
+const int PULSE_FADE = 12;
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
-const int TX_PIN = 3;        // Using software serial
-const int RX_PIN = 4;
 
 /*
    All the PulseSensor Playground functions.
 */
 PulseSensorPlayground pulseSensor;
-SoftwareSerial pulseUART(TX_PIN,RX_PIN);
 
 void setup() {
   /*
-     Use 115200 baud because that's what the Processing Sketch expects to read,
-     and because that speed provides about 11 bytes per millisecond.
-
+     115200 provides about 11 bytes per millisecond.
      If we used a slower baud rate, we'd likely write bytes faster than
-     they can be transmitted, which would mess up the timing
-     of readSensor() calls, which would make the pulse measurement
-     not work properly.
+     they can be transmitted,.
   */
-  pulseUART.begin(115200);
+  Serial.begin(115200);
+  while (!Serial && millis() < 5000);
 
   // Configure the PulseSensor manager.
 
@@ -91,7 +98,7 @@ void setup() {
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
 
-  pulseSensor.setSerial(pulseUART);
+  pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
   pulseSensor.setThreshold(THRESHOLD);
 
@@ -112,6 +119,11 @@ void setup() {
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
+  }
+  if (nRF52_Timer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
+    Serial.println(F("Starting Timer 3"));
+  } else {
+    Serial.println(F("Timer 3 Startup failed!"));
   }
 }
 
