@@ -96,7 +96,7 @@ Output the latest BPM and IBI values over the Serial port.
 
 ---
 ### outputToSerial(char, int)
-Output Data with a character prefix. Used exclusively with the Pulse Sensor Processing Visualizer.
+Output Data with a character prefix. Used exclusively with the Pulse Sensor Processing Visualizer. Processing Visualizer needs to know what the prefix means in order to parse data from the serial stream.
 
 ---
 ## Using Pulse Sensor Interrupts
