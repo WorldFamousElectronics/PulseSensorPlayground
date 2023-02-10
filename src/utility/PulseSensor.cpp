@@ -77,8 +77,8 @@ void PulseSensor::fadeOnPulse(int fadePin) {
 
 void PulseSensor::setThreshold(int threshold) {
   DISABLE_PULSE_SENSOR_INTERRUPTS;
-  threshSetting = threshold;
-  thresh = threshold;
+  threshSetting = threshold; // this is the backup we get from the main .ino
+  thresh = threshold; // this is the one that updates in software
   ENABLE_PULSE_SENSOR_INTERRUPTS;
 }
 
@@ -126,7 +126,7 @@ void PulseSensor::processLatestSample() {
   // Serial.print('\t');
   // Serial.println(thresh);
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
-  int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
+  N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
 
   // Fade the Fading LED
   FadeLevel = FadeLevel - FADE_LEVEL_PER_SAMPLE;
@@ -213,10 +213,8 @@ void PulseSensor::initializeLEDs() {
     digitalWrite(BlinkPin, LOW);
   }
   if (FadePin >= 0) {
-	#ifndef NO_ANALOG_WRITE
     pinMode(FadePin, OUTPUT);
     analogWrite(FadePin, 0); // turn off the LED.
-	#endif
   }
 }
 
