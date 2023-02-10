@@ -4,8 +4,11 @@
 
    This example is made to target boards in the nRF52 family.
    Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
-   When the Library Manager loads, search for NRF52_TimerInterrupt.
-   Install the latest version. At this writing it is v1.4.2
+   When the Library Manager loads, search for NRF52_TimerInterrupt, if you are using 
+   an Adafruit or Seeed nRF52 platform. 
+   If you are using MBED, like the Nano 33 BLE, search for NRF52_MBED_TimerInterrupt.
+
+   Install the latest version.
 
    This is a prototype version of PulseSensor_nRF52.ino use at your own risk.
 
@@ -21,12 +24,35 @@
    This software is not intended for medical use.
 */
 
-
+/*
+    If you are using an Adafruit or Seeed nRF52 platform,
+    uncomment the next line to use the NRF52TimerInterrupt library
+*/
 #include "NRF52TimerInterrupt.h"
+
+/*
+    If you are using an MBED nRF52 platform, like Nano 33 BLE,
+    uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
+*/
+// #include <NRF52_MBED_TimerInterrupt.h>
+// #include <NRF52_MBED_TimerInterrupt.hpp>
+// #include <NRF52_MBED_ISR_Timer.h>
+// #include <NRF52_MBED_ISR_Timer.hpp>
 
 #define TIMER3_INTERVAL_US        2000 // critical fine tuning here!
 
+/*
+    If you are using an Adafruit or Seeed nRF52 platform,
+    uncomment the next line to use the NRF52TimerInterrupt library
+*/
 NRF52Timer nRF52_Timer(NRF_TIMER_3);
+
+/*
+    If you are using an MBED nRF52 platform, like Nano 33 BLE,
+    uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
+*/
+// NRF52_MBED_Timer PulseTimer(NRF_TIMER_3);
+
 /*
    Every Sketch that uses the PulseSensor Playground must
    define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
