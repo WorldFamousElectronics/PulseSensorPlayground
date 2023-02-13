@@ -96,6 +96,7 @@ class PulseSensor {
     unsigned long sampleIntervalMs;  // expected time between calls to readSensor(), in milliseconds.
     int rate[10];                    // array to hold last ten IBI values (ms)
     unsigned long sampleCounter;     // used to determine pulse timing. Milliseconds since we started.
+    int N;                           // used to monitor duration between beats
     int P;                           // used to find peak in pulse wave, seeded (sample value)
     int T;                           // used to find trough in pulse wave, seeded (sample value)
     int thresh;                      // used to find instant moment of heart beat, seeded (sample value)

@@ -57,21 +57,24 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PULSE_SENSOR_COUNT = 2;
 
 /*
-     PULSE_POWERx = the output pin that the red (power) pin of
-      the first PulseSensor will be connected to. PulseSensor only
-      draws about 4mA, so almost any micro can power it from a GPIO.
-      If you don't want to use pins to power the PulseSensors, you can remove
-      the code dealing with PULSE_POWER0 and PULSE_POWER1.
-     PULSE_INPUTx = Analog Input. Connected to the pulse sensor
-      purple (signal) wire.
-     PULSE_BLINKx = digital Output. Connected to an LED (must have a
-      1K resistor) that will flash on each detected pulse.
-     PULSE_FADEx = digital Output. PWM pin onnected to an LED (must have
-      a 1K resistor) that will smoothly fade with each pulse.
-
-     NOTE: PULSE_FADEx must be pins that support PWM.
-       If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PULSE_FADEx
-       because those pins' PWM interferes with the sample timer.
+   Pinout:
+     PULSE_INPUT = Analog Input. Connected to the pulse sensor
+      purple (signal) wire. Ends with index number.
+     PULSE_BLINK = digital Output. Connected to an LED (and 1K series resistor)
+      that will flash on each detected pulse. Ends with index number.
+     PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K series resistor)
+      that will smoothly fade with each pulse. Ends with index number.
+      NOTE: PULSE_FADE must be a pin that supports PWM. Do not use
+      pin 9 or 10, because those pins' PWM interferes with the sample timer. Ends with index number.
+     THRESHOLD should be set higher than the PulseSensor signal idles
+      at when there is nothing touching it. The expected idle value
+      should be 512, which is 1/2 of the ADC range. To check the idle value
+      open a serial monitor and make note of the PulseSensor signal values
+      with nothing touching the sensor. THRESHOLD should be a value higher
+      than the range of idle noise by 25 to 50 or so. When the library
+      is finding heartbeats, the value is adjusted based on the pulse signal
+      waveform. THRESHOLD sets the default when there is no pulse present.
+      Adjust as neccesary.  Ends with index number.
 */
 const int PULSE_INPUT0 = A0;
 const int PULSE_BLINK0 = LED_BUILTIN;
@@ -81,7 +84,8 @@ const int PULSE_INPUT1 = A1;
 const int PULSE_BLINK1 = 12;
 const int PULSE_FADE1 = 11;
 
-const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
+const int THRESHOLD0 = 550;   // Adjust this number to avoid noise when idle
+const int THRESHOLD1 = 550;
 
 /*
    samplesUntilReport = the number of samples remaining to read
@@ -122,15 +126,16 @@ void setup() {
   pulseSensor.analogInput(PULSE_INPUT0, 0);
   pulseSensor.blinkOnPulse(PULSE_BLINK0, 0);
   pulseSensor.fadeOnPulse(PULSE_FADE0, 0);
+  pulseSensor.setThreshold(THRESHOLD0, 0);
 
   pulseSensor.analogInput(PULSE_INPUT1, 1);
   pulseSensor.blinkOnPulse(PULSE_BLINK1, 1);
   pulseSensor.fadeOnPulse(PULSE_FADE1, 1);
+  pulseSensor.setThreshold(THRESHOLD1, 1);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
-  pulseSensor.setThreshold(THRESHOLD);
-
+  
   // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
   samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
 

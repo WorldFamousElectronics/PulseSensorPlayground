@@ -46,6 +46,26 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PIN_RX = 7;
 const int PIN_TX = 8;
 
+/*
+   Pinout:
+     PULSE_INPUT = Analog Input. Connected to the pulse sensor
+      purple (signal) wire.
+     PULSE_BLINK = digital Output. Connected to an LED (and 1K series resistor)
+      that will flash on each detected pulse.
+     PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K series resistor)
+      that will smoothly fade with each pulse.
+      NOTE: PULSE_FADE must be a pin that supports PWM. Do not use
+      pin 9 or 10, because those pins' PWM interferes with the sample timer.
+     THRESHOLD should be set higher than the PulseSensor signal idles
+      at when there is nothing touching it. The expected idle value
+      should be 512, which is 1/2 of the ADC range. To check the idle value
+      open a serial monitor and make note of the PulseSensor signal values
+      with nothing touching the sensor. THRESHOLD should be a value higher
+      than the range of idle noise by 25 to 50 or so. When the library
+      is finding heartbeats, the value is adjusted based on the pulse signal
+      waveform. THRESHOLD sets the default when there is no pulse present.
+      Adjust as neccesary.
+*/
 const int PULSE_INPUT = A0;
 const int PULSE_BLINK = LED_BUILTIN;
 const int PULSE_FADE = 5;      // Must be a PWM pin other than 9 or 10.
