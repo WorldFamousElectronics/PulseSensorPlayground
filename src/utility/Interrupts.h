@@ -238,15 +238,6 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
     result = true;
   #endif
 
-  #if defined(ARDUINO_ARCH_NRF52840)
-    if (nRF52_Timer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
-	    // Serial.println(F("Starting nRF52 Timer 3"));
-	  } else {
-	    // Serial.println(F("Timer 3 fail"));
-	  }
-  #endif
-
-// (ARDUINO_ARCH_NRF52) 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
   ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)\
   ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
@@ -311,7 +302,7 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
   #endif
 
   #if defined(ARDUINO_ARCH_NRF52840)
-    nRF52_Timer.stopTimer();
+    sampleTimer.stopTimer();
   #endif
 	// #else
 	  return false;      // unknown or unsupported platform.
@@ -371,7 +362,7 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
   #endif
 
   #if defined(ARDUINO_ARCH_NRF52840)
-    nRF52_Timer.restartTimer();
+    sampleTimer.restartTimer();
   #endif
 
 // #else
