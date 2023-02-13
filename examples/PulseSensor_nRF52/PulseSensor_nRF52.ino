@@ -45,13 +45,13 @@
     If you are using an Adafruit or Seeed nRF52 platform,
     uncomment the next line to use the NRF52TimerInterrupt library
 */
-NRF52Timer nRF52_Timer(NRF_TIMER_3);
+NRF52Timer sampleTimer(NRF_TIMER_3);
 
 /*
     If you are using an MBED nRF52 platform, like Nano 33 BLE,
     uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
 */
-// NRF52_MBED_Timer PulseTimer(NRF_TIMER_3);
+// NRF52_MBED_Timer sampleTimer(NRF_TIMER_3);
 
 /*
    Every Sketch that uses the PulseSensor Playground must
@@ -123,10 +123,10 @@ void setup() {
   pulseSensor.analogInput(PULSE_INPUT);
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
-  pulseSensor.setThreshold(THRESHOLD);
 
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
@@ -146,7 +146,7 @@ void setup() {
       delay(50);
     }
   }
-  if (nRF52_Timer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
+  if (sampleTimer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
     Serial.println(F("Starting Timer 3"));
   } else {
     Serial.println(F("Timer 3 Startup failed!"));
