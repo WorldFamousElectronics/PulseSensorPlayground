@@ -2,7 +2,7 @@
    Code to detect pulses from the PulseSensor,
    using an interrupt service routine.
 
-   This example is designed to target the Adafruit nRF52840 Express.
+   This example is designed to target the Adafruit nRF52840 Feather Express.
 
     Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
     When the Library Manager loads, search for NRF52_TimerInterrupt.

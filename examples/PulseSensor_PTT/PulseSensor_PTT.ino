@@ -5,6 +5,8 @@
 
    Here is a link to the PTT tutorial
    https://pulsesensor.com/pages/pulse-transit-time
+   Using two PulseSensors, connect the one on A0 closer to your heart.
+   Connect the one on A1 at a point further from your heart.
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -81,12 +83,11 @@ const int PULSE_SENSOR_COUNT = 2;
 const int PULSE_INPUT0 = A0;
 const int PULSE_BLINK0 = LED_BUILTIN;
 const int PULSE_FADE0 = 5;
+const int THRESHOLD0 = 550;  
 
 const int PULSE_INPUT1 = A1;
 const int PULSE_BLINK1 = 12;
 const int PULSE_FADE1 = 11;
-
-const int THRESHOLD0 = 550;   // Adjust this number to avoid noise when idle
 const int THRESHOLD1 = 550;
 
 /*
@@ -178,6 +179,7 @@ void loop() {
       lastBeatSampleNumber[i] = pulseSensor.getLastBeatTime(i);
       if(i == 1){
         PTT = lastBeatSampleNumber[1] - lastBeatSampleNumber[0];
+        PTT = abs(PTT);
         pulseSensor.outputToSerial('|',PTT);
       }
     }

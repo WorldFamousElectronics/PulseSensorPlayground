@@ -84,7 +84,7 @@ const int PULSE_INPUT1 = A1;
 const int PULSE_BLINK1 = 12;
 const int PULSE_FADE1 = 11;
 
-const int THRESHOLD0 = 550;   // Adjust this number to avoid noise when idle
+const int THRESHOLD0 = 550;  
 const int THRESHOLD1 = 550; 
 
 /*
