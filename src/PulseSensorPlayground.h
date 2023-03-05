@@ -420,6 +420,11 @@ class PulseSensorPlayground {
   private:
 
 /*
+   Optionally use this (or a different) pin to toggle while the algorithm is running.
+   Connect it to an oscilloscope to determine algorithm run time.
+*/
+    // int timingPin = 10;
+/*
    Configure and enable interrupts to read samples.
    Call only if PulseSensorPlayground::UsingInterrupts is true.
 

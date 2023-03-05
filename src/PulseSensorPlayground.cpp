@@ -58,6 +58,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
       return false;
     }
   }
+  pinMode(timingPin,OUTPUT);
   return true;
 }
 
@@ -127,17 +128,17 @@ boolean PulseSensorPlayground::sawNewSample() {
 
 void PulseSensorPlayground::onSampleTime() {
   // Typically called from the ISR at 500Hz
-
+  // digitalWrite(timingPin,HIGH); // optionally connect timingPin to oscilloscope to time algorithm run time
   /*
      Read the voltage from each PulseSensor.
-     We do this separately from processing the voltages
+     We do this separately from processing the samples
      to minimize jitter in acquiring the signal.
   */
   for (int i = 0; i < SensorCount; ++i) {
     Sensors[i].readNextSample();
   }
 
-  // Process those voltages.
+  // Process those samples.
   for (int i = 0; i < SensorCount; ++i) {
     Sensors[i].processLatestSample();
     Sensors[i].updateLEDs();
@@ -145,6 +146,8 @@ void PulseSensorPlayground::onSampleTime() {
 
   // Set the flag that says we've read a sample since the Sketch checked.
   SawNewSample = true;
+
+  // digitalWrite(timingPin,LOW); // optionally connect timingPin to oscilloscope to time algorithm run time
  }
 
 int PulseSensorPlayground::getLatestSample(int sensorIndex) {
