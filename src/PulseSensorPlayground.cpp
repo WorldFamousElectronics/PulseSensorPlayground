@@ -58,7 +58,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
       return false;
     }
   }
-  pinMode(timingPin,OUTPUT);
+  // pinMode(timingPin,OUTPUT);
   return true;
 }
 

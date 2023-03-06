@@ -116,7 +116,7 @@ boolean PulseSensorPlaygroundEnableInterrupt();
 boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
 
 boolean PulseSensorPlaygroundSetupInterrupt() {
-	boolean result = true;
+	boolean result = false;
 
 #if !USE_ARDUINO_INTERRUPTS
   /*
@@ -252,6 +252,7 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
 }
 
 boolean PulseSensorPlaygroundDisableInterrupt(){
+	boolean result = false;
 #if USE_ARDUINO_INTERRUPTS
 	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
@@ -260,18 +261,18 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 			  DISABLE_PULSE_SENSOR_INTERRUPTS;
 	      TIMSK2 = 0x00;          // Disable OCR2A match interrupt
 	      ENABLE_PULSE_SENSOR_INTERRUPTS;
-	      return true;
+	      result = true;
 			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 				DISABLE_PULSE_SENSOR_INTERRUPTS;
 				TIMSK3 = 0x00;          // Disable OCR2A match interrupt
 				ENABLE_PULSE_SENSOR_INTERRUPTS;
-				return true;
+				result = true;
 			#endif
     #else
       DISABLE_PULSE_SENSOR_INTERRUPTS;
       TIMSK1 = 0x00;            // Disable OCR1A match interrupt
       ENABLE_PULSE_SENSOR_INTERRUPTS;
-      return true;
+      result = true;
     #endif
   #endif
 
@@ -281,12 +282,12 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 	    DISABLE_PULSE_SENSOR_INTERRUPTS;
 			TIMSK1 = 0x00;            // Disable OCR1A match interrupt
 			ENABLE_PULSE_SENSOR_INTERRUPTS;
-			return true;
+			result = true;
     #else
 			DISABLE_PULSE_SENSOR_INTERRUPTS;
 			TIMSK3 = 0x00;          // Disable OCR2A match interrupt
 			ENABLE_PULSE_SENSOR_INTERRUPTS;
-			return true;
+			result = true;
     #endif
  	#endif
 
@@ -294,7 +295,7 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 		DISABLE_PULSE_SENSOR_INTERRUPTS;
 		bitClear(TIMSK,6);   // Disable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
-    return true;
+    result = true;
 	#endif
 
   #if defined(ARDUINO_ARCH_ESP32)
@@ -303,15 +304,17 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 
   #if defined(ARDUINO_ARCH_NRF52840)
     sampleTimer.stopTimer();
+    result = true;
   #endif
 	// #else
-	  return false;      // unknown or unsupported platform.
+	  return result;      // unknown or unsupported platform.
 
 #endif
 } // PulseSensorPlaygroundDisableInterrupt
 
 
 boolean PulseSensorPlaygroundEnableInterrupt(){
+	boolean result = false;
 #if USE_ARDUINO_INTERRUPTS
 	#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     // check to see if the Servo library is in use
@@ -320,18 +323,18 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 			  DISABLE_PULSE_SENSOR_INTERRUPTS;
 	      TIMSK2 = 0x02;          // Enable OCR2A match interrupt
 	      ENABLE_PULSE_SENSOR_INTERRUPTS;
-	      return true;
+	      result = true;
 			#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 				DISABLE_PULSE_SENSOR_INTERRUPTS;
 				TIMSK3 = 0x02;          // Enable OCR2A match interrupt
 				ENABLE_PULSE_SENSOR_INTERRUPTS;
-				return true;
+				result = true;
 			#endif
     #else
       DISABLE_PULSE_SENSOR_INTERRUPTS;
       TIMSK1 = 0x02;            // Enable OCR1A match interrupt
       ENABLE_PULSE_SENSOR_INTERRUPTS;
-      return true;
+      result = true;
     #endif
   #endif
 
@@ -341,12 +344,12 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 	    DISABLE_PULSE_SENSOR_INTERRUPTS;
 			TIMSK1 = 0x02;            // Enable OCR1A match interrupt
 			ENABLE_PULSE_SENSOR_INTERRUPTS;
-			return true;
+			result = true;
     #else
 			DISABLE_PULSE_SENSOR_INTERRUPTS;
 			TIMSK2 = 0x02;          // Enable OCR2A match interrupt
 			ENABLE_PULSE_SENSOR_INTERRUPTS;
-			return true;
+			result = true;
     #endif
  	#endif
 
@@ -354,19 +357,20 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 		DISABLE_PULSE_SENSOR_INTERRUPTS;
 		bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
-    return true;
+    result = true;
 	#endif
 
   #if defined(ARDUINO_ARCH_ESP32)
     timerAlarmEnable(sampleTimer);
+    result = true;
   #endif
 
   #if defined(ARDUINO_ARCH_NRF52840)
     sampleTimer.restartTimer();
+    result = true;
   #endif
 
-// #else
-  return false;      // unknown or unsupported platform.
+  return result;      // unknown or unsupported platform.
 #endif
 }
 
