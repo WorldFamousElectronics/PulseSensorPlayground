@@ -420,7 +420,7 @@ class PulseSensorPlayground {
   private:
 
 /*
-   Optionally use this (or a different) pin to toggle while the algorithm is running.
+   Optionally use this (or a different) pin to toggle high while the algorithm is running.
    Connect it to an oscilloscope to determine algorithm run time.
 */
     // int timingPin = 10;
