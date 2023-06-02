@@ -65,7 +65,7 @@
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
 ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_NRF52840)
+||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
@@ -239,11 +239,19 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
   #endif
 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)\
-  ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)
+  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)\
+  ||(ARDUINO_ARCH_SAM)
 
     #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
     result = false;      // unknown or unsupported platform.
+  #endif
+
+  #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
+||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
+||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
+||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)
+
+    result = true;
   #endif
 
 #endif // USE_ARDUINO_INTERRUPTS
@@ -306,6 +314,12 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
     sampleTimer.stopTimer();
     result = true;
   #endif
+
+  #if defined(ARDUINO_ARCH_RP2040)
+    sampleTimer.stopTimer();
+    result = true;
+  #endif
+
 	// #else
 	  return result;      // unknown or unsupported platform.
 
@@ -366,6 +380,11 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
   #endif
 
   #if defined(ARDUINO_ARCH_NRF52840)
+    sampleTimer.restartTimer();
+    result = true;
+  #endif
+
+  #if defined(ARDUINO_ARCH_RP2040)
     sampleTimer.restartTimer();
     result = true;
   #endif
