@@ -129,7 +129,7 @@ void setup() {
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50);
+      delay(50); Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
