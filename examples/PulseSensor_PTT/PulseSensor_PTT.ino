@@ -179,7 +179,6 @@ void loop() {
       lastBeatSampleNumber[i] = pulseSensor.getLastBeatTime(i);
       if(i == 1){
         PTT = lastBeatSampleNumber[1] - lastBeatSampleNumber[0];
-        PTT = abs(PTT);
         pulseSensor.outputToSerial('|',PTT);
       }
     }
