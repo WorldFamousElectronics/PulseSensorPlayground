@@ -320,10 +320,9 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
     result = true;
   #endif
 
-	// #else
-	  return result;      // unknown or unsupported platform.
-
 #endif
+
+return result;      // unknown or unsupported platform.
 } // PulseSensorPlaygroundDisableInterrupt
 
 
@@ -389,8 +388,9 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
     result = true;
   #endif
 
-  return result;      // unknown or unsupported platform.
 #endif
+    
+return result;      // unknown or unsupported platform.
 }
 
 #if USE_ARDUINO_INTERRUPTS
