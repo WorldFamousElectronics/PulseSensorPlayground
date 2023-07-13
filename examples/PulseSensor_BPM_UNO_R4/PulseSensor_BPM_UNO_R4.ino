@@ -2,15 +2,11 @@
    Code to detect pulses from the PulseSensor,
    using an interrupt service routine.
 
-   This example is made to target boards in the nRF52 family.
-   Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
-   When the Library Manager loads, search for NRF52_TimerInterrupt, if you are using 
-   an Adafruit or Seeed nRF52 platform. 
-   If you are using MBED, like the Nano 33 BLE, search for NRF52_MBED_TimerInterrupt.
+>>>>  This example targest the Arduino UNO R4.
+>>>>  It has been tested on the Minima and the WiFi board variants.
 
-   Install the latest version.
-
-   This is a prototype version of PulseSensor_nRF52.ino use at your own risk.
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/getting-advanced
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -25,33 +21,12 @@
 */
 
 /*
-    If you are using an Adafruit or Seeed nRF52 platform,
-    uncomment the next line to use the NRF52TimerInterrupt library
+   We use the FspTimer to setup a timer interrupt for sample acquisition
+   FspTimer is part of the hardware core files for this chip 
 */
-#include "NRF52TimerInterrupt.h"
+#include "FspTimer.h"
+FspTimer sampleTimer;
 
-/*
-    If you are using an MBED nRF52 platform, like Nano 33 BLE,
-    uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
-*/
-// #include <NRF52_MBED_TimerInterrupt.h>
-// #include <NRF52_MBED_TimerInterrupt.hpp>
-// #include <NRF52_MBED_ISR_Timer.h>
-// #include <NRF52_MBED_ISR_Timer.hpp>
-
-#define TIMER3_INTERVAL_US        2000 // critical fine tuning here!
-
-/*
-    If you are using an Adafruit or Seeed nRF52 platform,
-    uncomment the next line to use the NRF52TimerInterrupt library
-*/
-NRF52Timer sampleTimer(NRF_TIMER_3);
-
-/*
-    If you are using an MBED nRF52 platform, like Nano 33 BLE,
-    uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
-*/
-// NRF52_MBED_Timer sampleTimer(NRF_TIMER_3);
 
 /*
    Every Sketch that uses the PulseSensor Playground must
@@ -59,14 +34,18 @@ NRF52Timer sampleTimer(NRF_TIMER_3);
    Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
    interrupts to automatically read and process PulseSensor data.
 
-   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
+   See PulseSensorBPM_Alternative.ino for an example of not using interrupts.
 */
 #define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
-void Timer3_ISR(){
+/*
+  This is the timer interrupt service routine where we acquire and process samples
+*/
+void sampleTimerISR(timer_callback_args_t __attribute((unused)) *p_args){
   PulseSensorPlayground::OurThis->onSampleTime();
 }
+
 /*
    The format of our output.
 
@@ -100,8 +79,8 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
       Adjust as neccesary.
 */
 const int PULSE_INPUT = A0;
-const int PULSE_BLINK = 13;
-const int PULSE_FADE = 12;
+const int PULSE_BLINK = LED_BUILTIN;
+const int PULSE_FADE = 5;
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
@@ -111,22 +90,25 @@ PulseSensorPlayground pulseSensor;
 
 void setup() {
   /*
-     115200 provides about 11 bytes per millisecond.
+     Use 115200 baud because that's what the Processing Sketch expects to read,
+     and because that speed provides about 11 bytes per millisecond.
+
      If we used a slower baud rate, we'd likely write bytes faster than
-     they can be transmitted,.
+     they can be transmitted, which would mess up the timing
+     of readSensor() calls, which would make the pulse measurement
+     not work properly.
   */
   Serial.begin(115200);
-  while (!Serial && millis() < 5000);
 
   // Configure the PulseSensor manager.
 
   pulseSensor.analogInput(PULSE_INPUT);
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
-  pulseSensor.setThreshold(THRESHOLD);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
@@ -141,16 +123,32 @@ void setup() {
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50);
+      delay(50); Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
   }
-  if (sampleTimer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
-    Serial.println(F("Starting Timer 3"));
-  } else {
-    Serial.println(F("Timer 3 Startup failed!"));
+
+/*
+  We have to get control of a timer on the R4. First, we try and see if there are any free timers available.
+  If there are no free timers available, we will just take control of one from some other purpose. 
+  We shouldn't have to force things, but if you use alot of timers, beware of this force use code!
+*/
+  uint8_t timer_type = GPT_TIMER;
+  int8_t tindex = FspTimer::get_available_timer(timer_type);
+  if(tindex == 0){
+    FspTimer::force_use_of_pwm_reserved_timer();
+    tindex = FspTimer::get_available_timer(timer_type);
   }
+
+/*
+  Begin sets up the timer that we just got control of as a periodic timer with 500Hz frequency.
+  It also passes the interrupt service routine that we made above. 
+*/
+  sampleTimer.begin(TIMER_MODE_PERIODIC, timer_type, tindex, SAMPLE_RATE_500HZ, 0.0f, sampleTimerISR);
+  sampleTimer.setup_overflow_irq();
+  sampleTimer.open();
+  sampleTimer.start();
 }
 
 void loop() {
@@ -171,4 +169,6 @@ void loop() {
   if (pulseSensor.sawStartOfBeat()) {
    pulseSensor.outputBeat();
   }
+
 }
+

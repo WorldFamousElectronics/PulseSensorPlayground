@@ -23,7 +23,7 @@
    Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
    interrupts to automatically read and process PulseSensor data.
 
-   See ProcessEverySample.ino for an example of not using interrupts.
+   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
 */
 #define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
