@@ -133,12 +133,18 @@
 #if defined(ARDUINO_ARCH_NRF52)
 #include "Adafruit_TinyUSB.h"
 #endif
+// #if defined(ARDUINO_ARCH_RENESAS)
+// #include "FspTimer.h"
+// FspTimer sampleTimer
+// #endif
 #include <Arduino.h>
 #include "utility/PulseSensor.h"
 #if USE_SERIAL
 #include "utility/PulseSensorSerialOutput.h"
 #endif
 #include "utility/PulseSensorTimingStatistics.h"
+
+#define SAMPLE_RATE_500HZ 500
 
 class PulseSensorPlayground {
   public:
@@ -464,6 +470,12 @@ class PulseSensorPlayground {
 #if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS
+
+#if defined(ARDUINO_ARCH_RENESAS)
+    uint8_t timer_type;
+    int8_t tindex;
+#endif
+
 };
 
 /*
