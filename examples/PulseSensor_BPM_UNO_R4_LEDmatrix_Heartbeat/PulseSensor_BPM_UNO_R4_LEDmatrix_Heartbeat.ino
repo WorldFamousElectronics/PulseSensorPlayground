@@ -3,11 +3,7 @@
    using an interrupt service routine.
 
 >>>>  This example targest the Arduino UNO R4 WiFi.
->>>>  It will plot the PulseSensor signal on the LED matrix of the UNO R4.
->>>>  Use the delay() inside the loop to change the matrix frame rate.
-
-   Here is a link to the tutorial
-   https://pulsesensor.com/pages/getting-advanced
+>>>>  It will pulse the Arduino heart animation on the LED matrix to the time of your heartbeat!
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -90,25 +86,32 @@ const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 PulseSensorPlayground pulseSensor;
 
 /*
-    library and variables used to plot on the LED matrix
+    Library and variables used to draw the heart animation
+    The Arduino heart icon will pulse with your heartbeat!
 */
 #include "Arduino_LED_Matrix.h"
-ArduinoLEDMatrix plotter;
-int maxX = 11;
-int maxY = 7;
-int minX = 0;
-int minY = 0;
-int pulseSignal;
-byte frame[8][12] = { // frame array is [y][x]
+ArduinoLEDMatrix beatingHeart;
+byte heart[8][12] = {
   { 0,0,0,0,0,0,0,0,0,0,0,0 },
   { 0,0,0,0,0,0,0,0,0,0,0,0 },
-  { 0,0,0,0,0,0,0,0,0,0,0,0 },
-  { 0,0,0,0,0,0,0,0,0,0,0,0 },
-  { 0,0,0,0,0,0,0,0,0,0,0,0 },
-  { 0,0,0,0,0,0,0,0,0,0,0,0 },
-  { 0,0,0,0,0,0,0,0,0,0,0,0 },
+  { 0,0,0,0,0,1,0,1,0,0,0,0 },
+  { 0,0,0,0,1,0,1,0,1,0,0,0 },
+  { 0,0,0,0,1,0,0,0,1,0,0,0 },
+  { 0,0,0,0,0,1,0,1,0,0,0,0 },
+  { 0,0,0,0,0,0,1,0,0,0,0,0 },
   { 0,0,0,0,0,0,0,0,0,0,0,0 }
 };
+byte heartPulse[8][12] = {
+  { 0,0,0,0,0,0,0,0,0,0,0,0 },
+  { 0,0,0,0,1,1,0,1,1,0,0,0 },
+  { 0,0,0,1,0,0,1,0,0,1,0,0 },
+  { 0,0,0,1,0,0,0,0,0,1,0,0 },
+  { 0,0,0,0,1,0,0,0,1,0,0,0 },
+  { 0,0,0,0,0,1,0,1,0,0,0,0 },
+  { 0,0,0,0,0,0,1,0,0,0,0,0 },
+  { 0,0,0,0,0,0,0,0,0,0,0,0 }
+};
+
 void setup() {
   /*
      Use 115200 baud because that's what the Processing Sketch expects to read,
@@ -176,7 +179,7 @@ void setup() {
   sampleTimer.start();
 
   // start up the LED matrix so we can control it.
-  plotter.begin();
+  beatingHeart.begin();
 }
 
 void loop() {
@@ -191,16 +194,14 @@ void loop() {
  pulseSensor.outputSample();
 
 /*
-    Get the latest PulseSensor signal value and scale it to fit the LED matrix.
-    advanceLEDplotter shifts the data history to the left.
+    The method isInsideBeat returns true when the pulse wave is above THRESHOLD.
+    The timing makes a nice heart pulse along with your heartbeat.
 */
-  pulseSignal = pulseSensor.getLatestSample(); // copy the latest sample value
-  pulseSignal = 1023 - pulseSignal; // invert for matrix disply to show with X axis along power and analog pins
-  pulseSignal = pulseSignal/128;  // scale to the LED matrix height
-  pulseSignal = constrain(pulseSignal, minY, maxY); // limit the singal so it won't get out of the frame
-  advanceLEDplotter();
-  plotter.renderBitmap(frame, 8, 12);
-
+  if(pulseSensor.isInsideBeat()){
+    beatingHeart.renderBitmap(heartPulse, 8, 12);
+  } else {
+    beatingHeart.renderBitmap(heart, 8, 12);
+  }
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
@@ -211,21 +212,3 @@ void loop() {
 
 }
 
-
-/*
-  New PulseSensor data comes in on the right of the plotter.
-  The 'right' is the matrix edge along the Qwiic/STEMMA connector edge of the board.
-*/
-void advanceLEDplotter(){
-  for(int y=0; y<=maxY; y++){
-    for(int x=0; x<=maxX-1; x++){
-      if(frame[y][x+1] == 1){
-        frame[y][x] = 1;
-        frame[y][x+1] = 0;
-      } else {
-        frame[y][x] = 0;
-      }
-    }
-  }
-  frame[pulseSignal][maxX] = 1;
-}
