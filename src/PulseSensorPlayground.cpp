@@ -51,6 +51,12 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
   for (;;);
 #endif // PULSE_SENSOR_MEMORY_USAGE
 
+// #if defined (ARDUINO_ARCH_SAM)
+// void sampleTimer(){
+//   onSampleTime();  // PulseSensorPlayground::OurThis->onSampleTime();
+// }
+// #endif
+
   // Lastly, set up and turn on the interrupts.
   if (UsingInterrupts) {
     if (!PulseSensorPlaygroundSetupInterrupt()) {

@@ -115,7 +115,7 @@ boolean PulseSensorPlaygroundEnableInterrupt();
 */
 boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
 
-boolean PulseSensorPlaygroundSetupInterrupt() {
+boolean PulseSensorPlaygroundSetupInterrupt(){
 	boolean result = false;
 
 #if !USE_ARDUINO_INTERRUPTS
@@ -239,8 +239,8 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
   #endif
 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)\
-  ||(ARDUINO_ARCH_SAM)
+  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)
+  
 
     #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
     result = false;      // unknown or unsupported platform.
@@ -249,14 +249,18 @@ boolean PulseSensorPlaygroundSetupInterrupt() {
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
 ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)
+||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_RENESAS)||(ARDUINO_ARCH_SAM)
 
     result = true;
   #endif
 
-  #if defined(ARDUINO_ARCH_RENESAS)
-    result = true;
-  #endif
+  // #if defined(ARDUINO_ARCH_RENESAS)
+  //   result = true;
+  // #endif
+
+  // #if defined(ARDUINO_ARCH_SAM)
+  //   result = true;
+  // #endif
 
 #endif // USE_ARDUINO_INTERRUPTS
 
@@ -326,6 +330,12 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 
   #if defined(ARDUINO_ARCH_RENESAS)
     sampleTimer.stop();
+    result = true;
+  #endif
+
+  #if defined(ARDUINO_ARCH_SAM)
+    sampleTimer.stop();
+    result = true;
   #endif
 
 #endif
@@ -400,6 +410,12 @@ boolean PulseSensorPlaygroundEnableInterrupt(){
 
   #if defined(ARDUINO_ARCH_RENESAS)
     sampleTimer.start();
+    result = true;
+  #endif
+
+  #if defined(ARDUINO_ARCH_SAM)
+    sampleTimer.start(2000);
+    result = true;
   #endif
 
 #endif
@@ -474,13 +490,7 @@ return result;      // unknown or unsupported platform.
 		#endif
 	#endif
 
-	// #if defined (ARDUINO_ARCH_NRF52840)
-	// 		void Timer3_ISR(){
-	// 		  // thisSample = micros();
-	// 		  // isrCounter++;
-	// 			PulseSensorPlayground::OurThis->onSampleTime();
-	// 		}
-	// #endif
+	
 
 	#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
 		// Interrupts not supported yet for Teensy

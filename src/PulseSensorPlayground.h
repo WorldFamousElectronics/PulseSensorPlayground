@@ -133,9 +133,9 @@
 #if defined(ARDUINO_ARCH_NRF52)
 #include "Adafruit_TinyUSB.h"
 #endif
-// #if defined(ARDUINO_ARCH_RENESAS)
-// #include "FspTimer.h"
-// FspTimer sampleTimer
+// #if defined(ARDUINO_ARCH_SAM)
+// #include <DueTimer.h>
+// DueTimer sampleTimer = Timer.getAvailable();
 // #endif
 #include <Arduino.h>
 #include "utility/PulseSensor.h"
