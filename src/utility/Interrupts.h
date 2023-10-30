@@ -73,12 +73,7 @@
 #define DISABLE_PULSE_SENSOR_INTERRUPTS cli()
 #define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
 #endif
-
-// #if defined (ARDUINO_ARCH_NRF52840)
-// 	#define TIMER1_INTERVAL_US        2000 // critical fine tuning here!
-// 	NRF52Timer nRF52_Timer(NRF_TIMER_3);
-// #endif
-
+  
 //	SAVED FOR FUTURE SUPPORT OF TEENSY INTERRUPTS
 #if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
 // #include <FlexiTimer2.h>
@@ -253,14 +248,6 @@ boolean PulseSensorPlaygroundSetupInterrupt(){
 
     result = true;
   #endif
-
-  // #if defined(ARDUINO_ARCH_RENESAS)
-  //   result = true;
-  // #endif
-
-  // #if defined(ARDUINO_ARCH_SAM)
-  //   result = true;
-  // #endif
 
 #endif // USE_ARDUINO_INTERRUPTS
 
@@ -495,13 +482,6 @@ return result;      // unknown or unsupported platform.
 	#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
 		// Interrupts not supported yet for Teensy
 	#endif
-
-  // #if defined(ARDUINO_ARCH_RENESAS)
-	// 		void sampleTimerISR(timer_callback_args_t __attribute((unused)) *p_args)
-	// 		{
-	// 			PulseSensorPlayground::OurThis->onSampleTime();
-	// 		}
-	// #endif
 
 
 #endif // USE_ARDUINO_INTERRUPTS
