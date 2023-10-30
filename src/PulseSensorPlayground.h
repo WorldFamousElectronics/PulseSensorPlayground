@@ -133,10 +133,6 @@
 #if defined(ARDUINO_ARCH_NRF52)
 #include "Adafruit_TinyUSB.h"
 #endif
-// #if defined(ARDUINO_ARCH_RENESAS)
-// #include "FspTimer.h"
-// FspTimer sampleTimer
-// #endif
 #include <Arduino.h>
 #include "utility/PulseSensor.h"
 #if USE_SERIAL
