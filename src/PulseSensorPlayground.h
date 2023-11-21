@@ -50,6 +50,23 @@ vvvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
 
+// Test for interrupt compatibility
+// bool USE_ARDUINO_INTERRUPTS;
+// #ifndef USE_ARDUINO_INTERRUPTS
+//     #if defined(ARDUINO_SAMD_MKR1000)||defined(ARDUINO_SAMD_MKRZERO)||defined(ARDUINO_SAMD_ZERO)\
+// ||defined(ARDUINO_ARCH_SAMD)||defined(ARDUINO_ARCH_STM32)||defined(ARDUINO_STM32_STAR_OTTO)||defined(ARDUINO_ARCH_NRF52)\
+// ||defined(ARDUINO_NANO33BLE)||defined(ARDUINO_ARCH_RP2040)||defined(ARDUINO_ARCH_ESP32)||defined(ARDUINO_ARCH_MBED_NANO)\
+// ||defined(ARDUINO_ARCH_NRF52840)||defined(ARDUINO_ARCH_SAM)||defined(ARDUINO_ARCH_RENESAS)||defined(ARDUINO_ARCH_AVR)\
+// ||defined(ARDUINO_AVR_UNO)||defined(ARDUINO_AVR_LEONARDO)||defined(ARDUINO_AVR_DUEMILANOVE)||defined(ARDUINO_AVR_MEGA2560)
+
+    #define USE_ARDUINO_INTERRUPTS true
+//     #else
+//     #define USE_ARDUINO_INTERRUPTS false
+
+//     #endif
+// #endif
+
+
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
 
@@ -191,8 +208,8 @@ vvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
 
        If begin() returns false, you can either use a different
        type of Arduino platform, or you can change your Sketch's
-       definition of USE_ARDUINO_INTERRUPTS to false:
-         #define USE_ARDUINO_INTERRUPTS false
+       definition of USE_ARDUINO_INTERRUPTS to false in the sketch:
+
 ^^^^^^^^  THIS CAN BE REMOVED FOR V2 ^^^^^^^^
     */
     boolean begin();
@@ -439,6 +456,8 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
     // (internal to the library) "this" pointer for the ISR.
     static PulseSensorPlayground *OurThis;
 
+    // boolean UsingInterrupts;
+
   private:
 
 /*
@@ -449,16 +468,17 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 */
     // int timingPin = 10;
 
+
+
 /*
 vvvvvvvv NEEDS ATTENTION vvvvvvvv      JM- I think having this here cause some problem with some architecture?
    Configure and enable interrupts to read samples.
    Call only if PulseSensorPlayground::UsingInterrupts is true.
-
    This function is defined (vs. declared here) in interrupts.h
 */
-    // void setupInterrupt();
-	// boolean disableInterrupt();
-	// boolean enableInterrupt();
+// boolean PulseSensorPlaygroundSetupInterrupt();
+// boolean PulseSensorPlaygroundDisableInterrupt();
+// boolean PulseSensorPlaygroundEnableInterrupt();
 
 //^^^^^^^^ NEEDS ATTENTION ^^^^^^^^
 
@@ -478,7 +498,8 @@ vvvvvvvv NEEDS ATTENTION vvvvvvvv      JM- I think having this here cause some p
 /*
    Varialbles used
 */
-    static boolean UsingInterrupts;
+    // boolean UsingInterrupts;
+    // boolean USE_ARDUINO_INTERRUPTS;
 	boolean Paused;
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.

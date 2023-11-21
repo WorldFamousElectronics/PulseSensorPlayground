@@ -58,13 +58,20 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
 // #endif
 
   // Lastly, set up and turn on the interrupts.
-  if (UsingInterrupts) {
+  if (USE_ARDUINO_INTERRUPTS){ // (UsingInterrupts) {
     if (!PulseSensorPlaygroundSetupInterrupt()) {
 			Paused = true;
       return false;
     }
   }
-  // pinMode(timingPin,OUTPUT);
+  /*
+    If you want to measure the time it takes to run our algorithm,
+    uncomment this line and all the other timingPin lines. 
+    Then connect timingPin to an oscilloscope. The pin will be HIGH
+    during the duration of our algorithm.
+
+  */
+  // pinMode(timingPin,OUTPUT); // optionally connect timingPin to oscilloscope to time algorithm run time
   return true;
 }
 
@@ -100,7 +107,7 @@ boolean PulseSensorPlayground::sawNewSample() {
 		 First, check to see if the sketch has paused the Pulse Sensor sampling
   */
   if(!Paused){
-    if (UsingInterrupts) {
+    if (USE_ARDUINO_INTERRUPTS){ // (UsingInterrupts) {
       // Disable interrupts to avoid a race with the ISR.
       // DISABLE_PULSE_SENSOR_INTERRUPTS;
       boolean sawOne = SawNewSample;
@@ -242,7 +249,7 @@ boolean PulseSensorPlayground::isPaused() {
 
 boolean PulseSensorPlayground::pause() {
   boolean result = true;
-	if (UsingInterrupts) {
+	if (USE_ARDUINO_INTERRUPTS){ // (UsingInterrupts) {
     if (!PulseSensorPlaygroundDisableInterrupt()) {
       Paused = false;
       result = false;
@@ -254,7 +261,7 @@ boolean PulseSensorPlayground::pause() {
 			Paused = true;
 		}
 	}else{
-		// do something here?
+		// do something more here?
 		for(int i=0; i<SensorCount; i++){
 			Sensors[i].resetVariables();
 		}
@@ -265,7 +272,7 @@ boolean PulseSensorPlayground::pause() {
 
 boolean PulseSensorPlayground::resume() {
   boolean result = true;
-	if (UsingInterrupts) {
+	if (USE_ARDUINO_INTERRUPTS){ // (UsingInterrupts) {
     if (!PulseSensorPlaygroundEnableInterrupt()) {
       Paused = true;
       result = false;
@@ -279,6 +286,293 @@ boolean PulseSensorPlayground::resume() {
   return result;
 }
 
+
+
+// boolean PulseSensorPlayground::PulseSensorPlaygroundSetupInterrupt() {
+//   boolean result = false;
+
+//   #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+
+//     // check to see if the Servo library is in use
+//     #if defined Servo_h
+//       // Initializes Timer2 to throw an interrupt every 2mS
+//       // Interferes with PWM on pins 3 and 11
+//       #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+//         TCCR2A = 0x02;          // Disable PWM and go into CTC mode
+//         TCCR2B = 0x05;          // don't force compare, 128 prescaler
+//         #if F_CPU == 16000000L   // if using 16MHz crystal
+//           OCR2A = 0XF9;         // set count to 249 for 2mS interrupt
+//         #elif F_CPU == 8000000L // if using 8MHz crystal
+//           OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
+//         #endif
+//         TIMSK2 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
+//         ENABLE_PULSE_SENSOR_INTERRUPTS;
+//         // #define _useTimer2
+//         result = true;
+//       #elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+//         TCCR3A = 0x02;          // Disable PWM and go into CTC mode
+//         TCCR3B = 0x05;          // don't force compare, 128 prescaler
+//         #if F_CPU == 16000000L   // if using 16MHz crystal
+//           OCR3A = 0XF9;         // set count to 249 for 2mS interrupt
+//         #elif F_CPU == 8000000L // if using 8MHz crystal
+//           OCR3A = 0X7C;         // set count to 124 for 2mS interrupt
+//         #endif
+//         TIMSK3 = 0x02;          // Enable OCR2A match interrupt DISABLE BY SETTING TO 0x00
+//         ENABLE_PULSE_SENSOR_INTERRUPTS;
+//         // #define _useTimer2
+//         result = true;
+//       #endif
+//     #else
+//       // Initializes Timer1 to throw an interrupt every 2mS.
+//       // Interferes with PWM on pins 9 and 10
+//       TCCR1A = 0x00;            // Disable PWM and go into CTC mode
+//       TCCR1C = 0x00;            // don't force compare
+//       #if F_CPU == 16000000L    // if using 16MHz crystal
+//         TCCR1B = 0x0C;          // prescaler 256
+//         OCR1A = 0x007C;         // count to 124 for 2mS interrupt
+//       #elif F_CPU == 8000000L   // if using 8MHz crystal
+//         TCCR1B = 0x0B;          // prescaler = 64
+//         OCR1A = 0x00F9;         // count to 249 for 2mS interrupt
+//       #endif
+//       TIMSK1 = 0x02;            // Enable OCR1A match interrupt DISABLE BY SETTING TO 0x00
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #endif
+//   #endif
+
+// #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+
+//     // check to see if the Servo library is in use
+//     #if defined Servo_h
+//     // Initializes Timer1 to throw an interrupt every 2mS.
+//     // Interferes with PWM on pins 9 and 10
+//     TCCR1A = 0x00;            // Disable PWM and go into CTC mode
+//     TCCR1C = 0x00;            // don't force compare
+//     #if F_CPU == 16000000L    // if using 16MHz crystal
+//       TCCR1B = 0x0C;          // prescaler 256
+//       OCR1A = 0x007C;         // count to 124 for 2mS interrupt
+//     #elif F_CPU == 8000000L   // if using 8MHz crystal
+//       TCCR1B = 0x0B;          // prescaler = 64
+//       OCR1A = 0x00F9;         // count to 249 for 2mS interrupt
+//     #endif
+//     TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+//     ENABLE_PULSE_SENSOR_INTERRUPTS;
+//     result = true;
+
+//     #else
+//     // Initializes Timer2 to throw an interrupt every 2mS
+//     // Interferes with PWM on pins 3 and 11
+//       TCCR2A = 0x02;          // Disable PWM and go into CTC mode
+//       TCCR2B = 0x05;          // don't force compare, 128 prescaler
+//       #if F_CPU == 16000000L   // if using 16MHz crystal
+//         OCR2A = 0XF9;         // set count to 249 for 2mS interrupt
+//       #elif F_CPU == 8000000L // if using 8MHz crystal
+//         OCR2A = 0X7C;         // set count to 124 for 2mS interrupt
+//       #endif
+//       TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       // #define _useTimer2
+//       result = true;
+
+//     #endif
+//  #endif
+
+//   #if defined(__AVR_ATtiny85__)
+//     GTCCR = 0x00;     // Disable PWM, don't connect pins to events
+//     OCR1A = 0x7D;     // Set top of count to 125. Timer match throws the interrupt
+//     OCR1C = 0x7D;     // Set top of the count to 125. Timer match resets the counter
+//     #if F_CPU == 16000000L
+//       TCCR1 = 0x89;      // Clear Timer on Compare, Set Prescaler to 256
+//     #elif F_CPU == 8000000L
+//       TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128
+//     #elif F_CPU == 1000000L
+//       TCCR1 = 0x85      // Clear Timer on Compare, Set Prescaler to 16
+//     #endif
+//     bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
+//     ENABLE_PULSE_SENSOR_INTERRUPTS;
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_SAMD_MKR1000)||defined(ARDUINO_SAMD_MKRZERO)||defined(ARDUINO_SAMD_ZERO)\
+//   ||defined(ARDUINO_ARCH_SAMD)||defined(ARDUINO_ARCH_STM32)||defined(ARDUINO_STM32_STAR_OTTO)||defined(ARDUINO_NANO33BLE)
+
+//   //  #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
+//     result = false;      // unknown or unsupported platform.
+//   #endif
+
+// #if defined(ARDUINO_SAMD_MKR1000)|| defined(ARDUINO_SAMD_MKRZERO)|| defined(ARDUINO_SAMD_ZERO)\
+// || defined(ARDUINO_ARCH_SAMD)|| defined(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)|| defined(ARDUINO_ARCH_NRF52)\
+// || defined(ARDUINO_NANO33BLE)|| defined(ARDUINO_ARCH_RP2040)|| defined(ARDUINO_ARCH_ESP32)|| defined(ARDUINO_ARCH_MBED_NANO)\
+// || defined(ARDUINO_ARCH_NRF52840)|| defined(ARDUINO_ARCH_RENESAS)|| defined(ARDUINO_ARCH_SAM)
+
+//     result = true;
+//   #endif
+
+
+
+//     return result;
+// }
+
+
+
+
+// boolean PulseSensorPlayground::PulseSensorPlaygroundDisableInterrupt(){
+//   boolean result = false;
+// #if USE_ARDUINO_INTERRUPTS
+//   #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+//     // check to see if the Servo library is in use
+//     #if defined Servo_h
+//       #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+//         DISABLE_PULSE_SENSOR_INTERRUPTS;
+//         TIMSK2 = 0x00;          // Disable OCR2A match interrupt
+//         ENABLE_PULSE_SENSOR_INTERRUPTS;
+//         result = true;
+//       #elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+//         DISABLE_PULSE_SENSOR_INTERRUPTS;
+//         TIMSK3 = 0x00;          // Disable OCR2A match interrupt
+//         ENABLE_PULSE_SENSOR_INTERRUPTS;
+//         result = true;
+//       #endif
+//     #else
+//       DISABLE_PULSE_SENSOR_INTERRUPTS;
+//       TIMSK1 = 0x00;            // Disable OCR1A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #endif
+//   #endif
+
+//   #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+//     // check to see if the Servo library is in use
+//     #if defined Servo_h
+//       DISABLE_PULSE_SENSOR_INTERRUPTS;
+//       TIMSK1 = 0x00;            // Disable OCR1A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #else
+//       DISABLE_PULSE_SENSOR_INTERRUPTS;
+//       TIMSK3 = 0x00;          // Disable OCR2A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #endif
+//   #endif
+
+//   #if defined(__AVR_ATtiny85__)
+//     DISABLE_PULSE_SENSOR_INTERRUPTS;
+//     bitClear(TIMSK,6);   // Disable interrupt on match between TCNT1 and OCR1A
+//     ENABLE_PULSE_SENSOR_INTERRUPTS;
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_ESP32)
+//     timerAlarmDisable(sampleTimer);
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_NRF52840)
+//     sampleTimer.stopTimer();
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_RP2040)
+//     sampleTimer.stopTimer();
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_RENESAS)
+//     sampleTimer.stop();
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_SAM)
+//     sampleTimer.stop();
+//     result = true;
+//   #endif
+
+// #endif
+
+
+
+// return result;      // unknown or unsupported platform.
+// } // PulseSensorPlaygroundDisableInterrupt
+
+
+// boolean PulseSensorPlayground::PulseSensorPlaygroundEnableInterrupt(){
+//   boolean result = false;
+// #if USE_ARDUINO_INTERRUPTS
+//   #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+//     // check to see if the Servo library is in use
+//     #if defined Servo_h
+//       #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+//         DISABLE_PULSE_SENSOR_INTERRUPTS;
+//         TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+//         ENABLE_PULSE_SENSOR_INTERRUPTS;
+//         result = true;
+//       #elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+//         DISABLE_PULSE_SENSOR_INTERRUPTS;
+//         TIMSK3 = 0x02;          // Enable OCR2A match interrupt
+//         ENABLE_PULSE_SENSOR_INTERRUPTS;
+//         result = true;
+//       #endif
+//     #else
+//       DISABLE_PULSE_SENSOR_INTERRUPTS;
+//       TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #endif
+//   #endif
+
+//   #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+//     // check to see if the Servo library is in use
+//     #if defined Servo_h
+//       DISABLE_PULSE_SENSOR_INTERRUPTS;
+//       TIMSK1 = 0x02;            // Enable OCR1A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #else
+//       DISABLE_PULSE_SENSOR_INTERRUPTS;
+//       TIMSK2 = 0x02;          // Enable OCR2A match interrupt
+//       ENABLE_PULSE_SENSOR_INTERRUPTS;
+//       result = true;
+//     #endif
+//   #endif
+
+//   #if defined(__AVR_ATtiny85__)
+//     DISABLE_PULSE_SENSOR_INTERRUPTS;
+//     bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
+//     ENABLE_PULSE_SENSOR_INTERRUPTS;
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_ESP32)
+//     timerAlarmEnable(sampleTimer);
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_NRF52840)
+//     sampleTimer.restartTimer();
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_RP2040)
+//     sampleTimer.restartTimer();
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_RENESAS)
+//     sampleTimer.start();
+//     result = true;
+//   #endif
+
+//   #if defined(ARDUINO_ARCH_SAM)
+//     sampleTimer.start(2000);
+//     result = true;
+//   #endif
+
+// #endif
+    
+// return result;      // unknown or unsupported platform.
+// }
+
+
 #if USE_SERIAL
   #if PULSE_SENSOR_MEMORY_USAGE
     void PulseSensorPlayground::printMemoryUsage() {
@@ -290,13 +584,13 @@ boolean PulseSensorPlayground::resume() {
       extern char *__heap_start;
       extern char *__heap_end;
 
-      int	data_size	=	(int)&__data_end - (int)&__data_start;
-      int	bss_size	=	(int)&__bss_end - (int)&__data_end;
-      int	heap_end	=	(int)&stack - (int)&__malloc_margin;
-      int	heap_size	=	heap_end - (int)&__bss_end;
-      int	stack_size	=	RAMEND - (int)&stack + 1;
-      int	available	=	(RAMEND - (int)&__data_start + 1);
-      available	-=	data_size + bss_size + heap_size + stack_size;
+      int data_size = (int)&__data_end - (int)&__data_start;
+      int bss_size  = (int)&__bss_end - (int)&__data_end;
+      int heap_end  = (int)&stack - (int)&__malloc_margin;
+      int heap_size = heap_end - (int)&__bss_end;
+      int stack_size  = RAMEND - (int)&stack + 1;
+      int available = (RAMEND - (int)&__data_start + 1);
+      available -=  data_size + bss_size + heap_size + stack_size;
 
       Stream *pOut = SerialOutput.getSerial();
       if (pOut) {

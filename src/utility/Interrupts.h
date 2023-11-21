@@ -56,16 +56,31 @@
 #ifndef PULSE_SENSOR_INTERRUPTS_H
 #define PULSE_SENSOR_INTERRUPTS_H
 
+/*
+    Decide whether or not to use interrupts based on the architecture of the target hardware.
+    We're doing this here to ensure correct order of operations.
+*/
+// #ifndef USE_ARDUINO_INTERRUPTS
+// boolean UsingInterrupts;
 
-//TODO: if noInterrupts() and interrupts() are defined for Arduino 101,
-// Use them throughout and eliminate these DISABLE/ENAGLE macros.
-//
-// Macros to link to interrupt disable/enable only if they exist
-// The name is long to avoid collisions with Sketch and Library symbols.
-#if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
-||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)||(ARDUINO_ARCH_RENESAS)
+// #if defined(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
+// ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
+// ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
+// ||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)||(ARDUINO_ARCH_RENESAS)\
+// ||(ARDUINO_ARCH_AVR)
+
+//   #define USE_ARDUINO_INTERRUPTS true
+//   #else
+//   #define USE_ARDUINO_INTERRUPTS false
+
+// #endif
+// #endif
+
+
+#if defined(__arc__)||defined(ARDUINO_SAMD_MKR1000)||defined(ARDUINO_SAMD_MKRZERO)||defined(ARDUINO_SAMD_ZERO)\
+||defined(ARDUINO_ARCH_SAMD)||defined(ARDUINO_ARCH_STM32)||defined(ARDUINO_STM32_STAR_OTTO)||defined(ARDUINO_ARCH_NRF52)\
+||defined(ARDUINO_NANO33BLE)||defined(ARDUINO_ARCH_RP2040)||defined(ARDUINO_ARCH_ESP32)||defined(ARDUINO_ARCH_MBED_NANO)\
+||defined(ARDUINO_ARCH_NRF52840)||defined(ARDUINO_ARCH_SAM)||defined(ARDUINO_ARCH_RENESAS)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS
@@ -90,11 +105,11 @@
    NOTE: This is the declaration (vs. definition) of this function.
    See the definition (vs. declaration) of this function, below.
 */
-boolean PulseSensorPlaygroundSetupInterrupt();
-boolean PulseSensorPlaygroundDisableInterrupt();
-boolean PulseSensorPlaygroundEnableInterrupt();
+// boolean PulseSensorPlaygroundSetupInterrupt();
+// boolean PulseSensorPlaygroundDisableInterrupt();
+// boolean PulseSensorPlaygroundEnableInterrupt();
 
-#if defined(USE_ARDUINO_INTERRUPTS) // that is, if the Sketch is including us...
+// #if defined(USE_ARDUINO_INTERRUPTS) // that is, if the Sketch is including us...
 
 /*
    (internal to the library) True if the Sketch uses interrupts to
@@ -108,20 +123,20 @@ boolean PulseSensorPlaygroundEnableInterrupt();
 
    See PulseSensorPlayground.h
 */
-boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
+// boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
 
 boolean PulseSensorPlaygroundSetupInterrupt(){
 	boolean result = false;
 
-#if !USE_ARDUINO_INTERRUPTS
+// #if !USE_ARDUINO_INTERRUPTS
   /*
      The Sketch doesn't want interrupts,
      so we won't waste Flash space and create complexity
      by adding interrupt-setup code.
   */
-  return result;
+  // return result;
 
-#else
+// #else
   // This code sets up the sample timer interrupt
   // based on the type of Arduino platform.
 
@@ -237,7 +252,7 @@ boolean PulseSensorPlaygroundSetupInterrupt(){
   ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)
   
 
-    #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
+  //  #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
     result = false;      // unknown or unsupported platform.
   #endif
 
@@ -249,7 +264,7 @@ boolean PulseSensorPlaygroundSetupInterrupt(){
     result = true;
   #endif
 
-#endif // USE_ARDUINO_INTERRUPTS
+// #endif // USE_ARDUINO_INTERRUPTS
 
   return result;
 }
@@ -327,9 +342,7 @@ boolean PulseSensorPlaygroundDisableInterrupt(){
 
 #endif
 
-
-
-return result;      // unknown or unsupported platform.
+return result;      
 } // PulseSensorPlaygroundDisableInterrupt
 
 
@@ -480,13 +493,13 @@ return result;      // unknown or unsupported platform.
 	
 
 	#if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
-		// Interrupts not supported yet for Teensy
+		// reminder to update for teensy
 	#endif
 
 
 #endif // USE_ARDUINO_INTERRUPTS
 
-#endif // defined(USE_ARDUINO_INTERRUPTS)
+// #endif // defined(USE_ARDUINO_INTERRUPTS)
 
 #endif // PULSE_SENSOR_INTERRUPTS_H
-// #endif
+
