@@ -1,42 +1,9 @@
 /*
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
+   This code is written to target the following hardrware:
+      Adafruit nRF52 boards
+      Seeed Studio nRF52 boards (NO EMBED)
+   Embed board architecture will be supported in the future.
 
-   This example is designed to target the Adafruit nRF52840 Feather Express.
-
-    Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
-    When the Library Manager loads, search for NRF52_TimerInterrupt.
-    Install the latest version.
-
-    Download the nRF Toobox App from Nordic Semiconductor to your phone or tablet.
-    Open the app and select Heart Rate Service, then connect to PulseSensor to view BPM graph.
-
-   Copyright World Famous Electronics LLC - see LICENSE
-   Contributors:
-     Joel Murphy, https://pulsesensor.com
-     Yury Gitman, https://pulsesensor.com
-     Bradford Needham, @bneedhamia, https://bluepapertech.com
-
-   Licensed under the MIT License, a copy of which
-   should have been included with this software.
-
-   This software is not intended for medical use.
-*/
-
-/*
-    The NRF52TimerInterrupt library will set up a hardware timer to trigger
-    sampling of the PulseSensor Playground library.
-    Define the sample interval in microseconds.
-*/
-#include "NRF52TimerInterrupt.h"
-#define SAMPLE_INTERVAL_US        2000 
-
-/*
-   Create an instance of the timer class called Sample_Timer.
-   NRF_TIMER_0 and NRF_TIMER_1 can be used by the core
-   and the bluetool library, so avoid them.
-*/
-NRF52Timer Sample_Timer(NRF_TIMER_3);
 
 /*
     Include the Adafruit bluefruit library
@@ -80,12 +47,8 @@ BLEDis bledis;
 
    See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
 */
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
-void Timer3_ISR(){
-  PulseSensorPlayground::OurThis->onSampleTime();
-}
 /*
    The format of our output.
 
@@ -183,16 +146,6 @@ void setup() {
   setupHeartrateMonitor();
   startAdvertising();
   Serial.println("Advertising\nConnect via Bluetooth to PulseSensor to view BPM");
-
-/*
-    Start the interrupt timer at the end of setup
-    so it does not interfere with other setup stuff
-*/
-  if (Sample_Timer.attachInterruptInterval(SAMPLE_INTERVAL_US, Timer3_ISR)){
-    Serial.println(F("Starting Timer 3"));
-  } else {
-    Serial.println(F("Timer 3 Startup failed!"));
-  }
 
 } // end of setup()
 

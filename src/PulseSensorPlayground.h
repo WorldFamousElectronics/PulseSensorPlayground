@@ -17,29 +17,29 @@
 /*
 vvvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
   NOTE: Every Sketch that uses the PulseSensor Playground
-  must define the variable USE_ARDUINO_INTERRUPTS *before* including
+  must define the variable USE_HARDWARE_TIMER *before* including
   PulseSensorPlayground.h. If you don't, you will get a compiler error
-  about "undefined reference to `PulseSensorPlayground::UsingInterrupts".
+  about "undefined reference to `PulseSensorPlayground::UsingHardwareTimer".
 
   In particular, if your Sketch wants the Playground to use interrupts
   to read and process PulseSensor data, your Sketch must contain the
   following two lines, in order:
-    #define USE_ARDUINO_INTERRUPTS true
+    #define USE_HARDWARE_TIMER true
     #include <PulseSensorPlayground.h>
 
   If, instead, your Sketch does not use interrupts to read PulseSensor
   data,  your Sketch must instead contain the
   following two lines, in order:
-    #define USE_ARDUINO_INTERRUPTS false
+    #define USE_HARDWARE_TIMER false
     #include <PulseSensorPlayground.h>
 
   See utility/interrupts.h for details.
 
   Internal, developer note: in the Playground code, don't use
-  USE_ARDUINO_INTERRUPTS as a variable; instead, refer to
-  PulseSensorPlayground::UsingInterrupts, which is a static variable
-  that reflects what the Sketch defined USE_ARDUINO_INTERRUPTS to.
-  Because USE_ARDUINO_INTERRUPTS is defined *only* in the user's Sketch,
+  USE_HARDWARE_TIMER as a variable; instead, refer to
+  PulseSensorPlayground::UsingHardwareTimer, which is a static variable
+  that reflects what the Sketch defined USE_HARDWARE_TIMER to.
+  Because USE_HARDWARE_TIMER is defined *only* in the user's Sketch,
   it doesn't exist when the various Playground modules are compiled.
 
   See further notes in interrupts.h
@@ -50,10 +50,11 @@ vvvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
 
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
-// #warning "dragons"
+
+// #include "SelectTimer.h"
 
 
-#define USE_ARDUINO_INTERRUPTS true
+#define USE_HARDWARE_TIMER true
 
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
@@ -139,7 +140,7 @@ vvvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
 // #define USE_SERIAL false 
 
 
-#if defined(ARDUINO_ARCH_NRF52)
+#if defined(ARDUINO_NRF52_ADAFRUIT)
 #include "Adafruit_TinyUSB.h"
 #endif
 #include <Arduino.h>
@@ -184,22 +185,22 @@ class PulseSensorPlayground {
        before calling begin().
 
 vvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
-       If the Sketch defined USE_ARDUINO_INTERRUPTS as true, this function
+       If the Sketch defined USE_HARDWARE_TIMER as true, this function
        sets up and turns on interrupts for the PulseSensor.
 
-       If instead the Sketch defined USE_ARDUINO_INTERRUPTS as false,
+       If instead the Sketch defined USE_HARDWARE_TIMER as false,
        it initializes what's necessary for the Sketch to process
        PulsSensor signals. See sawNewSample(), below.
 
        Returns true if successful, false if unsuccessful.
        Returns false if PulseSensorPlayground doesn't yet support
        interrupts on this Arduino platform and the user's Sketch
-       did a #define USE_ARDUINO_INTERRUPTS true.
+       did a #define USE_HARDWARE_TIMER true.
 
        If begin() returns false, you can either use a different
        type of Arduino platform, or you can change your Sketch's
-       definition of USE_ARDUINO_INTERRUPTS to false:
-         #define USE_ARDUINO_INTERRUPTS false
+       definition of USE_HARDWARE_TIMER to false:
+         #define USE_HARDWARE_TIMER false
 ^^^^^^^^  THIS CAN BE REMOVED FOR V2 ^^^^^^^^
     */
     boolean begin();
@@ -213,7 +214,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
        PulseSensor signals, or 2) your Sketch doesn't use interrupts
        to read from the PulseSensors.
 
-       NOTE: If your Sketch defined USE_ARDUINO_INTERRUPTS as false,
+       NOTE: If your Sketch defined USE_HARDWARE_TIMER as false,
        you must call pulse.sawNewSample() frequently (at least
        once every 2 milliseconds) to assure that PulseSensor signals
        are read accurately.
@@ -459,19 +460,6 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
     // int timingPin = 10;
 
 /*
-vvvvvvvv NEEDS ATTENTION vvvvvvvv      JM- I think having this here cause some problem with some architecture?
-   Configure and enable interrupts to read samples.
-   Call only if PulseSensorPlayground::UsingInterrupts is true.
-
-   This function is defined (vs. declared here) in interrupts.h
-*/
-    // void setupInterrupt();
-	// boolean disableInterrupt();
-	// boolean enableInterrupt();
-
-//^^^^^^^^ NEEDS ATTENTION ^^^^^^^^
-
-/*
     Print the memory usage of the compiled program.
     Only do this if the Serial class is enabled.
 */
@@ -491,8 +479,7 @@ vvvvvvvv NEEDS ATTENTION vvvvvvvv      JM- I think having this here cause some p
    Returns true if successful, false if we don't yet support
    the timer interrupt on this Arduino.
 
-   NOTE: This is the declaration (vs. definition) of this function.
-   See the definition (vs. declaration) of this function, below.
+   This could be included, or not, based on USE_HARDWARE_TIMER
 */
 boolean setupInterrupt();
 boolean disableInterrupt();
@@ -501,7 +488,7 @@ boolean enableInterrupt();
 /*
    Varialbles used
 */
-    boolean UsingInterrupts;
+    boolean UsingHardwareTimer;
 	boolean Paused;
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
@@ -509,7 +496,7 @@ boolean enableInterrupt();
     volatile boolean SawNewSample; // "A sample has arrived from the ISR"
 #if USE_SERIAL
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
-#endif
+#endif // USE_SERIAL
 #if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS
@@ -520,7 +507,6 @@ boolean enableInterrupt();
 #endif
 
 };
-
 
 
 // Macros to link to interrupt disable/enable only if they exist
@@ -537,36 +523,7 @@ boolean enableInterrupt();
 #define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
 #endif
 
-// #if defined(USE_ARDUINO_INTERRUPTS) // that is, if the Sketch is including us...
-
 /*
-   (internal to the library) True if the Sketch uses interrupts to
-   sample
-   We need to define USE_PS_INTERRUPTS once per Sketch, whether or not
-   the Sketch uses interrupts.
-   Not doing this or doing it for every file that includes interrupts.h
-   would cause a link error.
 
-   To refer to this variable, use "PulseSensorPlayground::UsingInterrupts".
-
-   See PulseSensorPlayground.h
 */
-// boolean PulseSensorPlayground::UsingInterrupts = USE_ARDUINO_INTERRUPTS;
-
-
-
-
-#if USE_ARDUINO_INTERRUPTS
-
-#ifndef SANDBOX_H
-// #include "utility/sandbox.h"    
-#endif
-
-#endif // USE_ARDUINO_INTERRUPTS
-
-// #endif // defined(USE_ARDUINO_INTERRUPTS)
-
-// #endif // PULSE_SENSOR_INTERRUPTS_H
-
-/* */
 #endif // PULSE_SENSOR_PLAYGROUND_H

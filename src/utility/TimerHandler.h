@@ -1,11 +1,10 @@
 
-#ifndef SANDBOX_H
-#define SANDBOX_H
+#ifndef TIMERHANDLER_H
+#define TIMERHANDLER_H
 #pragma once
-			// #warning "dragon"
 
 /*
-   Interrupt handling helper functions for PulseSensors.
+   Interrupt handling  functions for PulseSensors.
    See https://www.pulsesensor.com to get started.
 
    Copyright World Famous Electronics LLC - see LICENSE
@@ -21,51 +20,15 @@
 */
 
 /*
-   Any Sketch using the Playground must do one of two things:
-   1) #define USE_ARDUINO_INTERRUPTS true - if using interrupts;
-   2) #define USE_ARDUINO_INTERRUPTS false - if not using interrupts.
+   This library will determine the value of USE_HARDWARE_TIMER:
+   1) #define USE_HARDWARE_TIMER true - if using interrupts;
+   2) #define USE_HARDWARE_TIMER false - if not using interrupts.
 
-   Only the Sketch must define USE_ARDUINO_INTERRUPTS.
-   If the Sketch doesn't define USE_ARDUINO_INTERRUPTS, or if some other file
-   defines it as well, a link error will result.
+   Preprocessor directives will determine if the library supports 
+   hardware interrupts for the target hardware platform.
 
-   See notes in PulseSensorPlayground.h
-
-   The code below is rather convoluted, with nested #if's.
-   This structure is used to achieve two goals:
-   1) Minimize the complexity the user has to deal with to use or
-      not use interrupts to sample the PulseSensor data;
-   2) Create an ISR() only if the Sketch uses interrupts.  Defining an
-      ISR(), even if not used, may interfere with other libraries' use
-      of interrupts.
-
-   The nesting goes something like this:
-     if the Sketch is being compiled...              #if defined(USE_ARDUINO_INTERRUPTS)
-       if the user wants to use interrupts...        #if USE_ARDUINO_INTERRUPTS
-         #if's for the various Arduino platforms...  #if defined(__AVR_ATmega328P__)...
-
-   RULES of the constant USE_ARDUINO_INTERRUPTS:
-   1) This file, interrupts.h, should be the only file that uses USE_ARDUINO_INTERRUPTS
-     (although PulseSensorPlayground's comments talk about it to the user).
-     If other code in the library wants to know whether interrupts are being used,
-     that code should use PulseSensorPlayground::UsingInterrupts, which is true
-     if the Sketch wants to use interrupts.
-   1) Always use #if USE_ARDUINO_INTERRUPTS inside an #if defined(USE_ARDUINO_INTERRUPTS).
-      If you don't first test the #if defined(...), a compile error will occur
-      when compiling the library modules.
-   2) USE_ARDUINO_INTERRUPTS is defined only when this file is being included
-      by the user's Sketch; not when the rest of the library is compiled.
-   3) USE_ARDUINO_INTERRUPTS is true if the user wants to use interrupts;
-      it's false if they don't.
 */
 
-// #ifndef PULSE_SENSOR_INTERRUPTS_H
-// #define PULSE_SENSOR_INTERRUPTS_H
-
-
-//TODO: if noInterrupts() and interrupts() are defined for Arduino 101,
-// Use them throughout and eliminate these DISABLE/ENAGLE macros.
-//
 
   
 //  SAVED FOR FUTURE SUPPORT OF TEENSY INTERRUPTS
@@ -75,15 +38,13 @@
 
 
 /*
-   We create the Interrupt Service Routine only if the Sketch is
-   using interrupts. If we defined it when we didn't use it,
-   the ISR() will inappropriately intercept timer interrupts that
-   we don't use when not using interrupts.
+   We create the Interrupt Service Routine only if the library knows
+   how to engage them.
 
    We define the ISR that handles the timer that
    PulseSensorPlaygroundSetupInterrupt() set up.
    NOTE: Make sure that this ISR uses the appropriate timer for
-   the platform detected by PulseSensorPlaygroundSetupInterrupt(), above.
+   the platform detected by PulseSensorPlaygroundSetupInterrupt().
 */
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
       #if defined Servo_h
@@ -113,10 +74,8 @@
                 #endif
             #endif
       #else
-            // #warning "dragons"
         #ifndef TIMER_VECTOR
         #define TIMER_VECTOR
-            // #warning "dragons"
         ISR(TIMER1_COMPA_vect)
         {
           DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
@@ -157,10 +116,61 @@
         #endif
     #endif
 
-    
+    #if defined(ARDUINO_ARCH_RENESAS)
+        #include "FspTimer.h"
+        FspTimer sampleTimer;
+        void sampleTimerISR(timer_callback_args_t __attribute((unused)) *p_args){
+          PulseSensorPlayground::OurThis->onSampleTime();
+        }
+    #endif
+
+
+    #if defined(ARDUINO_SAM_DUE)
+        /*
+          Include the DueTimer library. If you don't have it, use library manager to get it.
+          You can also find it at https://github.com/ivanseidel/DueTimer
+          If you use the Servo library, probably want to include that before this inlude. Just sayin'...
+          This will grab the next available timer and call it sampleTimer for use throughout the code
+        */
+        #include <DueTimer.h>
+        DueTimer sampleTimer = Timer.getAvailable();
+        void sampleTimer_ISR(){ 
+          PulseSensorPlayground::OurThis->onSampleTime();
+        }
+    #endif
+
+    #if defined(ARDUINO_ARCH_RP2040)
+        /*
+          Include the TimerInterrupt library 
+          https://github.com/khoih-prog/RPI_PICO_TimerInterrupt
+          Set the sample rate to 500Hz
+         */
+        #include "RPi_Pico_TimerInterrupt.h"
+        #define SAMPLE_INTERVAL_US 2000L
+        RPI_PICO_Timer sampleTimer(0); // the paramater may need to change, depending?
+        boolean sampleTimer_ISR(struct repeating_timer *t){ 
+          (void) t;
+          PulseSensorPlayground::OurThis->onSampleTime();
+          return true;
+        }
+    #endif
+
+    #if defined(ARDUINO_NRF52_ADAFRUIT)
+        /*
+            If you are using an Adafruit or Seeed nRF52 platform,
+            use this library and ISR
+        */
+        #include "NRF52TimerInterrupt.h"
+        #define TIMER3_INTERVAL_US        2000 // critical fine tuning here!
+        NRF52Timer sampleTimer(NRF_TIMER_3);
+        void Timer3_ISR(){
+          PulseSensorPlayground::OurThis->onSampleTime();
+        }
+    #endif
+        
 
     #if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)
-        // Interrupts not supported yet for Teensy
+        // Interrupts here for Teensy in future
     #endif
 
 

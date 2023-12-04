@@ -2,7 +2,7 @@
    Code to detect pulses from the PulseSensor,
    using an interrupt service routine.
 
-   Here is a link to the tutorial\
+   Here is a link to the tutorial
    https://pulsesensor.com/pages/getting-advanced
 
    Copyright World Famous Electronics LLC - see LICENSE
@@ -18,32 +18,14 @@
 */
 
 /*
-  Include the DueTimer library. If you don't have it, use library manager to get it.
-  You can also find it at https://github.com/ivanseidel/DueTimer
-  If you use the Servo library, probably want to include that before this inlude. Just sayin'...
-  This will grab the next available timer and call it sampleTimer for use throughout the code
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You will see a warning during compilation that notes if 
+   a hardware timer is being used or not.
 */
-#include <DueTimer.h>
-DueTimer sampleTimer = Timer.getAvailable();
-
-/*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
-
-   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
-*/
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
-
-/*
- *  Declare the interrupt service routine
- *  This will be used in setup as the interrupt callback in attachInterrupt
- */
-void sampleTimer_ISR(){ 
-  PulseSensorPlayground::OurThis->onSampleTime();
-}
 
 /*
    The format of our output.
@@ -127,34 +109,55 @@ void setup() {
       delay(50);
     }
   }
-
-  /*  This starts the sample timer interrupt. Do this last in the setup() routine.
-   *  We are using Timer6 to avoid potential conflict with the servo library
-   *  This timer selection could be better...
-   *  Use pause() and resume() to start and stop sampling on the fly
-   *  Check Resources folder in the library for more tools
-   */
-  sampleTimer.attachInterrupt(sampleTimer_ISR);
-  sampleTimer.start(2000); // Calls every period microseconds
-
 }
 
 void loop() {
+  /*
+     See if a sample is ready from the PulseSensor.
+
+     If USE_HARDWARE_TIMER is true, the PulseSensor Playground
+     will automatically read and process samples from
+     the PulseSensor.
+
+     If USE_HARDWARE_TIMER is false, the call to sawNewSample()
+     will check to see how much time has passed, then read
+     and process a sample (analog voltage) from the PulseSensor.
+     Call this function often to maintain 500Hz sample rate,
+     that is every 2 milliseconds.
+
+     Check the compatibility of your hardware at this link
+     <url>
+     and delete the unused code portions in your saved copy, if you like.
+  */
+#if USE_HARDWARE_TIMER
   /*
      Wait a bit.
      We don't output every sample, because our baud rate
      won't support that much I/O.
   */
   delay(20);
-
+#else
+if (pulseSensor.sawNewSample()) {
+  /*
+      Every so often, send the latest Sample.
+      We don't print every sample, because our baud rate
+      won't support that much I/O.
+  */
+  if (--pulseSensor.samplesUntilReport == (byte) 0) {
+    pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+    pulseSensor.outputSample();
+  }
+}
+#endif
   // write the latest sample to Serial.
- pulseSensor.outputSample();
+    pulseSensor.outputSample();
 
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
    */
-  if (pulseSensor.sawStartOfBeat()) {
-   pulseSensor.outputBeat();
-  }
+    if (pulseSensor.sawStartOfBeat()) {
+      pulseSensor.outputBeat();
+    }
+
 }

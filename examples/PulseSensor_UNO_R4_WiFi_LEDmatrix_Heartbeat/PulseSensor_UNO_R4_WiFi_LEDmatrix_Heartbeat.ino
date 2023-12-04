@@ -1,16 +1,6 @@
 /*
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
-
-   This example is made to target boards in the nRF52 family.
-   Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
-   When the Library Manager loads, search for NRF52_TimerInterrupt, if you are using 
-   an Adafruit or Seeed nRF52 platform. 
-   If you are using MBED, like the Nano 33 BLE, search for NRF52_MBED_TimerInterrupt.
-
-   Install the latest version.
-
-   This is a prototype version of PulseSensor_nRF52.ino use at your own risk.
+   Code to target the UNO R4 WiFi board.
+   This example will beat a heart shape on the LED matrix!
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -25,48 +15,15 @@
 */
 
 /*
-    If you are using an Adafruit or Seeed nRF52 platform,
-    uncomment the next line to use the NRF52TimerInterrupt library
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You will see a warning during compilation that notes if 
+   a hardware timer is being used or not.
 */
-#include "NRF52TimerInterrupt.h"
-
-/*
-    If you are using an MBED nRF52 platform, like Nano 33 BLE,
-    uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
-*/
-// #include <NRF52_MBED_TimerInterrupt.h>
-// #include <NRF52_MBED_TimerInterrupt.hpp>
-// #include <NRF52_MBED_ISR_Timer.h>
-// #include <NRF52_MBED_ISR_Timer.hpp>
-
-#define TIMER3_INTERVAL_US        2000 // critical fine tuning here!
-
-/*
-    If you are using an Adafruit or Seeed nRF52 platform,
-    uncomment the next line to use the NRF52TimerInterrupt library
-*/
-NRF52Timer sampleTimer(NRF_TIMER_3);
-
-/*
-    If you are using an MBED nRF52 platform, like Nano 33 BLE,
-    uncomment the next lines to use the NRF52_MBED_TimerInterrupt library
-*/
-// NRF52_MBED_Timer sampleTimer(NRF_TIMER_3);
-
-/*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
-
-   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
-*/
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
-void Timer3_ISR(){
-  PulseSensorPlayground::OurThis->onSampleTime();
-}
 /*
    The format of our output.
 
@@ -100,8 +57,8 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
       Adjust as neccesary.
 */
 const int PULSE_INPUT = A0;
-const int PULSE_BLINK = 13;
-const int PULSE_FADE = 12;
+const int PULSE_BLINK = LED_BUILTIN;
+const int PULSE_FADE = 5;
 const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 
 /*
@@ -109,24 +66,53 @@ const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 */
 PulseSensorPlayground pulseSensor;
 
+/*
+    Library and variables used to draw the heart animation
+    The Arduino heart icon will pulse with your heartbeat!
+*/
+#include "Arduino_LED_Matrix.h"
+ArduinoLEDMatrix beatingHeart;
+byte heart[8][12] = {
+  { 0,0,0,0,0,0,0,0,0,0,0,0 },
+  { 0,0,0,0,0,0,0,0,0,0,0,0 },
+  { 0,0,0,0,0,1,0,1,0,0,0,0 },
+  { 0,0,0,0,1,0,1,0,1,0,0,0 },
+  { 0,0,0,0,1,0,0,0,1,0,0,0 },
+  { 0,0,0,0,0,1,0,1,0,0,0,0 },
+  { 0,0,0,0,0,0,1,0,0,0,0,0 },
+  { 0,0,0,0,0,0,0,0,0,0,0,0 }
+};
+byte heartPulse[8][12] = {
+  { 0,0,0,0,0,0,0,0,0,0,0,0 },
+  { 0,0,0,0,1,1,0,1,1,0,0,0 },
+  { 0,0,0,1,0,0,1,0,0,1,0,0 },
+  { 0,0,0,1,0,0,0,0,0,1,0,0 },
+  { 0,0,0,0,1,0,0,0,1,0,0,0 },
+  { 0,0,0,0,0,1,0,1,0,0,0,0 },
+  { 0,0,0,0,0,0,1,0,0,0,0,0 },
+  { 0,0,0,0,0,0,0,0,0,0,0,0 }
+};
+
 void setup() {
   /*
-     115200 provides about 11 bytes per millisecond.
+     Use 115200 baud because that's what the Processing Sketch expects to read,
+     and because that speed provides about 11 bytes per millisecond.
+
      If we used a slower baud rate, we'd likely write bytes faster than
-     they can be transmitted,.
+     they can be transmitted, which would mess up the sample reading
+     calls, which would make the pulse measurement not work properly.
   */
   Serial.begin(115200);
-  while (!Serial && millis() < 5000);
 
   // Configure the PulseSensor manager.
 
   pulseSensor.analogInput(PULSE_INPUT);
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
-  pulseSensor.setThreshold(THRESHOLD);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
 
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
@@ -141,16 +127,14 @@ void setup() {
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50);
+      delay(50); Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
   }
-  if (sampleTimer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR)){
-    Serial.println(F("Starting Timer 3"));
-  } else {
-    Serial.println(F("Timer 3 Startup failed!"));
-  }
+
+  // start up the LED matrix so we can control it.
+  beatingHeart.begin();
 }
 
 void loop() {
@@ -164,6 +148,15 @@ void loop() {
   // write the latest sample to Serial.
  pulseSensor.outputSample();
 
+/*
+    The method isInsideBeat returns true when the pulse wave is above THRESHOLD.
+    The timing makes a nice heart pulse along with your heartbeat.
+*/
+  if(pulseSensor.isInsideBeat()){
+    beatingHeart.renderBitmap(heartPulse, 8, 12);
+  } else {
+    beatingHeart.renderBitmap(heart, 8, 12);
+  }
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
@@ -171,4 +164,6 @@ void loop() {
   if (pulseSensor.sawStartOfBeat()) {
    pulseSensor.outputBeat();
   }
+
 }
+

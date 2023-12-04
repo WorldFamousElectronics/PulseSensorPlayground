@@ -13,16 +13,15 @@
 
    This software is not intended for medical use.
 */
-// #ifndef PULSE_SENSOR_PLAYGROUND_H
-// #define PULSE_SENSOR_PLAYGROUND_H
-// #endif
-#include <PulseSensorPlayground.h>
 
-#include "utility/sandbox.h"   
+#include <PulseSensorPlayground.h>
 
 // Define the "this" pointer for the ISR
 PulseSensorPlayground *PulseSensorPlayground::OurThis;
 
+
+// TimerHandler.h will define the ISR. It is included here so that happens only once.
+#include "utility/TimerHandler.h"   
 
 PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   // Save a static pointer to our playground so the ISR can read it.
@@ -32,7 +31,7 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   SensorCount = (byte) numberOfSensors;
   Sensors = new PulseSensor[SensorCount];
 
-  UsingInterrupts = USE_ARDUINO_INTERRUPTS;
+  UsingHardwareTimer = USE_HARDWARE_TIMER;
 
 #if PULSE_SENSOR_TIMING_ANALYSIS
   // We want sample timing analysis, so we construct it.
@@ -65,7 +64,7 @@ boolean PulseSensorPlayground::PulseSensorPlayground::begin() {
 // #endif
 
   // Lastly, set up and turn on the interrupts.
-  if (UsingInterrupts) {
+  if (UsingHardwareTimer) {
     if (!setupInterrupt()) {
 			Paused = true;
       return false;
@@ -107,7 +106,7 @@ boolean PulseSensorPlayground::sawNewSample() {
 		 First, check to see if the sketch has paused the Pulse Sensor sampling
   */
   if(!Paused){
-    if (UsingInterrupts) {
+    if (UsingHardwareTimer) {
       // Disable interrupts to avoid a race with the ISR.
       // DISABLE_PULSE_SENSOR_INTERRUPTS;
       boolean sawOne = SawNewSample;
@@ -249,7 +248,7 @@ boolean PulseSensorPlayground::isPaused() {
 
 boolean PulseSensorPlayground::pause() {
   boolean result = true;
-	if (UsingInterrupts) {
+	if (UsingHardwareTimer) {
     if (!disableInterrupt()) {
       Paused = false;
       result = false;
@@ -272,7 +271,7 @@ boolean PulseSensorPlayground::pause() {
 
 boolean PulseSensorPlayground::resume() {
   boolean result = true;
-	if (UsingInterrupts) {
+	if (UsingHardwareTimer) {
     if (!enableInterrupt()) {
       Paused = true;
       result = false;
@@ -327,7 +326,7 @@ boolean PulseSensorPlayground::setupInterrupt(){
     boolean result = false;
 
 
-#if !USE_ARDUINO_INTERRUPTS
+#if !USE_HARDWARE_TIMER
   /*
      The Sketch doesn't want interrupts,
      so we won't waste Flash space and create complexity
@@ -448,6 +447,45 @@ boolean PulseSensorPlayground::setupInterrupt(){
     result = true;
   #endif
 
+  #if defined(ARDUINO_ARCH_RENESAS)
+    uint8_t timer_type = GPT_TIMER;
+    int8_t tindex = FspTimer::get_available_timer(timer_type);
+
+    if(tindex == 0){
+      // Serial.println("forcing timer get;")
+        FspTimer::force_use_of_pwm_reserved_timer();
+        tindex = FspTimer::get_available_timer(timer_type);  
+    }
+    // Serial.print("got timer "); Serial.println(tindex);
+
+    sampleTimer.begin(TIMER_MODE_PERIODIC, timer_type, tindex, SAMPLE_RATE_500HZ, 0.0f, sampleTimerISR);
+    sampleTimer.setup_overflow_irq();
+    sampleTimer.open();
+    sampleTimer.start();
+  #endif
+
+  #if defined(ARDUINO_SAM_DUE)
+    sampleTimer.attachInterrupt(sampleTimer_ISR);
+    sampleTimer.start(2000); // Calls every period microseconds
+  #endif
+
+  #if defined(ARDUINO_ARCH_RP2040)
+    /*  This starts the sample timer interrupt
+     *  Use pause() and resume() to start and stop sampling on the fly
+     *  Check Resources folder in the library for more tools
+     */
+    sampleTimer.attachInterruptInterval(SAMPLE_INTERVAL_US, sampleTimer_ISR);
+  #endif
+
+  #if defined(ARDUINO_NRF52_ADAFRUIT)
+    /*  This starts the sample timer interrupt
+     *  Use pause() and resume() to start and stop sampling on the fly
+     *  Check Resources folder in the library for more tools
+     */
+    sampleTimer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR);
+  #endif
+
+
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
   ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)
   
@@ -464,7 +502,7 @@ boolean PulseSensorPlayground::setupInterrupt(){
     result = true;
   #endif
 
-#endif // USE_ARDUINO_INTERRUPTS
+#endif // USE_HARDWARE_TIMER
   return result;
 } // setup interrupt
 
@@ -472,7 +510,7 @@ boolean PulseSensorPlayground::setupInterrupt(){
 
 boolean PulseSensorPlayground::enableInterrupt(){
     boolean result = false;
-#if USE_ARDUINO_INTERRUPTS
+#if USE_HARDWARE_TIMER
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) // || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     // check to see if the Servo library is in use
     #if defined Servo_h
@@ -550,7 +588,7 @@ return result;      // unknown or unsupported platform.
 
 boolean PulseSensorPlayground::disableInterrupt(){      
     boolean result = false;
-#if USE_ARDUINO_INTERRUPTS
+#if USE_HARDWARE_TIMER
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
     #if defined Servo_h
