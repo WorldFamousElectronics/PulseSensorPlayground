@@ -51,10 +51,11 @@ vvvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
 
-// #include "SelectTimer.h"
+#include "utility/SelectTimer.h"
 
-
+#ifndef USE_HARDWARE_TIMER
 #define USE_HARDWARE_TIMER true
+#endif
 
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
@@ -494,6 +495,7 @@ boolean enableInterrupt();
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
     volatile boolean SawNewSample; // "A sample has arrived from the ISR"
+    // volatile boolean inISR = false;
 #if USE_SERIAL
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
 #endif // USE_SERIAL
@@ -514,7 +516,7 @@ boolean enableInterrupt();
 #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
 ||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)||(ARDUINO_ARCH_RENESAS)
+||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)||(ARDUINO_ARCH_RENESAS) || defined(ARDUINO_ARCH_SAMD)
 
 #define DISABLE_PULSE_SENSOR_INTERRUPTS
 #define ENABLE_PULSE_SENSOR_INTERRUPTS

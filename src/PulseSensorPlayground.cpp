@@ -157,8 +157,6 @@ void PulseSensorPlayground::onSampleTime() {
   }
 
   // Set the flag that says we've read a sample since the Sketch checked.
-  SawNewSample = true;
-
   // digitalWrite(timingPin,LOW); // optionally connect timingPin to oscilloscope to time algorithm run time
  }
 
@@ -491,15 +489,19 @@ boolean PulseSensorPlayground::setupInterrupt(){
         The interrupt will occur every 2000uS or 500Hz.
     */
     sampleTimer = timerBegin(0, 80, true);                
-    timerAttachInterrupt(sampleTimer, &PulseSensorPlayground::onSampleTime, true);  
+    timerAttachInterrupt(sampleTimer, &onInterrupt, true);  
     timerAlarmWrite(sampleTimer, 2000, true);      
     timerAlarmEnable(sampleTimer);
     result = true;
   #endif
 
+  #if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
+    sampleTimer.attachInterrupt(500, onInterrupt);
+  #endif
 
-  #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-  ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)
+
+  #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_ARCH_STM32)\
+    ||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_MBED_NANO)
   
 
     #error "Unsupported Board Selected! Try Using the example: PulseSensor_BPM_Alternative.ino"
@@ -508,8 +510,7 @@ boolean PulseSensorPlayground::setupInterrupt(){
 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
 ||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)\
-||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_SAM)
+||(ARDUINO_ARCH_RP2040)||(ARDUINO_SAMD_ZERO)
 
     result = true;
   #endif
@@ -563,8 +564,8 @@ boolean PulseSensorPlayground::enableInterrupt(){
     #if defined(__AVR_ATtiny85__)
         DISABLE_PULSE_SENSOR_INTERRUPTS;
         bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
-    ENABLE_PULSE_SENSOR_INTERRUPTS;
-    result = true;
+        ENABLE_PULSE_SENSOR_INTERRUPTS;
+        result = true;
     #endif
 
   #if defined(ARDUINO_ARCH_ESP32)

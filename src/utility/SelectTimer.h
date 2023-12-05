@@ -37,7 +37,8 @@
 		ARDUINO_NRF52_ADAFRUIT
 			Adafruit and Seeed nRF52 boards (non EMBED boards!)
 
-		ESP32!
+		ARDUINO_ARCH_ESP32
+			Adafruit Feather ESP32-S2
 
 
 */
@@ -47,14 +48,23 @@
 
 
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_RENESAS) || defined(ARDUINO_ARCH_RP2040)\
-|| defined(ARDUINO_SAM_DUE) || defined(ARDUINO_NRF52_ADAFRUIT)
-#define USING_HARDWARE_TIMER true
+|| defined(ARDUINO_SAM_DUE) || defined(ARDUINO_NRF52_ADAFRUIT) || defined(ARDUINO_ARCH_ESP32)\
+|| defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
+#define USE_HARDWARE_TIMER true
 			#warning "Using hardware timer to sample PulseSensor."
 #else
-#define USING_HARDWARE_TIMER false
+#define USE_HARDWARE_TIMER false
 			#warning "Using software timer to sample PulseSensor."
 #endif
 
-
+// #if defined(ARDUINO_ARCH_ESP32)
+// 	hw_timer_t *sampleTimer = NULL;
+//     portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
+//     void IRAM_ATTR onSampleTime() {
+// 	  portENTER_CRITICAL_ISR(&sampleTimerMux);
+// 	    PulseSensorPlayground::OurThis->onSampleTime();
+// 	  portEXIT_CRITICAL_ISR(&sampleTimerMux);
+// 	}
+// #endif
 
 #endif // SELECT_TIMER include guard

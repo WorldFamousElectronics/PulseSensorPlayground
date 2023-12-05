@@ -172,12 +172,39 @@
         /*
            The following hardware timer setup supports ESP32
         */
-        hw_timer_t * sampleTimer = NULL;
+        hw_timer_t *sampleTimer = NULL;
         portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
-        void IRAM_ATTR onSampleTime() {
+        void IRAM_ATTR onInterrupt() {
           portENTER_CRITICAL_ISR(&sampleTimerMux);
             PulseSensorPlayground::OurThis->onSampleTime();
           portEXIT_CRITICAL_ISR(&sampleTimerMux);
+        }
+    #endif
+
+    #if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
+        // These define's must be placed at the beginning before #include "SAMDTimerInterrupt.h"
+        // _TIMERINTERRUPT_LOGLEVEL_ from 0 to 4
+        // Don't define _TIMERINTERRUPT_LOGLEVEL_ > 0. Only for special ISR debugging only. Can hang the system.
+        // Don't define TIMER_INTERRUPT_DEBUG > 2. Only for special ISR debugging only. Can hang the system.
+        #define TIMER_INTERRUPT_DEBUG         0
+        #define _TIMERINTERRUPT_LOGLEVEL_     1
+        // Select only one to be true for SAMD21. Must must be placed at the beginning before #include "SAMDTimerInterrupt.h"
+        #define USING_TIMER_TC3         true      // Only TC3 can be used for SAMD51
+        #define USING_TIMER_TC4         false     // Not to use with Servo library
+        #define USING_TIMER_TC5         false
+        #define USING_TIMER_TCC         false
+        #define USING_TIMER_TCC1        false
+        #define USING_TIMER_TCC2        false     // Don't use this, can crash on some boards
+
+        #include "SAMDTimerInterrupt.h"
+
+        #if USING_TIMER_TC3
+        #define SELECTED_TIMER      TIMER_TC3
+        #endif
+        // Define selected SAMD timer and set up ISR
+        SAMDTimer sampleTimer(SELECTED_TIMER);
+        void onInterrupt(){
+          PulseSensorPlayground::OurThis->onSampleTime();
         }
     #endif
         
