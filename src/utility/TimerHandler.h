@@ -167,6 +167,19 @@
           PulseSensorPlayground::OurThis->onSampleTime();
         }
     #endif
+
+    #if defined(ARDUINO_ARCH_ESP32)
+        /*
+           The following hardware timer setup supports ESP32
+        */
+        hw_timer_t * sampleTimer = NULL;
+        portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
+        void IRAM_ATTR onSampleTime() {
+          portENTER_CRITICAL_ISR(&sampleTimerMux);
+            PulseSensorPlayground::OurThis->onSampleTime();
+          portEXIT_CRITICAL_ISR(&sampleTimerMux);
+        }
+    #endif
         
 
     #if defined(__MK66FX1M0__)||(__MK64FX512__)||(__MK20DX256__)||(__MK20DX128__)

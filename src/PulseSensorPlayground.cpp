@@ -450,23 +450,21 @@ boolean PulseSensorPlayground::setupInterrupt(){
   #if defined(ARDUINO_ARCH_RENESAS)
     uint8_t timer_type = GPT_TIMER;
     int8_t tindex = FspTimer::get_available_timer(timer_type);
-
     if(tindex == 0){
-      // Serial.println("forcing timer get;")
         FspTimer::force_use_of_pwm_reserved_timer();
         tindex = FspTimer::get_available_timer(timer_type);  
     }
-    // Serial.print("got timer "); Serial.println(tindex);
-
     sampleTimer.begin(TIMER_MODE_PERIODIC, timer_type, tindex, SAMPLE_RATE_500HZ, 0.0f, sampleTimerISR);
     sampleTimer.setup_overflow_irq();
     sampleTimer.open();
     sampleTimer.start();
+    result = true;
   #endif
 
   #if defined(ARDUINO_SAM_DUE)
     sampleTimer.attachInterrupt(sampleTimer_ISR);
     sampleTimer.start(2000); // Calls every period microseconds
+    result = true;
   #endif
 
   #if defined(ARDUINO_ARCH_RP2040)
@@ -475,6 +473,7 @@ boolean PulseSensorPlayground::setupInterrupt(){
      *  Check Resources folder in the library for more tools
      */
     sampleTimer.attachInterruptInterval(SAMPLE_INTERVAL_US, sampleTimer_ISR);
+    result = true;
   #endif
 
   #if defined(ARDUINO_NRF52_ADAFRUIT)
@@ -483,6 +482,19 @@ boolean PulseSensorPlayground::setupInterrupt(){
      *  Check Resources folder in the library for more tools
      */
     sampleTimer.attachInterruptInterval(TIMER3_INTERVAL_US, Timer3_ISR);
+    result = true;
+  #endif
+
+  #if defined(ARDUINO_ARCH_ESP32)
+    /*
+        This will set up and start the timer interrupt on ESP32.
+        The interrupt will occur every 2000uS or 500Hz.
+    */
+    sampleTimer = timerBegin(0, 80, true);                
+    timerAttachInterrupt(sampleTimer, &PulseSensorPlayground::onSampleTime, true);  
+    timerAlarmWrite(sampleTimer, 2000, true);      
+    timerAlarmEnable(sampleTimer);
+    result = true;
   #endif
 
 
@@ -495,9 +507,9 @@ boolean PulseSensorPlayground::setupInterrupt(){
   #endif
 
   #if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
-||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_RENESAS)||(ARDUINO_ARCH_SAM)
+||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)\
+||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_MBED_NANO)\
+||(ARDUINO_ARCH_SAM)
 
     result = true;
   #endif

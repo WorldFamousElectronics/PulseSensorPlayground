@@ -38,8 +38,8 @@
 /*
    The following hardware timer setup supports ESP32
 */
-hw_timer_t * sampleTimer = NULL;
-portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
+// hw_timer_t * sampleTimer = NULL;
+// portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
 
 /*
    Every Sketch that uses the PulseSensor Playground must
@@ -47,8 +47,7 @@ portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
    Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
    interrupts to automatically read and process PulseSensor data.
 */
-#define USE_ARDUINO_INTERRUPTS true
-//#define NO_PULSE_SENSOR_SERIAL true
+// #define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
 /*
@@ -205,11 +204,11 @@ void beginWiFi() {
     library is compiled, so that the onSampleTime
     function is known.
 */
-void IRAM_ATTR onSampleTime() {
-  portENTER_CRITICAL_ISR(&sampleTimerMux);
-    PulseSensorPlayground::OurThis->onSampleTime();
-  portEXIT_CRITICAL_ISR(&sampleTimerMux);
-}
+// void IRAM_ATTR onSampleTime() {
+//   portENTER_CRITICAL_ISR(&sampleTimerMux);
+//     PulseSensorPlayground::OurThis->onSampleTime();
+//   portEXIT_CRITICAL_ISR(&sampleTimerMux);
+// }
 
 /* 
    When sendPulseSignal is true, PulseSensor Signal data
@@ -300,10 +299,10 @@ void setup() {
     This will set up and start the timer interrupt on ESP32.
     The interrupt will occur every 2000uS or 500Hz.
 */
-  sampleTimer = timerBegin(0, 80, true);                
-  timerAttachInterrupt(sampleTimer, &onSampleTime, true);  
-  timerAlarmWrite(sampleTimer, 2000, true);      
-  timerAlarmEnable(sampleTimer);
+  // sampleTimer = timerBegin(0, 80, true);                
+  // timerAttachInterrupt(sampleTimer, &onSampleTime, true);  
+  // timerAlarmWrite(sampleTimer, 2000, true);      
+  // timerAlarmEnable(sampleTimer);
 
 }
 

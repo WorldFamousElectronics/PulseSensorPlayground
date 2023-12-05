@@ -25,6 +25,20 @@
 			ATtiny85
 				Digispark, Adafruit Trinket (old version), etc 
 
+		ARDUINO_ARCH_RENESAS
+			Arduino UNO R4
+
+		ARDUINO_SAM_DUE
+			Ardino DUE
+
+		ARDUINO_ARCH_RP2040
+			Any board with RP2040
+
+		ARDUINO_NRF52_ADAFRUIT
+			Adafruit and Seeed nRF52 boards (non EMBED boards!)
+
+		ESP32!
+
 
 */
 
@@ -35,8 +49,10 @@
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_RENESAS) || defined(ARDUINO_ARCH_RP2040)\
 || defined(ARDUINO_SAM_DUE) || defined(ARDUINO_NRF52_ADAFRUIT)
 #define USING_HARDWARE_TIMER true
+			#warning "Using hardware timer to sample PulseSensor."
 #else
 #define USING_HARDWARE_TIMER false
+			#warning "Using software timer to sample PulseSensor."
 #endif
 
 
