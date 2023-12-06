@@ -14,48 +14,22 @@
    This software is not intended for medical use.
 */
 
-/*
-vvvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
-  NOTE: Every Sketch that uses the PulseSensor Playground
-  must define the variable USE_HARDWARE_TIMER *before* including
-  PulseSensorPlayground.h. If you don't, you will get a compiler error
-  about "undefined reference to `PulseSensorPlayground::UsingHardwareTimer".
-
-  In particular, if your Sketch wants the Playground to use interrupts
-  to read and process PulseSensor data, your Sketch must contain the
-  following two lines, in order:
-    #define USE_HARDWARE_TIMER true
-    #include <PulseSensorPlayground.h>
-
-  If, instead, your Sketch does not use interrupts to read PulseSensor
-  data,  your Sketch must instead contain the
-  following two lines, in order:
-    #define USE_HARDWARE_TIMER false
-    #include <PulseSensorPlayground.h>
-
-  See utility/interrupts.h for details.
-
-  Internal, developer note: in the Playground code, don't use
-  USE_HARDWARE_TIMER as a variable; instead, refer to
-  PulseSensorPlayground::UsingHardwareTimer, which is a static variable
-  that reflects what the Sketch defined USE_HARDWARE_TIMER to.
-  Because USE_HARDWARE_TIMER is defined *only* in the user's Sketch,
-  it doesn't exist when the various Playground modules are compiled.
-
-  See further notes in interrupts.h
-^^^^^^^^^  THIS CAN BE REMOVED FOR V2 ^^^^^^^^^^^
-*/
-
-#pragma once
 
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
 
+/*
+    SelectTimer.h will determine if the library supports
+    hardware timer interrupts or not.
+
+*/
 #include "utility/SelectTimer.h"
 
-#ifndef USE_HARDWARE_TIMER
-#define USE_HARDWARE_TIMER true
-#endif
+/*
+    Library version number
+*/
+#define PULSESENSOR_PLAYGROUND_VERSION_STRING "v2.0.0"
+#define PULSESENSOR_PLAYGROUND_VERSION_NUMBER 2
 
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
@@ -204,7 +178,7 @@ vvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
          #define USE_HARDWARE_TIMER false
 ^^^^^^^^  THIS CAN BE REMOVED FOR V2 ^^^^^^^^
     */
-    boolean begin();
+    bool begin();
 
     /*
 
@@ -227,7 +201,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 
 ^^^^^^^^  THIS NEEDS MODIFICATION FOR V2 ^^^^^^^^
     */
-    boolean sawNewSample();
+    bool sawNewSample();
 
     //---------- Per-PulseSensor functions
 
@@ -319,7 +293,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 
        sensorIndex = optional, index (0..numberOfSensors - 1).
     */
-    boolean sawStartOfBeat(int sensorIndex = 0);
+    bool sawStartOfBeat(int sensorIndex = 0);
 
     /*
        Returns true if the given PulseSensor signal is currently
@@ -336,7 +310,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 
        sensorIndex = optional, index (0..numberOfSensors - 1).
     */
-    boolean isInsideBeat(int sensorIndex = 0);
+    bool isInsideBeat(int sensorIndex = 0);
 
     /*
        By default, the threshold value is 530.  JM- is this true?
@@ -406,6 +380,8 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
        Used exclusively with the Pulse Sensor Processing sketch.
     */
     void outputToSerial(char symbol, int data);
+#else
+    #warning "PulseSensor Playground internal Serial commands not used"
 #endif
 
     /*
@@ -429,34 +405,38 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
         Returns true if PulseSensor sampling is paused, false if it is sampling 
 
     */
-	boolean isPaused();
+	bool isPaused();
 
     /*
 	   Pause PulseSensor sampling in order to do other stuff.
        This will effect all PulseSensors if you are using more than one.
 	   
     */
-	boolean pause();
+	bool pause();
 
 	/*
         Resume sampling the PulseSensor after a call to pause().
         This will effect all PulseSensors if you are using more than one.
     */
-	boolean resume();
+	bool resume();
 
 
     // (internal to the library) "this" pointer for the ISR.
+#if USE_HARDWARE_TIMER
     static PulseSensorPlayground *OurThis;
+#endif
 
     byte samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+    bool UsingHardwareTimer;
 
   private:
 
 /*
    Optionally use this (or a different) pin to toggle high
    while the beat finding algorithm is running.
-   Uncomment this line and connect the pin to an oscilloscope
-   to measure algorithm run time.
+   Uncomment this line and the other 3 timingPin lines
+   in PulseSensorPlayground.cpp, then connect the pin
+   to an oscilloscope to measure algorithm run time.
 */
     // int timingPin = 10;
 
@@ -474,28 +454,21 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 #endif
 
 /*
-   (internal to the library)
-   Sets up the sample timer interrupt for this Arduino Platform.
-
-   Returns true if successful, false if we don't yet support
-   the timer interrupt on this Arduino.
-
-   This could be included, or not, based on USE_HARDWARE_TIMER
+   Sets up the sample timer interrupt for this Arduino Platform
+   and the pause and resume routines.
 */
-boolean setupInterrupt();
-boolean disableInterrupt();
-boolean enableInterrupt();
+bool setupInterrupt();
+bool disableInterrupt();
+bool enableInterrupt();
 
 /*
-   Varialbles used
+   Varialbles
 */
-    boolean UsingHardwareTimer;
-	boolean Paused;
+	bool Paused;                // keeps track of whether the algorithm is running
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
-    volatile boolean SawNewSample; // "A sample has arrived from the ISR"
-    // volatile boolean inISR = false;
+    volatile bool SawNewSample; // "A sample has arrived from the ISR"
 #if USE_SERIAL
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
 #endif // USE_SERIAL
@@ -503,29 +476,7 @@ boolean enableInterrupt();
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS
 
-#if defined(ARDUINO_ARCH_RENESAS)
-    uint8_t timer_type;
-    int8_t tindex;
-#endif
-
 };
 
 
-// Macros to link to interrupt disable/enable only if they exist
-// The name is long to avoid collisions with Sketch and Library symbols.
-#if defined(__arc__)||(ARDUINO_SAMD_MKR1000)||(ARDUINO_SAMD_MKRZERO)||(ARDUINO_SAMD_ZERO)\
-||(ARDUINO_ARCH_SAMD)||(ARDUINO_ARCH_STM32)||(ARDUINO_STM32_STAR_OTTO)||(ARDUINO_ARCH_NRF52)\
-||(ARDUINO_NANO33BLE)||(ARDUINO_ARCH_RP2040)||(ARDUINO_ARCH_ESP32)||(ARDUINO_ARCH_MBED_NANO)\
-||(ARDUINO_ARCH_NRF52840)||(ARDUINO_ARCH_SAM)||(ARDUINO_ARCH_RENESAS) || defined(ARDUINO_ARCH_SAMD)
-
-#define DISABLE_PULSE_SENSOR_INTERRUPTS
-#define ENABLE_PULSE_SENSOR_INTERRUPTS
-#else
-#define DISABLE_PULSE_SENSOR_INTERRUPTS cli()
-#define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
-#endif
-
-/*
-
-*/
 #endif // PULSE_SENSOR_PLAYGROUND_H

@@ -1,7 +1,6 @@
 
 #ifndef TIMERHANDLER_H
 #define TIMERHANDLER_H
-#pragma once
 
 /*
    Interrupt handling  functions for PulseSensors.
@@ -148,7 +147,7 @@
         #include "RPi_Pico_TimerInterrupt.h"
         #define SAMPLE_INTERVAL_US 2000L
         RPI_PICO_Timer sampleTimer(0); // the paramater may need to change, depending?
-        boolean sampleTimer_ISR(struct repeating_timer *t){ 
+        bool sampleTimer_ISR(struct repeating_timer *t){ 
           (void) t;
           PulseSensorPlayground::OurThis->onSampleTime();
           return true;

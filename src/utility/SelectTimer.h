@@ -6,10 +6,7 @@
 	USE_HARDWARE_TIMER will be defined true, and the compilation process will proceed without warnings.
 
 	In the event that hardware timer interrupts are not supported,
-	USE_HARDWARE_TIMER will be defined false, and a warning saying this will be presented in Arduino IDE.
-
-	If the target hardware is supported by a specific library example,
-	the library will send an error in the IDE that directs the user to the exact library file name to use.
+	USE_HARDWARE_TIMER will be defined false, and a warning saying this will be printed during compiliation.
 
 	These are the different architectures, and the boards that they cover.
 
@@ -26,19 +23,34 @@
 				Digispark, Adafruit Trinket (old version), etc 
 
 		ARDUINO_ARCH_RENESAS
-			Arduino UNO R4
+			RA4M1 Core-M4
+				Arduino UNO R4 Minima
+				Arduino UNO R4 Wifi
 
 		ARDUINO_SAM_DUE
-			Ardino DUE
+			AT91SAM3X8E Core-M3
+				Ardino DUE
 
 		ARDUINO_ARCH_RP2040
-			Any board with RP2040
+			RP2040
+				Raspi Pico
+				Adafruit Feather RP2040
+				Any board with RP2040
 
 		ARDUINO_NRF52_ADAFRUIT
-			Adafruit and Seeed nRF52 boards (non EMBED boards!)
+			nRF52840 Bluetooth
+				Adafruit and Seeed nRF52 boards (non EMBED boards yet!)
 
 		ARDUINO_ARCH_ESP32
-			Adafruit Feather ESP32-S2
+			ESP32 Family
+				Adafruit Feather ESP32-S2
+				Needs testing on other family members
+
+		ARDUINO_ARCH_SAMD
+			ATSAMD21 Core-M0
+				Adafruit Feather M0
+			ATSAMD51 Core-M4
+				Adafruit Meather M4
 
 
 */
@@ -51,20 +63,19 @@
 || defined(ARDUINO_SAM_DUE) || defined(ARDUINO_NRF52_ADAFRUIT) || defined(ARDUINO_ARCH_ESP32)\
 || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
 #define USE_HARDWARE_TIMER true
-			#warning "Using hardware timer to sample PulseSensor."
+			// #warning "Using hardware timer to sample PulseSensor."
 #else
 #define USE_HARDWARE_TIMER false
 			#warning "Using software timer to sample PulseSensor."
 #endif
 
-// #if defined(ARDUINO_ARCH_ESP32)
-// 	hw_timer_t *sampleTimer = NULL;
-//     portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
-//     void IRAM_ATTR onSampleTime() {
-// 	  portENTER_CRITICAL_ISR(&sampleTimerMux);
-// 	    PulseSensorPlayground::OurThis->onSampleTime();
-// 	  portEXIT_CRITICAL_ISR(&sampleTimerMux);
-// 	}
-// #endif
+// Macros to link to interrupt disable/enable only if they exist
+#ifndef ARDUINO_ARCH_AVR
+#define DISABLE_PULSE_SENSOR_INTERRUPTS
+#define ENABLE_PULSE_SENSOR_INTERRUPTS
+#else
+#define DISABLE_PULSE_SENSOR_INTERRUPTS cli()
+#define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
+#endif
 
 #endif // SELECT_TIMER include guard

@@ -105,17 +105,17 @@ unsigned long PulseSensor::getLastBeatTime() {
   return lastBeatTime;
 }
 
-boolean PulseSensor::sawStartOfBeat() {
+bool PulseSensor::sawStartOfBeat() {
   // Disable interrupts to avoid a race with the ISR.
   DISABLE_PULSE_SENSOR_INTERRUPTS;
-  boolean started = QS;
+  bool started = QS;
   QS = false;
   ENABLE_PULSE_SENSOR_INTERRUPTS;
 
   return started;
 }
 
-boolean PulseSensor::isInsideBeat() {
+bool PulseSensor::isInsideBeat() {
   return Pulse;
 }
 
