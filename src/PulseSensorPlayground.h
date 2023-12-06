@@ -20,7 +20,10 @@
 
 /*
     SelectTimer.h will determine if the library supports
-    hardware timer interrupts or not.
+    hardware timer interrupts or not. If so, it will set
+    up a hardware timer to sample at 500Hz. If not,
+    it will set up a software timer that the main program
+    will have to check often called 
 
 */
 #include "utility/SelectTimer.h"
@@ -154,29 +157,9 @@ class PulseSensorPlayground {
     PulseSensorPlayground(int numberOfSensors = 1);
 
     /*
-       Start reading and processing data from the PulseSensors.
-
+       Start reading and processing data from the PulseSensor(s).
        Your Sketch should make all necessary PulseSensor configuration calls
        before calling begin().
-
-vvvvvvvv  THIS CAN BE REMOVED FOR V2 vvvvvvvv
-       If the Sketch defined USE_HARDWARE_TIMER as true, this function
-       sets up and turns on interrupts for the PulseSensor.
-
-       If instead the Sketch defined USE_HARDWARE_TIMER as false,
-       it initializes what's necessary for the Sketch to process
-       PulsSensor signals. See sawNewSample(), below.
-
-       Returns true if successful, false if unsuccessful.
-       Returns false if PulseSensorPlayground doesn't yet support
-       interrupts on this Arduino platform and the user's Sketch
-       did a #define USE_HARDWARE_TIMER true.
-
-       If begin() returns false, you can either use a different
-       type of Arduino platform, or you can change your Sketch's
-       definition of USE_HARDWARE_TIMER to false:
-         #define USE_HARDWARE_TIMER false
-^^^^^^^^  THIS CAN BE REMOVED FOR V2 ^^^^^^^^
     */
     bool begin();
 
@@ -186,20 +169,15 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
        Returns true if a new sample has been read from each PulseSensor.
        You'll likely want to add this call to your Sketch's loop()
        only if you either 1) want to do something with each sample of the
-       PulseSensor signals, or 2) your Sketch doesn't use interrupts
+       PulseSensor signals, or 2) your Sketch doesn't use a hardware timer
        to read from the PulseSensors.
 
-       NOTE: If your Sketch defined USE_HARDWARE_TIMER as false,
-       you must call pulse.sawNewSample() frequently (at least
+       NOTE: If your Sketch uses a software timer,
+       you must call sawNewSample() frequently (at least
        once every 2 milliseconds) to assure that PulseSensor signals
        are read accurately.
-       A typical loop() that doesn't use interrupts will contain:
-         if (pulse.sawNewSample()) {
-           int latest = pulse.getLatestSample();
-           ...do whatever you want with the sample read from the PulseSensor.
-         }
-
-^^^^^^^^  THIS NEEDS MODIFICATION FOR V2 ^^^^^^^^
+       A typical loop() that uses a software timer should not have 
+       any delay() statements in it.  
     */
     bool sawNewSample();
 

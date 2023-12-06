@@ -127,7 +127,8 @@ void loop() {
      will check to see how much time has passed, then read
      and process a sample (analog voltage) from the PulseSensor.
      Call this function often to maintain 500Hz sample rate,
-     that is every 2 milliseconds.
+     that is every 2 milliseconds. Best not to have any delay() 
+     functions in the loop when using a software timer.
 
      Check the compatibility of your hardware at this link
      <url>
