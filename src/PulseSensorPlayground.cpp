@@ -498,6 +498,7 @@ bool PulseSensorPlayground::setupInterrupt(){
 
   #if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
     sampleTimer.attachInterrupt(SAMPLE_RATE_500HZ, onInterrupt);
+    result = true;
   #endif
 
 #endif // USE_HARDWARE_TIMER

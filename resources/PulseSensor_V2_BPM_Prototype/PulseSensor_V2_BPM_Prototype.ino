@@ -105,12 +105,13 @@ void setup() {
        If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
        which doesn't use interrupts.
     */
+    Serial.println("PulseSensor.begin() returned false!");
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50); Serial.println('!');
+      delay(100); Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
-      delay(50);
+      delay(100);
     }
   }
 }

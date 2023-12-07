@@ -169,7 +169,8 @@
 
     #if defined(ARDUINO_ARCH_ESP32)
         /*
-           The following hardware timer setup supports ESP32
+           The hw_timer_t variable type and all the timer tools
+           come in the board download so we don't need an external library
         */
         hw_timer_t *sampleTimer = NULL;
         portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
