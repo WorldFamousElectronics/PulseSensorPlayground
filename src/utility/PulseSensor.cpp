@@ -125,12 +125,8 @@ void PulseSensor::readNextSample() {
 }
 
 void PulseSensor::processLatestSample() {
-  // Serial.println(threshSetting);
-  // Serial.print('\t');
-  // Serial.println(thresh);
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
-  // if(N % 250 ==0){ Serial.println("\t\t\t!");}
   // Fade the Fading LED
   FadeLevel = FadeLevel - FADE_LEVEL_PER_SAMPLE;
   FadeLevel = constrain(FadeLevel, 0, MAX_FADE_LEVEL);

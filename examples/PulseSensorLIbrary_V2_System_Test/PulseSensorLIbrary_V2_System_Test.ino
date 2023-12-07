@@ -10,7 +10,7 @@
     getLatestSample()
     getPulseAmplitude()
     getLastBeatTime()
-  All other functionality is implicitly tested by running the program.
+  All other functionality is implicitly tested by successfully running the program.
   
 
 
@@ -43,6 +43,8 @@ bool testing = false;
 bool normal = false;
 uint8_t errorCode = 0x00; // maybe used for anything automatic?
 int testBPM, testIBI, testAmp, testLastBeatTime; // test variables
+int beatCounter;
+int firstBeatTime, lastBeatTime, firstToLastBeatTime;
 
 // Standard PulseSensor Stuff
 const int OUTPUT_TYPE = SERIAL_PLOTTER;
@@ -84,6 +86,7 @@ void setup() {
   }
   pulseSensor.pause();
   delay(100);
+  printInstructions();
   
 }
 
@@ -98,46 +101,55 @@ void loop() {
 } // loop
 
 
-void printInstructions(){
-  Serial.print("PulseSensor Playground "); Serial.println(PULSESENSOR_PLAYGROUND_VERSION_STRING);
-  Serial.println("Full System Test Program Instructions");
-  Serial.println("\n\t1) Connect PulseSensor wires to the board under test");
-  Serial.println("\t2) Use a known good signal source to connect PulseSensor to");
-  Serial.println("\t3) Send 'b' to begin the software funcional test");
-  Serial.println("\t4) The test will run 10 seconds, be still and wait for results");
-  Serial.println("\nDuring the test, the board will output PulseSensor raw data");
-  Serial.println("for review in monitor or plotter.");
-  Serial.println("\nSend 'r' to run the pulseSensor with normal output");
-  Serial.println("Send 'p' to pause normal output, and print this message");
-  // Serial.println("");
-  // Serial.println("");
-}
-
-
 /*
   Receives millis() and runs a test for TEST_DURATION 
 */
-uint8_t runTest(unsigned long startTime){
+void runTest(unsigned long startTime){
+  beatCounter = 0;  // reset the beat counter
+  testIBI = 0;
+  testBPM = 0;
+  testAmp = 0;
+  firstBeatTime = -1;
+  lastBeatTime = -1;
   Serial.println("\n\tSTART TEST");
   pulseSensor.resume(); // start the sensing!
+  while((millis() - startTime) < TEST_DURATION){
+    Serial.println(pulseSensor.getLatestSample()); // print raw data for plotter or monitor review
+    if(pulseSensor.sawStartOfBeat()){
+      beatCounter++;
+      if(firstBeatTime < 0){ firstBeatTime = pulseSensor.getLastBeatTime(); }
+      testBPM += pulseSensor.getBeatsPerMinute(); 
+      testIBI += pulseSensor.getInterBeatIntervalMs();
+      testAmp += pulseSensor.getPulseAmplitude();
+    }
+    delay(20);
+  }
+  lastBeatTime = pulseSensor.getLastBeatTime();
+  pulseSensor.pause();
+  testBPM /= beatCounter;
+  testIBI /= beatCounter;
+  testAmp /= beatCounter;
+  firstToLastBeatTime = lastBeatTime - firstBeatTime;
 
-
+  printResults();
+  printInstructions();
+  testing = false;
 }
     
 
 void runNormal(){
-if(pulseSensor.UsingHardwareTimer){
-      delay(20); 
-      pulseSensor.outputSample();
-    } else {
-      if (pulseSensor.sawNewSample()) {
-        if (--pulseSensor.samplesUntilReport == (byte) 0) {
-          pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-          pulseSensor.outputSample();
-        }
+  if(pulseSensor.UsingHardwareTimer){
+    delay(20); 
+    pulseSensor.outputSample();
+  } else {
+    if (pulseSensor.sawNewSample()) {
+      if (--pulseSensor.samplesUntilReport == (byte) 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
       }
     }
-    if (pulseSensor.sawStartOfBeat()) {
-      pulseSensor.outputBeat();
-    }
+  }
+  if (pulseSensor.sawStartOfBeat()) {
+    pulseSensor.outputBeat();
+  }
 }

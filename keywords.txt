@@ -33,6 +33,7 @@ getPulseAmplitude	KEYWORD2
 pause	KEYWORD2
 resume	KEYWORD2
 isPaused	KEYWORD2
+UsingHardwareTimer	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
