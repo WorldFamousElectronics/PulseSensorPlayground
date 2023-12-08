@@ -3,14 +3,14 @@
    The code below will serve a web page on the local network
    and will refresh the BPM with every heartbeat.
    On startup, the ESP32 will send it's network address
-   over the serial port. Use that url in any browser
-   on the same local network to connect and veiw the webpage.
-   
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
+   over the serial port (for example 192.168.1.172).
+   Use that url in any browser on the same local network
+   to connect and veiw the webpage. This code will not
+   make the page available outside your local network.
 
-   Here is a link to the tutorial\
-   https://pulsesensor.com/pages/getting-advanced
+   Check out the PulseSensor Playground Tools for explaination
+   of all user functions and directives.
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:

@@ -4,8 +4,10 @@
       Seeed Studio nRF52 boards (NO EMBED)
    Embed board architecture will be supported in the future.
 
+    Check out the PulseSensor Playground Tools for explaination
+    of all user functions and directives.
+    https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
-/*
     Include the Adafruit bluefruit library
     The target hardware will play the role of Server
     The phone or tablet will play the role of Client
@@ -40,12 +42,12 @@ uint8_t  bpm = 0;
 BLEDis bledis;   
 
 /*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
-
-   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
 #include <PulseSensorPlayground.h>
 

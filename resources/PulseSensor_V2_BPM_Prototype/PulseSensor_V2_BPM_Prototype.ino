@@ -1,8 +1,9 @@
 /*
-   Code to detect heartbeat pulses from the PulseSensor
 
-   This code is a prototype for v2 using a conditional check
-   on the UsingHardwareTimer variable in the library.
+    This code is a prototype for v2 using a conditional check
+    on the UsingHardwareTimer variable in the library.
+
+   Code to detect heartbeat pulses from the PulseSensor
 
    Check out the PulseSensor Playground Tools for explaination
    of all user functions and directives.
@@ -25,10 +26,9 @@
    The PulseSensor Playground library will decide whether to use
    a hardware timer to get accurate sample readings by checking
    what target hardware is being used and adjust accordingly.
-   You will see a "warning" come up in red during compilation
-   if a hardware timer is being used or not.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
-
 #include <PulseSensorPlayground.h>
 
 /*
@@ -135,32 +135,32 @@ void loop() {
      <url>
      and delete the unused code portions in your saved copy, if you like.
   */
-if(pulseSensor.UsingHardwareTimer){
-  /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
-  */
-  delay(20); 
-  // write the latest sample to Serial.
-  pulseSensor.outputSample();
-} else {
-/*
-    When using a software timer, we have to check to see if it is time
-    to acquire another sample. A call to sawNewSample will do that.
-*/
-  if (pulseSensor.sawNewSample()) {
+  if(pulseSensor.UsingHardwareTimer){
     /*
-        Every so often, send the latest Sample.
-        We don't print every sample, because our baud rate
-        won't support that much I/O.
+       Wait a bit.
+       We don't output every sample, because our baud rate
+       won't support that much I/O.
     */
-    if (--pulseSensor.samplesUntilReport == (byte) 0) {
-      pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-      pulseSensor.outputSample();
+    delay(20); 
+    // write the latest sample to Serial.
+    pulseSensor.outputSample();
+  } else {
+  /*
+      When using a software timer, we have to check to see if it is time
+      to acquire another sample. A call to sawNewSample will do that.
+  */
+    if (pulseSensor.sawNewSample()) {
+      /*
+          Every so often, send the latest Sample.
+          We don't print every sample, because our baud rate
+          won't support that much I/O.
+      */
+      if (--pulseSensor.samplesUntilReport == (byte) 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
+      }
     }
   }
-}
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
