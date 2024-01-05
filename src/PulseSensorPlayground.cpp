@@ -496,6 +496,12 @@ bool PulseSensorPlayground::setupInterrupt(){
     result = true;
   #endif
 
+  #if defined(ARDUINO_ARCH_ESP8266)
+        ESP8266Timer sampleTimer;
+    sampleTimer.setFrequency(500,onInterrupt);
+    sampleTimer.restartTimer();
+  #endif
+
   #if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
     sampleTimer.attachInterrupt(SAMPLE_RATE_500HZ, onInterrupt);
     result = true;
@@ -575,6 +581,11 @@ bool PulseSensorPlayground::enableInterrupt(){
     result = true;
   #endif
 
+  #if defined(ARDUINO_ARCH_ESP8266)
+    sampleTimer.restartTimer();
+    result = true;
+  #endif
+
   #if defined(ARDUINO_ARCH_SAM)
     sampleTimer.start(2000);
     result = true;
@@ -649,6 +660,11 @@ bool PulseSensorPlayground::disableInterrupt(){
 
   #if defined(ARDUINO_ARCH_RENESAS)
     sampleTimer.stop();
+    result = true;
+  #endif
+
+  #if defined(ARDUINO_ARCH_ESP8266)
+    sampleTimer.stopTimer();
     result = true;
   #endif
 

@@ -181,6 +181,21 @@
         }
     #endif
 
+    #if defined(ARDUINO_ARCH_ESP8266)
+        /*
+            If you are using ESP8266, include the TimerInterrupt library
+            https://github.com/khoih-prog/ESP8266TimerInterrupt
+        */
+        #define USING_TIM_DIV16 true
+        #include "ESP8266TimerInterrupt.h"
+        
+        void IRAM_ATTR onInterrupt(){
+          PulseSensorPlayground::OurThis->onSampleTime();
+        }
+        ESP8266Timer sampleTimer;
+
+    #endif
+
     #if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
         // These define's must be placed at the beginning before #include "SAMDTimerInterrupt.h"
         // _TIMERINTERRUPT_LOGLEVEL_ from 0 to 4

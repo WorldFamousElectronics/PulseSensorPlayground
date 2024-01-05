@@ -38,7 +38,7 @@
 				Any board with RP2040
 
 		ARDUINO_NRF52_ADAFRUIT
-			nRF52840 Bluetooth
+			nRF52840 Bluetooth Family
 				Adafruit and Seeed nRF52 boards (non EMBED boards yet!)
 
 		ARDUINO_ARCH_ESP32
@@ -52,6 +52,10 @@
 			ATSAMD51 Core-M4
 				Adafruit Meather M4
 
+		ARDUINO_ARCH_ESP8266
+			ESP8266 Family
+			Adafruit Feather Huzzah
+
 
 */
 
@@ -61,7 +65,7 @@
 
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_RENESAS) || defined(ARDUINO_ARCH_RP2040)\
 || defined(ARDUINO_SAM_DUE) || defined(ARDUINO_NRF52_ADAFRUIT) || defined(ARDUINO_ARCH_ESP32)\
-|| defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
+|| defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_ESP8266)
 #define USE_HARDWARE_TIMER true
 			// #warning "Using hardware timer to sample PulseSensor."
 #else
@@ -70,12 +74,12 @@
 #endif
 
 // Macros to link to interrupt disable/enable only if they exist
-#ifndef ARDUINO_ARCH_AVR
-#define DISABLE_PULSE_SENSOR_INTERRUPTS
-#define ENABLE_PULSE_SENSOR_INTERRUPTS
-#else
+#if defined ARDUINO_ARCH_AVR
 #define DISABLE_PULSE_SENSOR_INTERRUPTS cli()
 #define ENABLE_PULSE_SENSOR_INTERRUPTS sei()
+#else
+#define DISABLE_PULSE_SENSOR_INTERRUPTS
+#define ENABLE_PULSE_SENSOR_INTERRUPTS
 #endif
 
 #endif // SELECT_TIMER include guard
