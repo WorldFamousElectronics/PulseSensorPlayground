@@ -1,8 +1,16 @@
 /*
-   Arduino Sketch to detect pulses from two PulseSensors.
+   Arduino Sketch to detect pulses from two PulseSensors
+   and measures the time between! This can be used to derive
+   Pulse Transit Time (PTT)
 
-   Here is a link to the tutorial
-   https://pulsesensor.com/pages/two-or-more-pulse-sensors
+   Here is a link to the Pulse Transit Time tutorial
+   https://pulsesensor.com/pages/pulse-transit-time
+   Using two PulseSensors, connect the one on A0 closer to your heart.
+   Connect the one on A1 at a point further from your heart.
+
+   Check out the PulseSensor Playground Tools for explaination
+   of all user functions and directives.
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -17,25 +25,13 @@
 */
 
 /*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS false tells the library to
-   not use interrupts to read data from the PulseSensor.
-
-   If you want to use interrupts, simply change the line below
-   to read:
-     #define USE_ARDUINO_INTERRUPTS true
-
-   Set US_PS_INTERRUPTS to false if either
-   1) Your Arduino platform's interrupts aren't yet supported
-   by PulseSensor Playground, or
-   2) You don't wish to use interrupts because of the side effects.
-
-   NOTE: if US_PS_INTERRUPTS is false, your Sketch must
-   call pulse.sawNewSample() at least once every 2 milliseconds
-   to accurately read the PulseSensor signal.
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
-#define USE_ARDUINO_INTERRUPTS false
 #include <PulseSensorPlayground.h>
 
 
@@ -49,7 +45,7 @@
    Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
-const int OUTPUT_TYPE = SERIAL_PLOTTER;
+const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
 
 /*
    Number of PulseSensor devices we're reading from.
@@ -79,30 +75,25 @@ const int PULSE_SENSOR_COUNT = 2;
 const int PULSE_INPUT0 = A0;
 const int PULSE_BLINK0 = LED_BUILTIN;
 const int PULSE_FADE0 = 5;
+const int THRESHOLD0 = 550;  
 
 const int PULSE_INPUT1 = A1;
 const int PULSE_BLINK1 = 12;
 const int PULSE_FADE1 = 11;
-
-const int THRESHOLD0 = 550;   // Adjust this number to avoid noise when idle
 const int THRESHOLD1 = 550;
-
-/*
-   samplesUntilReport = the number of samples remaining to read
-   until we want to report a sample over the serial connection.
-
-   We want to report a sample value over the serial port
-   only once every 20 milliseconds (10 samples) to avoid
-   doing Serial output faster than the Arduino can send.
-*/
-byte samplesUntilReport;
-const byte SAMPLES_PER_SERIAL_SAMPLE = 10;
 
 /*
    All the PulseSensor Playground functions.
    We tell it how many PulseSensors we're using.
 */
 PulseSensorPlayground pulseSensor(PULSE_SENSOR_COUNT);
+
+/*
+  Variables used to determine PTT.
+  NOTE: This code assumes the Pulse Sensor on analog pin 0 is closer to he heart.
+*/
+unsigned long lastBeatSampleNumber[PULSE_SENSOR_COUNT];
+int PTT;
 
 void setup() {
   /*
@@ -135,9 +126,7 @@ void setup() {
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
-  
-  // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
-  samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+
 
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
@@ -159,35 +148,65 @@ void setup() {
 }
 
 void loop() {
+  /*
+     See if a sample is ready from the PulseSensor.
 
+     If USE_HARDWARE_TIMER is true, the PulseSensor Playground
+     will automatically read and process samples from
+     the PulseSensor.
+
+     If USE_HARDWARE_TIMER is false, the call to sawNewSample()
+     will check to see how much time has passed, then read
+     and process a sample (analog voltage) from the PulseSensor.
+     Call this function often to maintain 500Hz sample rate,
+     that is every 2 milliseconds. Best not to have any delay() 
+     functions in the loop when using a software timer.
+
+     Check the compatibility of your hardware at this link
+     <url>
+     and delete the unused code portions in your saved copy, if you like.
+  */
+if(pulseSensor.UsingHardwareTimer){
+  /*
+     Wait a bit.
+     We don't output every sample, because our baud rate
+     won't support that much I/O.
+  */
+  delay(20); 
+  // write the latest sample to Serial.
+  pulseSensor.outputSample();
+} else {
+/*
+    When using a software timer, we have to check to see if it is time
+    to acquire another sample. A call to sawNewSample will do that.
+*/
   if (pulseSensor.sawNewSample()) {
-
-    if (--samplesUntilReport == (byte) 0) {
-      samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-
+    /*
+        Every so often, send the latest Sample.
+        We don't print every sample, because our baud rate
+        won't support that much I/O.
+    */
+    if (--pulseSensor.samplesUntilReport == (byte) 0) {
+      pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
       pulseSensor.outputSample();
+    }
+  }
+}
+  /*
+     If a beat has happened on a given PulseSensor
+     since we last checked, write the per-beat information
+     about that PulseSensor to Serial.
+  */
+  for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
+    if (pulseSensor.sawStartOfBeat(i)) {
+      pulseSensor.outputBeat(i);
 
-      /*
-         If a beat has happened on a given PulseSensor
-         since we last checked, write the per-beat information
-         about that PulseSensor to Serial.
-      */
-
-      for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
-        if (pulseSensor.sawStartOfBeat(i)) {
-          pulseSensor.outputBeat(i);
-        }
+      lastBeatSampleNumber[i] = pulseSensor.getLastBeatTime(i);
+      if(i == 1){
+        PTT = lastBeatSampleNumber[1] - lastBeatSampleNumber[0];
+        pulseSensor.outputToSerial('|',PTT);
       }
     }
-
-    /*******
-      Here is a good place to add code that could take up
-      to a millisecond or so to run.
-    *******/
   }
 
-  /******
-     Don't add code here, because it could slow the sampling
-     from the PulseSensor.
-  ******/
 }

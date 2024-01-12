@@ -1,12 +1,13 @@
 /*
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
 
->>>>  This example targest the Arduino UNO R4.
->>>>  It has been tested on the Minima and the WiFi board variants.
+    This code is a prototype for v2 using a conditional check
+    on the UsingHardwareTimer variable in the library.
 
-   Here is a link to the tutorial
-   https://pulsesensor.com/pages/getting-advanced
+   Code to detect heartbeat pulses from the PulseSensor
+
+   Check out the PulseSensor Playground Tools for explaination
+   of all user functions and directives.
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -21,30 +22,14 @@
 */
 
 /*
-   We use the FspTimer to setup a timer interrupt for sample acquisition
-   FspTimer is part of the hardware core files for the UNO R4 
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
-#include "FspTimer.h"
-FspTimer sampleTimer;
-
-
-/*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
-
-   See PulseSensorBPM_Alternative.ino for an example of not using interrupts.
-*/
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
-
-/*
-  This is the timer interrupt service routine where we acquire and process samples
-*/
-void sampleTimerISR(timer_callback_args_t __attribute((unused)) *p_args){
-  PulseSensorPlayground::OurThis->onSampleTime();
-}
 
 /*
    The format of our output.
@@ -94,8 +79,9 @@ void setup() {
      and because that speed provides about 11 bytes per millisecond.
 
      If we used a slower baud rate, we'd likely write bytes faster than
-     they can be transmitted, which would mess up the sample reading
-     calls, which would make the pulse measurement not work properly.
+     they can be transmitted, which would mess up the timing
+     of readSensor() calls, which would make the pulse measurement
+     not work properly.
   */
   Serial.begin(115200);
 
@@ -119,60 +105,68 @@ void setup() {
        If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
        which doesn't use interrupts.
     */
+    Serial.println("PulseSensor.begin() returned false!");
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50); Serial.println('!');
+      delay(100); Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
-      delay(50);
+      delay(100);
     }
   }
-
-/*
-  We have to get control of a timer on the UNO R4. First, we try and see if there are any free timers available.
-  If there are no free timers available, we will just take control of one from some other purpose. 
-  We shouldn't have to force things, but if you use alot of timers, beware of this force use code!
-  You can check to see if you are forcing by un-commenting the "forcing timer get" print line.
-  You can check to see what timer you have under your control by un-commenting the "got timer " print line.
-*/
-  uint8_t timer_type = GPT_TIMER;
-  int8_t tindex = FspTimer::get_available_timer(timer_type);
-  if(tindex == 0){
-    // Serial.println("forcing timer get;")
-    FspTimer::force_use_of_pwm_reserved_timer();
-    tindex = FspTimer::get_available_timer(timer_type);
-  }
-  // Serial.print("got timer "); Serial.println(tindex);
-
-/*
-  sampleTimer.begin sets up the timer that we just got control of as a periodic timer with 500Hz frequency.
-  It also passes the interrupt service routine that we made above. 
-  SAMPLE_RATE_500HZ is defined in the PulseSensorPlayground.h file.
-*/
-  sampleTimer.begin(TIMER_MODE_PERIODIC, timer_type, tindex, SAMPLE_RATE_500HZ, 0.0f, sampleTimerISR);
-  sampleTimer.setup_overflow_irq();
-  sampleTimer.open();
-  sampleTimer.start();
 }
 
 void loop() {
   /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
+     See if a sample is ready from the PulseSensor.
+
+     If USE_HARDWARE_TIMER is true, the PulseSensor Playground
+     will automatically read and process samples from
+     the PulseSensor.
+
+     If USE_HARDWARE_TIMER is false, the call to sawNewSample()
+     will check to see how much time has passed, then read
+     and process a sample (analog voltage) from the PulseSensor.
+     Call this function often to maintain 500Hz sample rate,
+     that is every 2 milliseconds. Best not to have any delay() 
+     functions in the loop when using a software timer.
+
+     Check the compatibility of your hardware at this link
+     <url>
+     and delete the unused code portions in your saved copy, if you like.
   */
-  delay(20);
-
-  // write the latest sample to Serial.
- pulseSensor.outputSample();
-
+  if(pulseSensor.UsingHardwareTimer){
+    /*
+       Wait a bit.
+       We don't output every sample, because our baud rate
+       won't support that much I/O.
+    */
+    delay(20); 
+    // write the latest sample to Serial.
+    pulseSensor.outputSample();
+  } else {
+  /*
+      When using a software timer, we have to check to see if it is time
+      to acquire another sample. A call to sawNewSample will do that.
+  */
+    if (pulseSensor.sawNewSample()) {
+      /*
+          Every so often, send the latest Sample.
+          We don't print every sample, because our baud rate
+          won't support that much I/O.
+      */
+      if (--pulseSensor.samplesUntilReport == (byte) 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
+      }
+    }
+  }
   /*
      If a beat has happened since we last checked,
      write the per-beat information to Serial.
    */
-  if (pulseSensor.sawStartOfBeat()) {
-   pulseSensor.outputBeat();
-  }
+    if (pulseSensor.sawStartOfBeat()) {
+      pulseSensor.outputBeat();
+    }
 
 }
-

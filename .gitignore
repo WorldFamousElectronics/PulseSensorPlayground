@@ -1,3 +1,5 @@
 *.cfg
 *.json
 *.svd
+*.zip
+*.DS_Store

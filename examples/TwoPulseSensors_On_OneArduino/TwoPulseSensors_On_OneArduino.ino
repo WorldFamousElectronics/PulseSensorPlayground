@@ -1,8 +1,12 @@
 /*
    Arduino Sketch to detect pulses from two PulseSensors.
-
+   This sketch will communicate to a Processing sketch on your computor.
    Here is a link to the tutorial
    https://pulsesensor.com/pages/two-or-more-pulse-sensors
+
+   Check out the PulseSensor Playground Tools for explaination
+   of all user functions and directives.
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -17,25 +21,13 @@
 */
 
 /*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS false tells the library to
-   not use interrupts to read data from the PulseSensor.
-
-   If you want to use interrupts, simply change the line below
-   to read:
-     #define USE_ARDUINO_INTERRUPTS true
-
-   Set US_PS_INTERRUPTS to false if either
-   1) Your Arduino platform's interrupts aren't yet supported
-   by PulseSensor Playground, or
-   2) You don't wish to use interrupts because of the side effects.
-
-   NOTE: if US_PS_INTERRUPTS is false, your Sketch must
-   call pulse.sawNewSample() at least once every 2 milliseconds
-   to accurately read the PulseSensor signal.
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
 
@@ -146,17 +138,50 @@ void setup() {
 }
 
 void loop() {
-
   /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
+     See if a sample is ready from the PulseSensor.
+
+     If USE_HARDWARE_TIMER is true, the PulseSensor Playground
+     will automatically read and process samples from
+     the PulseSensor.
+
+     If USE_HARDWARE_TIMER is false, the call to sawNewSample()
+     will check to see how much time has passed, then read
+     and process a sample (analog voltage) from the PulseSensor.
+     Call this function often to maintain 500Hz sample rate,
+     that is every 2 milliseconds. Best not to have any delay() 
+     functions in the loop when using a software timer.
+
+     Check the compatibility of your hardware at this link
+     <url>
+     and delete the unused code portions in your saved copy, if you like.
   */
-  delay(20);
-
-  // write the latest sample to Serial.
-  pulseSensor.outputSample();
-
+  if(pulseSensor.UsingHardwareTimer){
+    /*
+       Wait a bit.
+       We don't output every sample, because our baud rate
+       won't support that much I/O.
+    */
+    delay(20); 
+    // write the latest sample to Serial.
+    pulseSensor.outputSample();
+  } else {
+  /*
+      When using a software timer, we have to check to see if it is time
+      to acquire another sample. A call to sawNewSample will do that.
+  */
+    if (pulseSensor.sawNewSample()) {
+      /*
+          Every so often, send the latest Sample.
+          We don't print every sample, because our baud rate
+          won't support that much I/O.
+      */
+      if (--pulseSensor.samplesUntilReport == (byte) 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
+      }
+    }
+  }
   /*
      If a beat has happened on a given PulseSensor
      since we last checked, write the per-beat information

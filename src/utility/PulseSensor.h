@@ -45,10 +45,10 @@ class PulseSensor {
     int getInterBeatIntervalMs();
 
     // Reads and clears the 'saw start of beat' flag, "QS".
-    boolean sawStartOfBeat();
+    bool sawStartOfBeat();
 
     // Returns true if this PulseSensor signal is inside a beat vs. outside.
-    boolean isInsideBeat();
+    bool isInsideBeat();
 
     // Returns the latest amp value.
     int getPulseAmplitude();
@@ -84,8 +84,8 @@ class PulseSensor {
     volatile int BPM;                // int that holds raw Analog in 0. updated every call to readSensor()
     volatile int Signal;             // holds the latest incoming raw data (0..1023)
     volatile int IBI;                // int that holds the time interval (ms) between beats! Must be seeded!
-    volatile boolean Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
-    volatile boolean QS;             // The start of beat has been detected and not read by the Sketch.
+    volatile bool Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
+    volatile bool QS;             // The start of beat has been detected and not read by the Sketch.
     volatile int FadeLevel;          // brightness of the FadePin, in scaled PWM units. See FADE_SCALE
     volatile int threshSetting;      // used to seed and reset the thresh variable
     volatile int amp;                         // used to hold amplitude of pulse waveform, seeded (sample value)
@@ -100,7 +100,7 @@ class PulseSensor {
     int P;                           // used to find peak in pulse wave, seeded (sample value)
     int T;                           // used to find trough in pulse wave, seeded (sample value)
     int thresh;                      // used to find instant moment of heart beat, seeded (sample value)
-    boolean firstBeat;               // used to seed rate array so we startup with reasonable BPM
-    boolean secondBeat;              // used to seed rate array so we startup with reasonable BPM
+    bool firstBeat;               // used to seed rate array so we startup with reasonable BPM
+    bool secondBeat;              // used to seed rate array so we startup with reasonable BPM
 };
 #endif // PULSE_SENSOR_H

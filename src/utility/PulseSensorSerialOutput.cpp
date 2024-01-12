@@ -42,20 +42,20 @@ void PulseSensorSerialOutput::outputSample(PulseSensor sensors[], int numSensors
     case SERIAL_PLOTTER:
       if (numSensors == 1) {
         pOutput->print(sensors[0].getBeatsPerMinute());
-        pOutput->print(F(","));
+        pOutput->print(',');
         pOutput->print(sensors[0].getInterBeatIntervalMs());
-        pOutput->print(F(","));
-        pOutput->println(sensors[0].getLatestSample());
+        pOutput->print(',');
+        pOutput->print(sensors[0].getLatestSample());
       } else {
         for (int i = 0; i < numSensors; ++i) {
           if (i != 0) {
-            pOutput->print(F(","));
+            pOutput->print(',');
           }
           pOutput->print(sensors[i].getLatestSample());
           // Could output BPM and IBI here.
         }
-        pOutput->println();
       }
+        pOutput->println();
       break;
 
     case PROCESSING_VISUALIZER:

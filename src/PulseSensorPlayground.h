@@ -2,7 +2,7 @@
    A central Playground object to manage a set of PulseSensors.
    See https://www.pulsesensor.com to get started.
 
-   Copyright World Famous Electronics LLC - see LICENSE
+   Copyright World Famous Electronics LLC - see LICENSE -JM why not list the copyright here?
    Contributors:
      Joel Murphy, https://pulsesensor.com
      Yury Gitman, https://pulsesensor.com
@@ -14,39 +14,25 @@
    This software is not intended for medical use.
 */
 
-/*
-  NOTE: Every Sketch that uses the PulseSensor Playground
-  must define the variable USE_ARDUINO_INTERRUPTS *before* including
-  PulseSensorPlayground.h. If you don't, you will get a compiler error
-  about "undefined reference to `PulseSensorPlayground::UsingInterrupts".
-
-  In particular, if your Sketch wants the Playground to use interrupts
-  to read and process PulseSensor data, your Sketch must contain the
-  following two lines, in order:
-    #define USE_ARDUINO_INTERRUPTS true
-    #include <PulseSensorPlayground.h>
-
-  If, instead, your Sketch does not use interrupts to read PulseSensor
-  data,  your Sketch must instead contain the
-  following two lines, in order:
-    #define USE_ARDUINO_INTERRUPTS false
-    #include <PulseSensorPlayground.h>
-
-  See utility/interrupts.h for details.
-
-  Internal, developer note: in the Playground code, don't use
-  USE_ARDUINO_INTERRUPTS as a variable; instead, refer to
-  PulseSensorPlayground::UsingInterrupts, which is a static variable
-  that reflects what the Sketch defined USE_ARDUINO_INTERRUPTS to.
-  Because USE_ARDUINO_INTERRUPTS is defined *only* in the user's Sketch,
-  it doesn't exist when the various Playground modules are compiled.
-
-  See further notes in interrupts.h
-*/
-
 
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
+
+/*
+    SelectTimer.h will determine if the library supports
+    hardware timer interrupts or not. If so, it will set
+    up a hardware timer to sample at 500Hz. If not,
+    it will set up a software timer that the main program
+    will have to check often called 
+
+*/
+#include "utility/SelectTimer.h"
+
+/*
+    Library version number
+*/
+#define PULSESENSOR_PLAYGROUND_VERSION_STRING "v2.0.0"
+#define PULSESENSOR_PLAYGROUND_VERSION_NUMBER 2
 
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
@@ -118,11 +104,12 @@
 
 /*
     Tell the compiler not to include Serial related code.
-    If you are coming up against issues with the Serial class
-    removing the related code here can help.
+    If you are coming up against issues with the Serial class,
+    or have no need for the library's Serial output,
+    you can remove the related code here.
     
-    When true, the library can mangage Serial output,
-    and messages from libraries will be printed.
+    When true, the library will mangage Serial output,
+    and messages from the library will be sent to the Serial specified in the .ino file.
     
     When false, the library will not have any access to the Serial
     class. All the other functionality remains. 
@@ -130,7 +117,8 @@
 #define USE_SERIAL true
 // #define USE_SERIAL false 
 
-#if defined(ARDUINO_ARCH_NRF52)
+
+#if defined(ARDUINO_NRF52_ADAFRUIT)
 #include "Adafruit_TinyUSB.h"
 #endif
 #include <Arduino.h>
@@ -141,6 +129,7 @@
 #include "utility/PulseSensorTimingStatistics.h"
 
 #define SAMPLE_RATE_500HZ 500
+#define SAMPLES_PER_SERIAL_SAMPLE 10
 
 class PulseSensorPlayground {
   public:
@@ -168,48 +157,29 @@ class PulseSensorPlayground {
     PulseSensorPlayground(int numberOfSensors = 1);
 
     /*
-       Start reading and processing data from the PulseSensors.
-
+       Start reading and processing data from the PulseSensor(s).
        Your Sketch should make all necessary PulseSensor configuration calls
        before calling begin().
-
-       If the Sketch defined USE_ARDUINO_INTERRUPTS as true, this function
-       sets up and turns on interrupts for the PulseSensor.
-
-       If instead the Sketch defined USE_ARDUINO_INTERRUPTS as false,
-       it initializes what's necessary for the Sketch to process
-       PulsSensor signals. See sawNewSample(), below.
-
-       Returns true if successful, false if unsuccessful.
-       Returns false if PulseSensorPlayground doesn't yet support
-       interrupts on this Arduino platform and the user's Sketch
-       did a #define USE_ARDUINO_INTERRUPTS true.
-
-       If begin() returns false, you can either use a different
-       type of Arduino platform, or you can change your Sketch's
-       definition of USE_ARDUINO_INTERRUPTS to false:
-         #define USE_ARDUINO_INTERRUPTS false
     */
-    boolean begin();
+    bool begin();
 
     /*
+
+vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
        Returns true if a new sample has been read from each PulseSensor.
        You'll likely want to add this call to your Sketch's loop()
        only if you either 1) want to do something with each sample of the
-       PulseSensor signals, or 2) your Sketch doesn't use interrupts
+       PulseSensor signals, or 2) your Sketch doesn't use a hardware timer
        to read from the PulseSensors.
 
-       NOTE: If your Sketch defined USE_ARDUINO_INTERRUPTS as false,
-       you must call pulse.sawNewSample() frequently (at least
+       NOTE: If your Sketch uses a software timer,
+       you must call sawNewSample() frequently (at least
        once every 2 milliseconds) to assure that PulseSensor signals
        are read accurately.
-       A typical loop() that doesn't use interrupts will contain:
-         if (pulse.sawNewSample()) {
-           int latest = pulse.getLatestSample();
-           ...do whatever you want with the sample read from the PulseSensor.
-         }
+       A typical loop() that uses a software timer should not have 
+       any delay() statements in it.  
     */
-    boolean sawNewSample();
+    bool sawNewSample();
 
     //---------- Per-PulseSensor functions
 
@@ -219,8 +189,7 @@ class PulseSensorPlayground {
        call pulse.analogInput(pin) or pulse.analogInput(pin, sensorIndex).
 
        inputPin = the analog input this PulseSensor is connected to.
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor to configure.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
     void analogInput(int inputPin, int sensorIndex = 0);
 
@@ -233,33 +202,32 @@ class PulseSensorPlayground {
        pulse.blinkOnPulse(blinkPin, sensorIndex).
 
        blinkPin = the pin to blink on each pulse, which you've connected
-         to an LED and 220 ohm resistor, or the built in LED pin
+         to an LED and 1K ohm resistor, or the built in LED pin
          on your Arduino (for example, pin 13 on Arduino Uno).
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor to configure.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
     void blinkOnPulse(int blinkPin, int sensorIndex = 0);
 
     /*
-       By default, the Playground doesn't blink LEDs automatically.
+       By default, the Playground doesn't fade LEDs automatically.
 
-       If you wish the Playground to automatically blink a fading LED
-       during each detected pulse,
-       call fadeOnPulse(fadePin) or fadeOnPulse(fadePin, sensorIndex).
+       If you wish the Playground to automatically fade an LED
+       during each detected pulse, call fadeOnPulse(fadePin)
+       or fadeOnPulse(fadePin, sensorIndex).
 
-       NOTE: the fade pin must be a PWM (Pulse-Width Modulation) pin.
+       NOTE: the fade pin must be able to output PWM (Pulse-Width Modulation).
 
        fadePin = the PWM pin to blink and fade on each pulse,
          which is connected to an LED and a current-limit resistor.
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor to configure.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
     void fadeOnPulse(int fadePin, int sensorIndex = 0);
 
     /*
-       (Internal to library - do not call from a Sketch)
        Perform all the processing necessary when it's time to
        read from all the PulseSensors and process their signals.
+       This function is not called by the user, but in some cases
+       the sketch needs to associate it with other code above the setup.
     */
     void onSampleTime();
 
@@ -267,8 +235,7 @@ class PulseSensorPlayground {
        Returns the most recently read analog value from the given PulseSensor
        (range: 0..1023).
 
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor of interest.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
     int getLatestSample(int sensorIndex = 0);
 
@@ -278,8 +245,7 @@ class PulseSensorPlayground {
        The internal beats-per-minute measure is updated per-PulseSensor,
        when a beat is detected from that PulseSensor.
 
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor of interest.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
     int getBeatsPerMinute(int sensorIndex = 0);
 
@@ -290,30 +256,28 @@ class PulseSensorPlayground {
        The internal IBI measure is updated per-PulseSensor,
        when a beat is detected from that PulseSensor.
 
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor of interest.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
     int getInterBeatIntervalMs(int sensorIndex = 0);
 
     /*
-       Returns true if a new heartbeat (pulse) has been detected
-       from the given PulseSensor since the last call to sawStartOfBeat()
-       on this PulseSensor.
+       Returns true if the moment of a new heartbeat (pulse) has been detected
+       since the last time sawStartOfBeat() was called on this PulseSensor.
 
        Typical use in loop():
          if (pulse.sawStartOfBeat()) {
-           ...do what you want to do per-heartbeat.
+           ...do what you want to do when there is a heartbeat.
          }
 
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor of interest.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
-    boolean sawStartOfBeat(int sensorIndex = 0);
+    bool sawStartOfBeat(int sensorIndex = 0);
 
     /*
        Returns true if the given PulseSensor signal is currently
-       inside a heartbeat. That is, returns true if the signal is above
-       the automatically-set threshold of a beat, false otherwise.
+       inside a heartbeat. Inside a heartbeat means, the signal is above
+       the dynamically-set threshold of a beat. When the signal goes below 
+       the threshold, isInsiceBeat will return false.
 
        Typical use in loop():
          if (pulse.isInsideBeat()) {
@@ -322,15 +286,16 @@ class PulseSensorPlayground {
            ...do what you want while between beats.
          }
 
-       sensorIndex = optional, index (0..numberOfSensors - 1)
-         of the PulseSensor of interest.
+       sensorIndex = optional, index (0..numberOfSensors - 1).
     */
-    boolean isInsideBeat(int sensorIndex = 0);
+    bool isInsideBeat(int sensorIndex = 0);
 
     /*
-       By default, the threshold value is 530.
-       threshold is used to find the heartbeat
-       adjust this value up in the setup function to avoid noise.
+       By default, the threshold value is 530.  JM- is this true?
+       threshold value is used to find the heartbeat.
+       PulseSensor signal idles at V/2 (512 analog value on a 10 bit ADC)
+       It is recommended to set this value above the idle threshold.
+       adjust this value in the setup function to avoid noise.
     */
     void setThreshold(int threshold, int sensorIndex = 0);
 
@@ -350,6 +315,9 @@ class PulseSensorPlayground {
 
     /*
        By default, Playground output is in SERIAL_PLOTTER format.
+       In SERIAL_PLOTTER format, data will be sent to the Serial port
+       in CSV format. Data include the PulseSensor raw signal,
+       Interbeat Interval, and BPM will print with every heartbeat.
 
        If you want output in a different format, call this function once
        sometime before calling pulse.begin().
@@ -357,16 +325,16 @@ class PulseSensorPlayground {
        Remember to call pulse.setSerial() if you want serial output.
 
        outputType = SERIAL_PLOTTER to output to the Arduino Serial Plotter,
-       PROCESSSING_VISUALIZER to output to the Processing Sketch
-       that draws the PulseSensor output.
+       PROCESSSING_VISUALIZER to output formatted to our data visualization 
+       software written in Processing. See www.pulsesensor.com for tutorials.
     */
     void setOutputType(byte outputType);
 
     /*
-       Output the current signal information for each PulseSensor,
+       Output the current raw signal data for each PulseSensor,
        in the previously-set outputType.
 
-       If your Sketch wants to plot samples, it should call this function
+       If your Sketch wants to plot raw sample data, it should call this function
        every so often.
     */
     void outputSample();
@@ -390,55 +358,69 @@ class PulseSensorPlayground {
        Used exclusively with the Pulse Sensor Processing sketch.
     */
     void outputToSerial(char symbol, int data);
+#else
+    #warning "PulseSensor Playground internal Serial commands not used"
 #endif
 
     /*
         Returns the current amplitude of the pulse waveform.
+        Amplitude is calculated after a heartbeat is detected.
+        the value is the ADC counts from the previous trough
+        to the following peak in the raw sensor data.
     */
     int getPulseAmplitude(int sensorIndex = 0);
 
     /*
        Returns the sample number when the last beat was found. 2mS resolution.
+       The sample number will count up continually.
+       As an unsigned long variable, it will roll-over in approx 100 days free running.
     */
     unsigned long getLastBeatTime(int sensorIndex = 0);
 
     
 
-	// check to see if the library is sampling (on interrupt OR in software)
-	boolean isPaused();
+	/*
+        Returns true if PulseSensor sampling is paused, false if it is sampling 
 
-	// option to pause Pulse Sensor sampling in order to do other stuff
-	// this function will only tell the timer to stop interrupting
-	// does not return PWM or other fuctionality to effected pins
-	boolean pause();
+    */
+	bool isPaused();
 
-	// restart sampling the Pulse Sensor after a pause
-	boolean resume();
+    /*
+	   Pause PulseSensor sampling in order to do other stuff.
+       This will effect all PulseSensors if you are using more than one.
+	   
+    */
+	bool pause();
+
+	/*
+        Resume sampling the PulseSensor after a call to pause().
+        This will effect all PulseSensors if you are using more than one.
+    */
+	bool resume();
 
 
     // (internal to the library) "this" pointer for the ISR.
+#if USE_HARDWARE_TIMER
     static PulseSensorPlayground *OurThis;
+#endif
+
+    byte samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+    bool UsingHardwareTimer;
 
   private:
 
 /*
-   Optionally use this (or a different) pin to toggle high while the algorithm is running.
-   Connect it to an oscilloscope to determine algorithm run time.
+   Optionally use this (or a different) pin to toggle high
+   while the beat finding algorithm is running.
+   Uncomment this line and the other 3 timingPin lines
+   in PulseSensorPlayground.cpp, then connect the pin
+   to an oscilloscope to measure algorithm run time.
 */
     // int timingPin = 10;
-/*
-   Configure and enable interrupts to read samples.
-   Call only if PulseSensorPlayground::UsingInterrupts is true.
-
-   This function is defined (vs. declared here) in interrupts.h
-*/
-    // void setupInterrupt();
-	// boolean disableInterrupt();
-	// boolean enableInterrupt();
 
 /*
-    Don't let the library try to print stuff
-    if the serial is not passed to us
+    Print the memory usage of the compiled program.
+    Only do this if the Serial class is enabled.
 */
 #if USE_SERIAL
     #if PULSE_SENSOR_MEMORY_USAGE
@@ -450,35 +432,29 @@ class PulseSensorPlayground {
 #endif
 
 /*
-   If true, the Sketch wants to use interrupts to read the PulseSensor(s).
-
-   This variable is defined (vs. declared here) in interrupts.h
+   Sets up the sample timer interrupt for this Arduino Platform
+   and the pause and resume routines.
 */
-    static boolean UsingInterrupts;
-	boolean Paused;
+bool setupInterrupt();
+bool disableInterrupt();
+bool enableInterrupt();
+
+/*
+   Varialbles
+*/
+	bool Paused;                // keeps track of whether the algorithm is running
     byte SensorCount;              // number of PulseSensors in Sensors[].
     PulseSensor *Sensors;          // use Sensors[idx] to access a sensor.
     volatile unsigned long NextSampleMicros; // Desired time to sample next.
-    volatile boolean SawNewSample; // "A sample has arrived from the ISR"
+    volatile bool SawNewSample; // "A sample has arrived from the ISR"
 #if USE_SERIAL
     PulseSensorSerialOutput SerialOutput; // Serial Output manager.
-#endif
+#endif // USE_SERIAL
 #if PULSE_SENSOR_TIMING_ANALYSIS   // Don't use ram and flash we don't need.
     PulseSensorTimingStatistics *pTiming;
 #endif // PULSE_SENSOR_TIMING_ANALYSIS
 
-#if defined(ARDUINO_ARCH_RENESAS)
-    uint8_t timer_type;
-    int8_t tindex;
-#endif
-
 };
 
-/*
-   We include interrupts.h here instead of above
-   because it depends on variables and functions we declare (vs. define)
-   in PulseSensorPlayground.h.
-*/
-#include "utility/Interrupts.h"
 
 #endif // PULSE_SENSOR_PLAYGROUND_H

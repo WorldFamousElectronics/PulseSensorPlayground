@@ -1,9 +1,14 @@
 /*
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
+   Code to detect pulses from the PulseSensor
+   and move a servo motor to the beat.
+   uses an interrupt service routine.
 
-   Here is a link to the tutorial\
-   https://pulsesensor.com/pages/getting-advanced
+   Here is a link to the tutorial
+   https://pulsesensor.com/pages/pulse-sensor-servo-tutorial
+
+   Check out the PulseSensor Playground Tools for explaination
+   of all user functions and directives.
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -18,32 +23,20 @@
 */
 
 /*
-  Include the DueTimer library. If you don't have it, use library manager to get it.
-  You can also find it at https://github.com/ivanseidel/DueTimer
-  If you use the Servo library, probably want to include that before this inlude. Just sayin'...
-  This will grab the next available timer and call it sampleTimer for use throughout the code
+  Include Servo.h BEFORE you include PusleSensorPlayground.h
+  PulseSensor Playground needs to know if you want to use a Servo.
 */
-#include <DueTimer.h>
-DueTimer sampleTimer = Timer.getAvailable();
+#include <Servo.h>
 
 /*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
-
-   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
-
-/*
- *  Declare the interrupt service routine
- *  This will be used in setup as the interrupt callback in attachInterrupt
- */
-void sampleTimer_ISR(){ 
-  PulseSensorPlayground::OurThis->onSampleTime();
-}
 
 /*
    The format of our output.
@@ -87,6 +80,14 @@ const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
 */
 PulseSensorPlayground pulseSensor;
 
+/*
+  Make a heart servo, the pin to control it with,
+  and a servo position variable
+*/
+Servo heart;
+const int SERVO_PIN = 6;
+int pos = 90;
+
 void setup() {
   /*
      Use 115200 baud because that's what the Processing Sketch expects to read,
@@ -98,9 +99,12 @@ void setup() {
      not work properly.
   */
   Serial.begin(115200);
+  // set up the heart servo on SERVO_PULSE
+  // set servo position to pos (90 degrees, mid position)
+  heart.attach(SERVO_PIN);
+  heart.write(pos);
 
   // Configure the PulseSensor manager.
-
   pulseSensor.analogInput(PULSE_INPUT);
   pulseSensor.blinkOnPulse(PULSE_BLINK);
   pulseSensor.fadeOnPulse(PULSE_FADE);
@@ -116,45 +120,80 @@ void setup() {
        likely because our particular Arduino platform interrupts
        aren't supported yet.
 
-       If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
+       If your Sketch hangs here, try changing USE_ARDUINO_INTERRUPTS to false.
        which doesn't use interrupts.
     */
     for(;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50); Serial.println('!');
+      delay(50);
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
   }
-
-  /*  This starts the sample timer interrupt. Do this last in the setup() routine.
-   *  We are using Timer6 to avoid potential conflict with the servo library
-   *  This timer selection could be better...
-   *  Use pause() and resume() to start and stop sampling on the fly
-   *  Check Resources folder in the library for more tools
-   */
-  sampleTimer.attachInterrupt(sampleTimer_ISR);
-  sampleTimer.start(2000); // Calls every period microseconds
-
 }
 
 void loop() {
   /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
+     See if a sample is ready from the PulseSensor.
+
+     If USE_HARDWARE_TIMER is true, the PulseSensor Playground
+     will automatically read and process samples from
+     the PulseSensor.
+
+     If USE_HARDWARE_TIMER is false, the call to sawNewSample()
+     will check to see how much time has passed, then read
+     and process a sample (analog voltage) from the PulseSensor.
+     Call this function often to maintain 500Hz sample rate,
+     that is every 2 milliseconds. Best not to have any delay() 
+     functions in the loop when using a software timer.
+
+     Check the compatibility of your hardware at this link
+     <url>
+     and delete the unused code portions in your saved copy, if you like.
   */
-  delay(20);
-
-  // write the latest sample to Serial.
- pulseSensor.outputSample();
-
+  if(pulseSensor.UsingHardwareTimer){
+    /*
+       Wait a bit.
+       We don't output every sample, because our baud rate
+       won't support that much I/O.
+    */
+    delay(20); 
+    // write the latest sample to Serial.
+    pulseSensor.outputSample();
+    // write the latest analog value to the heart servo
+    moveServo(pulseSensor.getLatestSample());
+  } else {
   /*
-     If a beat has happened since we last checked,
-     write the per-beat information to Serial.
-   */
-  if (pulseSensor.sawStartOfBeat()) {
-   pulseSensor.outputBeat();
+      When using a software timer, we have to check to see if it is time
+      to acquire another sample. A call to sawNewSample will do that.
+  */
+    if (pulseSensor.sawNewSample()) {
+      /*
+          Every so often, send the latest Sample.
+          We don't print every sample, because our baud rate
+          won't support that much I/O.
+      */
+      if (--pulseSensor.samplesUntilReport == (byte) 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
+        // write the latest analog value to the heart servo
+        moveServo(pulseSensor.getLatestSample());
+        (signal);
+      }
+    }
   }
+  
+}
+
+
+/*
+  Map the Pulse Sensor Signal to the Servo range
+  Pulse Sensor = 0 <> 1023
+  Servo = 0 <> 180
+  Modify as you see fit!
+*/
+void moveServo(int value){
+  pos = map(value,0,1023,0,180);
+  heart.write(pos);
 }

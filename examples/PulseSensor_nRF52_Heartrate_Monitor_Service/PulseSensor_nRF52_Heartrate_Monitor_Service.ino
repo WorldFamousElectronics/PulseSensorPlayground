@@ -1,44 +1,13 @@
 /*
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
+   This code is written to target the following hardrware:
+      Adafruit nRF52 boards
+      Seeed Studio nRF52 boards (NO EMBED)
+   Embed board architecture will be supported in the future.
 
-   This example is designed to target the Adafruit nRF52840 Feather Express.
+    Check out the PulseSensor Playground Tools for explaination
+    of all user functions and directives.
+    https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
-    Install the dependent library. Go to Sketch > Include Library > Mange Libraries.
-    When the Library Manager loads, search for NRF52_TimerInterrupt.
-    Install the latest version.
-
-    Download the nRF Toobox App from Nordic Semiconductor to your phone or tablet.
-    Open the app and select Heart Rate Service, then connect to PulseSensor to view BPM graph.
-
-   Copyright World Famous Electronics LLC - see LICENSE
-   Contributors:
-     Joel Murphy, https://pulsesensor.com
-     Yury Gitman, https://pulsesensor.com
-     Bradford Needham, @bneedhamia, https://bluepapertech.com
-
-   Licensed under the MIT License, a copy of which
-   should have been included with this software.
-
-   This software is not intended for medical use.
-*/
-
-/*
-    The NRF52TimerInterrupt library will set up a hardware timer to trigger
-    sampling of the PulseSensor Playground library.
-    Define the sample interval in microseconds.
-*/
-#include "NRF52TimerInterrupt.h"
-#define SAMPLE_INTERVAL_US        2000 
-
-/*
-   Create an instance of the timer class called Sample_Timer.
-   NRF_TIMER_0 and NRF_TIMER_1 can be used by the core
-   and the bluetool library, so avoid them.
-*/
-NRF52Timer Sample_Timer(NRF_TIMER_3);
-
-/*
     Include the Adafruit bluefruit library
     The target hardware will play the role of Server
     The phone or tablet will play the role of Client
@@ -73,19 +42,15 @@ uint8_t  bpm = 0;
 BLEDis bledis;   
 
 /*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
-
-   See PulseSensor_BPM_Alternative.ino for an example of not using interrupts.
+   Include the PulseSensor Playground library to get all the good stuff!
+   The PulseSensor Playground library will decide whether to use
+   a hardware timer to get accurate sample readings by checking
+   what target hardware is being used and adjust accordingly.
+   You may see a "warning" come up in red during compilation
+   if a hardware timer is not being used.
 */
-#define USE_ARDUINO_INTERRUPTS true
 #include <PulseSensorPlayground.h>
 
-void Timer3_ISR(){
-  PulseSensorPlayground::OurThis->onSampleTime();
-}
 /*
    The format of our output.
 
@@ -183,16 +148,6 @@ void setup() {
   setupHeartrateMonitor();
   startAdvertising();
   Serial.println("Advertising\nConnect via Bluetooth to PulseSensor to view BPM");
-
-/*
-    Start the interrupt timer at the end of setup
-    so it does not interfere with other setup stuff
-*/
-  if (Sample_Timer.attachInterruptInterval(SAMPLE_INTERVAL_US, Timer3_ISR)){
-    Serial.println(F("Starting Timer 3"));
-  } else {
-    Serial.println(F("Timer 3 Startup failed!"));
-  }
 
 } // end of setup()
 

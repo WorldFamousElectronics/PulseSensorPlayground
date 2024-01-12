@@ -13,6 +13,9 @@
 
    This software is not intended for medical use.
 */
+// #ifndef PULSE_SENSOR_PLAYGROUND_H
+// #define PULSE_SENSOR_PLAYGROUND_H
+// #endif
 #include <PulseSensorPlayground.h>
 
 /*
@@ -102,17 +105,17 @@ unsigned long PulseSensor::getLastBeatTime() {
   return lastBeatTime;
 }
 
-boolean PulseSensor::sawStartOfBeat() {
+bool PulseSensor::sawStartOfBeat() {
   // Disable interrupts to avoid a race with the ISR.
   DISABLE_PULSE_SENSOR_INTERRUPTS;
-  boolean started = QS;
+  bool started = QS;
   QS = false;
   ENABLE_PULSE_SENSOR_INTERRUPTS;
 
   return started;
 }
 
-boolean PulseSensor::isInsideBeat() {
+bool PulseSensor::isInsideBeat() {
   return Pulse;
 }
 
@@ -122,12 +125,8 @@ void PulseSensor::readNextSample() {
 }
 
 void PulseSensor::processLatestSample() {
-  // Serial.println(threshSetting);
-  // Serial.print('\t');
-  // Serial.println(thresh);
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
-
   // Fade the Fading LED
   FadeLevel = FadeLevel - FADE_LEVEL_PER_SAMPLE;
   FadeLevel = constrain(FadeLevel, 0, MAX_FADE_LEVEL);

@@ -3,14 +3,14 @@
    The code below will serve a web page on the local network
    and will refresh the BPM with every heartbeat.
    On startup, the ESP32 will send it's network address
-   over the serial port. Use that url in any browser
-   on the same network to connect and veiw the webpage.
-   
-   Code to detect pulses from the PulseSensor,
-   using an interrupt service routine.
+   over the serial port (for example 192.168.1.172).
+   Use that url in any browser on the same local network
+   to connect and veiw the webpage. This code will not
+   make the page available outside your local network.
 
-   Here is a link to the tutorial\
-   https://pulsesensor.com/pages/getting-advanced
+   Check out the PulseSensor Playground Tools for explaination
+   of all user functions and directives.
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
    Copyright World Famous Electronics LLC - see LICENSE
    Contributors:
@@ -36,19 +36,9 @@
 #include <Arduino_JSON.h>
 
 /*
-   The following hardware timer setup supports ESP32
-*/
-hw_timer_t * sampleTimer = NULL;
-portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
+   Include PulseSensor Playground library for all the good stuff!
 
-/*
-   Every Sketch that uses the PulseSensor Playground must
-   define USE_ARDUINO_INTERRUPTS before including PulseSensorPlayground.h.
-   Here, #define USE_ARDUINO_INTERRUPTS true tells the library to use
-   interrupts to automatically read and process PulseSensor data.
 */
-#define USE_ARDUINO_INTERRUPTS true
-//#define NO_PULSE_SENSOR_SERIAL true
 #include <PulseSensorPlayground.h>
 
 /*
@@ -198,19 +188,6 @@ void beginWiFi() {
   Serial.println("\nConnected");
 }
 
-
-/*
-    This is the interrupt service routine.
-    We need to declare it after the PulseSensor Playground
-    library is compiled, so that the onSampleTime
-    function is known.
-*/
-void IRAM_ATTR onSampleTime() {
-  portENTER_CRITICAL_ISR(&sampleTimerMux);
-    PulseSensorPlayground::OurThis->onSampleTime();
-  portEXIT_CRITICAL_ISR(&sampleTimerMux);
-}
-
 /* 
    When sendPulseSignal is true, PulseSensor Signal data
    is sent to the serial port for user monitoring.
@@ -296,15 +273,6 @@ void setup() {
 /*  Print the control information to the serial monitor  */
   printControlInfo();
   
-/*
-    This will set up and start the timer interrupt on ESP32.
-    The interrupt will occur every 2000uS or 500Hz.
-*/
-  sampleTimer = timerBegin(0, 80, true);                
-  timerAttachInterrupt(sampleTimer, &onSampleTime, true);  
-  timerAlarmWrite(sampleTimer, 2000, true);      
-  timerAlarmEnable(sampleTimer);
-
 }
 
 void loop() {
