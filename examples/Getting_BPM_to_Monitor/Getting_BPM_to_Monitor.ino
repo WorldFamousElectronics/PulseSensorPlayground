@@ -23,7 +23,7 @@ PulseSensorPlayground pulseSensor;  // Creates an instance of the PulseSensorPla
 
 void setup() {   
 
-  Serial.begin(9600);          // For Serial Monitor
+  Serial.begin(115200);          // For Serial Monitor
 
   // Configure the PulseSensor object, by assigning our variables to it. 
   pulseSensor.analogInput(PulseWire);   
