@@ -29,7 +29,7 @@
 
 PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
   // Save a static pointer to our playground so the ISR can read it.
-#if USE_HARDWARE_TIMER 
+#if USE_HARDWARE_TIMER    
   OurThis = this;
 #endif
 

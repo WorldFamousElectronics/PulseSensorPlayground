@@ -13,9 +13,6 @@
 
    This software is not intended for medical use.
 */
-// #ifndef PULSE_SENSOR_PLAYGROUND_H
-// #define PULSE_SENSOR_PLAYGROUND_H
-// #endif
 #include <PulseSensorPlayground.h>
 
 /*

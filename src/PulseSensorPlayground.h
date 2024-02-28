@@ -18,6 +18,7 @@
 #ifndef PULSE_SENSOR_PLAYGROUND_H
 #define PULSE_SENSOR_PLAYGROUND_H
 
+#include <Arduino.h>
 /*
     SelectTimer.h will determine if the library supports
     hardware timer interrupts or not. If so, it will set
@@ -28,11 +29,12 @@
 */
 #include "utility/SelectTimer.h"
 
+
 /*
     Library version number
 */
-#define PULSESENSOR_PLAYGROUND_VERSION_STRING "v2.0.0"
-#define PULSESENSOR_PLAYGROUND_VERSION_NUMBER 2
+#define PULSESENSOR_PLAYGROUND_VERSION_STRING "v2.1.0"
+#define PULSESENSOR_PLAYGROUND_VERSION_NUMBER 210
 
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
@@ -130,6 +132,8 @@
 
 #define SAMPLE_RATE_500HZ 500
 #define SAMPLES_PER_SERIAL_SAMPLE 10
+
+
 
 class PulseSensorPlayground {
   public:
@@ -432,6 +436,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 #endif
 
 /*
+
    Sets up the sample timer interrupt for this Arduino Platform
    and the pause and resume routines.
 */

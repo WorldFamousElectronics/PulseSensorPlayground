@@ -179,7 +179,6 @@ void loop() {
         pulseSensor.outputSample();
         // write the latest analog value to the heart servo
         moveServo(pulseSensor.getLatestSample());
-        (signal);
       }
     }
   }

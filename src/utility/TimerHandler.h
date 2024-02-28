@@ -46,7 +46,8 @@
    the platform detected by PulseSensorPlaygroundSetupInterrupt().
 */
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__) || defined(__AVR_ATtiny85__)
-      #if defined Servo_h
+    #if __has_include (<Servo.h>)
+#warning "Detected Servo library in TimerHandler.h"
             #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
                 #ifndef TIMER_VECTOR
                 #define TIMER_VECTOR
@@ -86,12 +87,14 @@
         #endif
       #endif
     #endif
+        // #endif
 
     #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-        #if defined Servo_h
+        #if __has_include (<Servo.h>)
+#warning "Detected Servo library in TimerHandler.h"
             #ifndef TIMER_VECTOR
             #define TIMER_VECTOR
-            ISR(TIMER1_COMPA_vect)
+            ISR(TIMER2_COMPA_vect)
             {
                 DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
 
@@ -103,7 +106,7 @@
         #else
             #ifndef TIMER_VECTOR
             #define TIMER_VECTOR
-            ISR(TIMER2_COMPA_vect)
+            ISR(TIMER1_COMPA_vect)
             {
                 DISABLE_PULSE_SENSOR_INTERRUPTS;         // disable interrupts while we do this
 

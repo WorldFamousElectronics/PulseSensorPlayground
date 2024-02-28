@@ -62,7 +62,6 @@
 #ifndef SELECT_TIMER_H
 #define SELECT_TIMER_H
 
-
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_RENESAS) || defined(ARDUINO_ARCH_RP2040)\
 || defined(ARDUINO_SAM_DUE) || defined(ARDUINO_NRF52_ADAFRUIT) || defined(ARDUINO_ARCH_ESP32)\
 || defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_ESP8266)

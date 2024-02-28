@@ -15,7 +15,6 @@
 */
 #ifndef PULSE_SENSOR_H
 #define PULSE_SENSOR_H
-
 #include <Arduino.h>
 
 class PulseSensor {
