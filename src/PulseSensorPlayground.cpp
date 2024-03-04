@@ -347,7 +347,7 @@ bool PulseSensorPlayground::setupInterrupt(){
   #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 
     // check to see if the Servo library is in use
-    #if defined Servo_h
+    #if __has_include (<Servo.h>)
       // Initializes Timer2 to throw an interrupt every 2mS
       // Interferes with PWM on pins 3 and 11
             #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
@@ -396,7 +396,7 @@ bool PulseSensorPlayground::setupInterrupt(){
     #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 
     // check to see if the Servo library is in use
-    #if defined Servo_h
+    #if __has_include (<Servo.h>) 
         // Initializes Timer1 to throw an interrupt every 2mS.
         // Interferes with PWM on pins 9 and 10
         TCCR1A = 0x00;            // Disable PWM and go into CTC mode
@@ -519,7 +519,7 @@ bool PulseSensorPlayground::enableInterrupt(){
 #if USE_HARDWARE_TIMER
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
-    #if defined Servo_h
+    #if __has_include (<Servo.h>)
             #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
               DISABLE_PULSE_SENSOR_INTERRUPTS;
           TIMSK2 = 0x02;          // Enable OCR2A match interrupt
@@ -541,7 +541,7 @@ bool PulseSensorPlayground::enableInterrupt(){
 
     #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
         // check to see if the Servo library is in use
-    #if defined Servo_h
+    #if __has_include (<Servo.h>)
         DISABLE_PULSE_SENSOR_INTERRUPTS;
             TIMSK1 = 0x02;            // Enable OCR1A match interrupt
             ENABLE_PULSE_SENSOR_INTERRUPTS;
@@ -602,7 +602,7 @@ bool PulseSensorPlayground::disableInterrupt(){
 #if USE_HARDWARE_TIMER
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
     // check to see if the Servo library is in use
-    #if defined Servo_h
+    #if __has_include (<Servo.h>)
             #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
               DISABLE_PULSE_SENSOR_INTERRUPTS;
           TIMSK2 = 0x00;          // Disable OCR2A match interrupt
@@ -624,7 +624,7 @@ bool PulseSensorPlayground::disableInterrupt(){
 
     #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
         // check to see if the Servo library is in use
-    #if defined Servo_h
+    #if __has_include (<Servo.h>)
         DISABLE_PULSE_SENSOR_INTERRUPTS;
         TIMSK1 = 0x00;            // Disable OCR1A match interrupt
         ENABLE_PULSE_SENSOR_INTERRUPTS;
