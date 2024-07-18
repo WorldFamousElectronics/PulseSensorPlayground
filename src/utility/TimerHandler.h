@@ -176,11 +176,11 @@
            come in the board download so we don't need an external library
         */
         hw_timer_t *sampleTimer = NULL;
-        portMUX_TYPE sampleTimerMux = portMUX_INITIALIZER_UNLOCKED;
-        void IRAM_ATTR onInterrupt() {
-          portENTER_CRITICAL_ISR(&sampleTimerMux);
+        portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+        void ARDUINO_ISR_ATTR onInterrupt() {
+          portENTER_CRITICAL_ISR(&timerMux);
             PulseSensorPlayground::OurThis->onSampleTime();
-          portEXIT_CRITICAL_ISR(&sampleTimerMux);
+          portEXIT_CRITICAL_ISR(&timerMux);
         }
     #endif
 

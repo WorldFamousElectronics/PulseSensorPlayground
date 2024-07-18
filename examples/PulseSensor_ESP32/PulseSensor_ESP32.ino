@@ -194,7 +194,7 @@ void beginWiFi() {
    Modified by keys received on the Serial port.
    Use the Serial Plotter to view the PulseSensor Signal wave.
 */
-boolean sendPulseSignal = false;
+bool sendPulseSignal = false;
 
 void setup() {
 /*
@@ -337,7 +337,7 @@ void printControlInfo(){
   Serial.print("\nPulseSensor Server url: ");
   Serial.println(WiFi.localIP());
   Serial.println("Send 'b' to begin sending PulseSensor signal data");
-  Serial.println("Send 'x' to stop sendin PulseSensor signal data");
+  Serial.println("Send 'x' to stop sending PulseSensor signal data");
   Serial.println("Send '?' to print this message");
 }
 
