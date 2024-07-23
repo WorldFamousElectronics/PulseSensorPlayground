@@ -31,8 +31,8 @@
 */
 #include <Arduino.h>
 #include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include <AsyncTCP.h> // https://github.com/dvarrel/ESPAsyncTCP
+#include <ESPAsyncWebServer.h> // https://github.com/dvarrel/ESPAsyncWebSrv
 #include <Arduino_JSON.h>
 
 /*
