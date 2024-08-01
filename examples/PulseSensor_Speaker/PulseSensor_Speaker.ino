@@ -84,7 +84,7 @@ PulseSensorPlayground pulseSensor;
         Follow this tutorial:
         https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial
 */
-const int PIN_SPEAKER = 2;    // speaker on pin2 makes a beep with heartbeat
+const int SPEAKER_PIN = 3;    // speaker on pin3 makes a beep with your heartbeat
 
 
 void setup() {
@@ -183,7 +183,7 @@ void loop() {
    */
   if (pulseSensor.sawStartOfBeat()) {
     pulseSensor.outputBeat();
-    tone(PIN_SPEAKER,932);              // tone(pin,frequency)
+    heartBeep(SPEAKER_PIN,true);
   }
 
   /*
@@ -191,7 +191,25 @@ void loop() {
     Use this to time the duration of the beep
   */
   if(pulseSensor.isInsideBeat() == false){
-    noTone(PIN_SPEAKER);
+    heartBeep(SPEAKER_PIN,false);
   }
 
+}
+/*
+  heartBeep(to beep or not to beep)
+  This function will reliably output a clean tone (500Hz on AVR, sounds about Bb). 
+  You can try the tone() function that comes in the Arduino core if you want a different note, but it will be noisy.
+    The Arduino tone() function starts up a hardware timer at a specific freqeuency, and initializes an interrupt.
+    The problem with using tone() is that the interrupt needs to be called in order to toggle the pin at frequency.
+    The tone() interrupt collides with our PulseSensor interrupt and operations. Thankfully, tone() breaks and not PulseSensor!
+    The arduino core needs to be updated so that the tone library operates 'hands free' like the PWM library.
+    Or, the PWM library needs to be updated to accept a frequency parameter to ensure a clean(er) note.
+    There are some architectures upon which the Tone library might work: nRF52? ESP32? 
+*/
+void heartBeep(int pin, bool beep){
+  if(beep){
+    analogWrite(pin,127);
+  } else {
+    analogWrite(pin,0);
+  }
 }
