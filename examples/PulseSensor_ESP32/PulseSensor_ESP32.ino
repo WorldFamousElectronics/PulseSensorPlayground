@@ -8,6 +8,12 @@
    to connect and veiw the webpage. This code will not
    make the page available outside your local network.
 
+    This example code is fully described in our new book:
+    Heartbeat Sensor Projects with PulseSensor: Prototyping Biofeedback Devices with PulseSensor!
+    https://www.amazon.com/Heartbeat-Sensor-Projects-PulseSensor-Prototyping/dp/148429324X
+    There is also a tutorial online here:
+    https://pulsesensor.com/pages/wifi-server-with-esp32
+
    Check out the PulseSensor Playground Tools for explaination
    of all user functions and directives.
    https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md

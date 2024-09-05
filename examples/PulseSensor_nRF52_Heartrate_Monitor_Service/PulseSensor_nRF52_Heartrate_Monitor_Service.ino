@@ -8,8 +8,16 @@
     of all user functions and directives.
     https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
+    This example code is fully described in our new book:
+    Heartbeat Sensor Projects with PulseSensor: Prototyping Biofeedback Devices with PulseSensor!
+    https://www.amazon.com/Heartbeat-Sensor-Projects-PulseSensor-Prototyping/dp/148429324X
+    There is also a tutorial online here:
+    https://pulsesensor.com/pages/nrf52-bluetooth-low-energy
+*/
+
+/*
     Include the Adafruit bluefruit library
-    The target hardware will play the role of Server
+    The nRF52 will play the role of Server
     The phone or tablet will play the role of Client
 */
 #include <bluefruit.h>
