@@ -214,7 +214,7 @@ void setup() {
   beginWiFi();
   
 /*
-   ESP32 analogRead defaults to 13 bit resolution
+   ESP32 analogRead defaults to 12 bit resolution
    PulseSensor Playground library works with 10 bit
 */
   analogReadResolution(10);
