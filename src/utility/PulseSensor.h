@@ -71,6 +71,16 @@ class PulseSensor {
     // (internal to the library) Updtate the thresh variables.
     void setThreshold(int threshold);
 
+    //  receive Peak value
+    int getPeak(){
+      return P;
+    }
+
+    //  receive Trough value
+    int getTrough(){
+      return  T;
+    }
+
 
   private:
     // Configuration
