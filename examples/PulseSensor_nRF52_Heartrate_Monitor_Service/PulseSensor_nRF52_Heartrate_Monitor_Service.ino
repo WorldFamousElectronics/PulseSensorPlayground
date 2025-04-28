@@ -13,6 +13,10 @@
     https://www.amazon.com/Heartbeat-Sensor-Projects-PulseSensor-Prototyping/dp/148429324X
     There is also a tutorial online here:
     https://pulsesensor.com/pages/nrf52-bluetooth-low-energy
+
+    For more information on the PulseSensor methods and functions
+    go to our Resources page
+    https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 */
 
 /*

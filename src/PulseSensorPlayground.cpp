@@ -128,6 +128,7 @@ bool PulseSensorPlayground::sawNewSample() {
       unsigned long nowMicros = micros();
       if ((long) (NextSampleMicros - nowMicros) > 0L) {
         result = false;  // not time yet.
+        return result;
       }
       NextSampleMicros = nowMicros + MICROS_PER_READ;
 

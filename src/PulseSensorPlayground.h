@@ -131,7 +131,7 @@
 #include "utility/PulseSensorTimingStatistics.h"
 
 #define SAMPLE_RATE_500HZ 500
-#define SAMPLES_PER_SERIAL_SAMPLE 10
+#define SAMPLES_PER_SERIAL_SAMPLE 0x09
 
 
 
@@ -408,7 +408,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
     static PulseSensorPlayground *OurThis;
 #endif
 
-    byte samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+    uint8_t samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
     bool UsingHardwareTimer;
 
   private:

@@ -22,6 +22,10 @@
    should have been included with this software.
 
    This software is not intended for medical use.
+
+   For more information on the PulseSensor methods and functions
+   go to our Resources page
+   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 */
 
 /*
@@ -182,11 +186,11 @@ if(pulseSensor.UsingHardwareTimer){
 */
   if (pulseSensor.sawNewSample()) {
     /*
-        Every so often, send the latest Sample.
+        Every 20 milliseconds, send the latest Sample.
         We don't print every sample, because our baud rate
         won't support that much I/O.
     */
-    if (--pulseSensor.samplesUntilReport == (byte) 0) {
+    if ((pulseSensor.samplesUntilReport--) == 0) {
       pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
       pulseSensor.outputSample();
     }
