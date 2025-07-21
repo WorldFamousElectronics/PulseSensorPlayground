@@ -1,0 +1,35 @@
+# BasedOnStyle: Chromium
+---
+Language: Cpp
+AlignConsecutiveAssignments: true
+AlignConsecutiveBitFields: true
+AlignConsecutiveDeclarations: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: false
+  BeforeCatch: true
+  BeforeElse: false
+ColumnLimit: 85
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ContinuationIndentWidth: 2  # Same as TabWidth
+DerivePointerAlignment: true
+IndentAccessModifiers: true
+IndentCaseLabels: false
+IndentPPDirectives: BeforeHash
+IndentWidth: 2  # Same as TabWidth
+MaxEmptyLinesToKeep: 2
+PenaltyExcessCharacter: 2
+PointerAlignment: Right
+ReferenceAlignment: Left
+ReflowComments: IndentOnly
+SkipMacroDefinitionBody: true
+SortIncludes: Never
+SpaceAfterCStyleCast: true
+SpaceAfterTemplateKeyword: false
+SpacesBeforeTrailingComments: 2
+TabWidth: 2
+UseTab: Never

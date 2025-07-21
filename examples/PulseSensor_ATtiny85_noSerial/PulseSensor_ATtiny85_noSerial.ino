@@ -49,9 +49,9 @@
       Adjust as neccesary.
 */
 const int PULSE_INPUT = A1;
-const int PULSE_BLINK = 1;    // Pin 13 is the on-board LED
+const int PULSE_BLINK = 1;  // Pin 13 is the on-board LED
 const int PULSE_FADE = 0;
-const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
+const int THRESHOLD = 550;  // Adjust this number to avoid noise when idle
 
 /*
    All the PulseSensor Playground functions.
@@ -76,7 +76,7 @@ void setup() {
        If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
        which doesn't use interrupts.
     */
-    for(;;) {
+    for (;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
       delay(50);
@@ -89,9 +89,9 @@ void setup() {
 void loop() {
   /*
      When we're not outputting serial messages
-		 there's not much to do here.
-		 In case you want to add more behavior to the sketch
-		 you can use sawStartOfBeat() or isInsideBeat()
-		 to have the sketch do stuff when there's a beat.
+     there's not much to do here.
+     In case you want to add more behavior to the sketch
+     you can use sawStartOfBeat() or isInsideBeat()
+     to have the sketch do stuff when there's a beat.
   */
 }
