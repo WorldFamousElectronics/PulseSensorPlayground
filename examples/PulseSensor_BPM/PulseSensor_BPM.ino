@@ -67,7 +67,7 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PULSE_INPUT = A0;
 const int PULSE_BLINK = LED_BUILTIN;
 const int PULSE_FADE = 5;
-const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
+const int THRESHOLD = 550;  // Adjust this number to avoid noise when idle
 
 /*
    All the PulseSensor Playground functions.
@@ -106,10 +106,11 @@ void setup() {
        If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
        which doesn't use interrupts.
     */
-    for(;;) {
+    for (;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50); Serial.println('!');
+      delay(50);
+      Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
@@ -117,56 +118,56 @@ void setup() {
 }
 
 void loop() {
-   /*
-     See if a sample is ready from the PulseSensor.
-
-     If USE_HARDWARE_TIMER is true, the PulseSensor Playground
-     will automatically read and process samples from
-     the PulseSensor.
-
-     If USE_HARDWARE_TIMER is false, the call to sawNewSample()
-     will check to see how much time has passed, then read
-     and process a sample (analog voltage) from the PulseSensor.
-     Call this function often to maintain 500Hz sample rate,
-     that is every 2 milliseconds. Best not to have any delay() 
-     functions in the loop when using a software timer.
-
-     Check the compatibility of your hardware at this link
-     <url>
-     and delete the unused code portions in your saved copy, if you like.
-  */
-if(pulseSensor.UsingHardwareTimer){
   /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
-  */
-  delay(20); 
-  // write the latest sample to Serial.
-  pulseSensor.outputSample();
-} else {
-/*
-    When using a software timer, we have to check to see if it is time
-    to acquire another sample. A call to sawNewSample will do that.
-*/
-  if (pulseSensor.sawNewSample()) {
+    See if a sample is ready from the PulseSensor.
+
+    If USE_HARDWARE_TIMER is true, the PulseSensor Playground
+    will automatically read and process samples from
+    the PulseSensor.
+
+    If USE_HARDWARE_TIMER is false, the call to sawNewSample()
+    will check to see how much time has passed, then read
+    and process a sample (analog voltage) from the PulseSensor.
+    Call this function often to maintain 500Hz sample rate,
+    that is every 2 milliseconds. Best not to have any delay()
+    functions in the loop when using a software timer.
+
+    Check the compatibility of your hardware at this link
+    <url>
+    and delete the unused code portions in your saved copy, if you like.
+ */
+  if (pulseSensor.UsingHardwareTimer) {
     /*
+       Wait a bit.
+       We don't output every sample, because our baud rate
+       won't support that much I/O.
+    */
+    delay(20);
+    // write the latest sample to Serial.
+    pulseSensor.outputSample();
+  } else {
+    /*
+      When using a software timer, we have to check to see if it is time
+      to acquire another sample. A call to sawNewSample will do that.
+    */
+    if (pulseSensor.sawNewSample()) {
+      /*
         Every 20 milliseconds, send the latest Sample.
         We don't print every sample, because our baud rate
         won't support that much I/O.
-    */
-    if ((pulseSensor.samplesUntilReport--) == 0) {
-      pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-      pulseSensor.outputSample();
+      */
+      if ((pulseSensor.samplesUntilReport--) == 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
+      }
     }
   }
-}
   /*
-     If a beat has happened since we last checked,
-     write the per-beat information to Serial, formatted as CSV:
-     BPM, IBI, PulseSensor Signal
-   */
-    if (pulseSensor.sawStartOfBeat()) {
-      pulseSensor.outputBeat();
-    }
+    If a beat has happened since we last checked,
+    write the per-beat information to Serial, formatted as CSV:
+    BPM, IBI, PulseSensor Signal
+  */
+  if (pulseSensor.sawStartOfBeat()) {
+    pulseSensor.outputBeat();
+  }
 }

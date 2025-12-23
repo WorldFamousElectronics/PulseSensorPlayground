@@ -25,44 +25,44 @@
 */
 
 /*
-   Include the PulseSensor Playground library to get all the good stuff!
-   The PulseSensor Playground library will decide whether to use
-   a hardware timer to get accurate sample readings by checking
-   what target hardware is being used and adjust accordingly.
-   You may see a "warning" come up in red during compilation
-   if a hardware timer is not being used.
+  Include the PulseSensor Playground library to get all the good stuff!
+  The PulseSensor Playground library will decide whether to use
+  a hardware timer to get accurate sample readings by checking
+  what target hardware is being used and adjust accordingly.
+  You may see a "warning" come up in red during compilation
+  if a hardware timer is not being used.
 */
 #include <PulseSensorPlayground.h>
 
 
 /*
-   The format of our output.
+  The format of our output.
 
-   Set this to PROCESSING_VISUALIZER if you're going to run
+  Set this to PROCESSING_VISUALIZER if you're going to run
     the multi-sensor Processing Visualizer Sketch.
     See https://github.com/WorldFamousElectronics/PulseSensorAmped_2_Sensors
 
-   Set this to SERIAL_PLOTTER if you're going to run
+  Set this to SERIAL_PLOTTER if you're going to run
     the Arduino IDE's Serial Plotter.
 */
 const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
 /*
-   Number of PulseSensor devices we're reading from.
+  Number of PulseSensor devices we're reading from.
 */
 const int PULSE_SENSOR_COUNT = 2;
 
 /*
-   Pinout:
-     PULSE_INPUT = Analog Input. Connected to the pulse sensor
+  Pinout:
+    PULSE_INPUT = Analog Input. Connected to the pulse sensor
       purple (signal) wire. Ends with index number.
-     PULSE_BLINK = digital Output. Connected to an LED (and 1K series resistor)
+    PULSE_BLINK = digital Output. Connected to an LED (and 1K series resistor)
       that will flash on each detected pulse. Ends with index number.
-     PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K series resistor)
+    PULSE_FADE = digital Output. PWM pin onnected to an LED (and 1K series resistor)
       that will smoothly fade with each pulse. Ends with index number.
       NOTE: PULSE_FADE must be a pin that supports PWM. Do not use
       pin 9 or 10, because those pins' PWM interferes with the sample timer. Ends with index number.
-     THRESHOLD should be set higher than the PulseSensor signal idles
+    THRESHOLD should be set higher than the PulseSensor signal idles
       at when there is nothing touching it. The expected idle value
       should be 512, which is 1/2 of the ADC range. To check the idle value
       open a serial monitor and make note of the PulseSensor signal values
@@ -80,32 +80,32 @@ const int PULSE_INPUT1 = A1;
 const int PULSE_BLINK1 = 12;
 const int PULSE_FADE1 = 11;
 
-const int THRESHOLD0 = 550;  
-const int THRESHOLD1 = 550; 
+const int THRESHOLD0 = 550;
+const int THRESHOLD1 = 550;
 
 /*
-   All the PulseSensor Playground functions.
-   We tell it how many PulseSensors we're using.
+  All the PulseSensor Playground functions.
+  We tell it how many PulseSensors we're using.
 */
 PulseSensorPlayground pulseSensor(PULSE_SENSOR_COUNT);
 
 void setup() {
   /*
-     Use 250000 baud because that's what the Processing Sketch expects to read,
-     and because that speed provides about 25 bytes per millisecond,
-     or 50 characters per PulseSensor sample period of 2 milliseconds.
+    Use 250000 baud because that's what the Processing Sketch expects to read,
+    and because that speed provides about 25 bytes per millisecond,
+    or 50 characters per PulseSensor sample period of 2 milliseconds.
 
-     If we used a slower baud rate, we'd likely write bytes faster than
-     they can be transmitted, which would mess up the timing
-     of readSensor() calls, which would make the pulse measurement
-     not work properly.
+    If we used a slower baud rate, we'd likely write bytes faster than
+    they can be transmitted, which would mess up the timing
+    of readSensor() calls, which would make the pulse measurement
+    not work properly.
   */
   Serial.begin(250000);
 
   /*
-     Configure the PulseSensor manager,
-     telling it which PulseSensor (0 or 1)
-     we're configuring.
+    Configure the PulseSensor manager,
+    telling it which PulseSensor (0 or 1)
+    we're configuring.
   */
 
   pulseSensor.analogInput(PULSE_INPUT0, 0);
@@ -153,32 +153,32 @@ void loop() {
      will check to see how much time has passed, then read
      and process a sample (analog voltage) from the PulseSensor.
      Call this function often to maintain 500Hz sample rate,
-     that is every 2 milliseconds. Best not to have any delay() 
+     that is every 2 milliseconds. Best not to have any delay()
      functions in the loop when using a software timer.
 
      Check the compatibility of your hardware at this link
      <url>
      and delete the unused code portions in your saved copy, if you like.
   */
-  if(pulseSensor.UsingHardwareTimer){
+  if (pulseSensor.UsingHardwareTimer) {
     /*
        Wait a bit.
        We don't output every sample, because our baud rate
        won't support that much I/O.
     */
-    delay(20); 
+    delay(20);
     // write the latest sample to Serial.
     pulseSensor.outputSample();
   } else {
-  /*
+    /*
       When using a software timer, we have to check to see if it is time
       to acquire another sample. A call to sawNewSample will do that.
-  */
+    */
     if (pulseSensor.sawNewSample()) {
       /*
-          Every 20 milliseconds, send the latest Sample.
-          We don't print every sample, because our baud rate
-          won't support that much I/O.
+        Every 20 milliseconds, send the latest Sample.
+        We don't print every sample, because our baud rate
+        won't support that much I/O.
       */
       if ((pulseSensor.samplesUntilReport--) == 0) {
         pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
@@ -187,9 +187,9 @@ void loop() {
     }
   }
   /*
-     If a beat has happened on a given PulseSensor
-     since we last checked, write the per-beat information
-     about that PulseSensor to Serial.
+    If a beat has happened on a given PulseSensor
+    since we last checked, write the per-beat information
+    about that PulseSensor to Serial.
   */
   for (int i = 0; i < PULSE_SENSOR_COUNT; ++i) {
     if (pulseSensor.sawStartOfBeat(i)) {

@@ -11,27 +11,21 @@
     getPulseAmplitude()
     getLastBeatTime()
   All other functionality is implicitly tested by successfully running the program.
-  
 
+  Check out the PulseSensor Playground Tools for explaination
+  of all user functions and directives.
+  https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
 
-   Check out the PulseSensor Playground Tools for explaination
-   of all user functions and directives.
-   https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md
+  Copyright World Famous Electronics LLC - see LICENSE
+  Contributors:
+    Joel Murphy, https://pulsesensor.com
+    Yury Gitman, https://pulsesensor.com
+    Bradford Needham, @bneedhamia, https://bluepapertech.com
 
-   Copyright World Famous Electronics LLC - see LICENSE
-   Contributors:
-     Joel Murphy, https://pulsesensor.com
-     Yury Gitman, https://pulsesensor.com
-     Bradford Needham, @bneedhamia, https://bluepapertech.com
+  Licensed under the MIT License, a copy of which
+  should have been included with this software.
 
-   Licensed under the MIT License, a copy of which
-   should have been included with this software.
-
-   This software is not intended for medical use.
-*/
-
-/*
-   Test notes here
+  This software is not intended for medical use.
 */
 
 #include <PulseSensorPlayground.h>
@@ -41,8 +35,8 @@
 unsigned long thisTime;
 bool testing = false;
 bool normal = false;
-uint8_t errorCode = 0x00; // maybe used for anything automatic?
-int testBPM, testIBI, testAmp, testLastBeatTime; // test variables
+uint8_t errorCode = 0x00;  // maybe used for anything automatic?
+int testBPM, testIBI, testAmp, testLastBeatTime;  // test variables
 int beatCounter;
 int firstBeatTime, lastBeatTime, firstToLastBeatTime;
 
@@ -51,7 +45,7 @@ const int OUTPUT_TYPE = SERIAL_PLOTTER;
 const int PULSE_INPUT = A0;
 const int PULSE_BLINK = LED_BUILTIN;
 const int PULSE_FADE = 5;
-const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
+const int THRESHOLD = 550;  // Adjust this number to avoid noise when idle
 
 PulseSensorPlayground pulseSensor;
 
@@ -69,17 +63,18 @@ void setup() {
   // Now that everything is ready, start reading the PulseSensor signal.
   if (!pulseSensor.begin()) {
     /*
-       PulseSensor initialization failed,
-       likely because our particular Arduino platform interrupts
-       aren't supported yet.
+      PulseSensor initialization failed,
+      likely because our particular Arduino platform interrupts
+      aren't supported yet.
 
-       If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
-       which doesn't use interrupts.
+      If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
+      which doesn't use interrupts.
     */
-    for(;;) {
+    for (;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
-      delay(50); Serial.println('!');
+      delay(50);
+      Serial.println('!');
       digitalWrite(PULSE_BLINK, HIGH);
       delay(50);
     }
@@ -87,24 +82,23 @@ void setup() {
   pulseSensor.pause();
   delay(100);
   printInstructions();
-  
 }
 
 void loop() {
-  if(testing){
+  if (testing) {
     runTest(millis());
   }
-  if(normal){
+  if (normal) {
     runNormal();
   }
   checkSerial();
-} // loop
+}  // loop
 
 
 /*
-  Receives millis() and runs a test for TEST_DURATION 
+  Receives millis() and runs a test for TEST_DURATION
 */
-void runTest(unsigned long startTime){
+void runTest(unsigned long startTime) {
   beatCounter = 0;  // reset the beat counter
   testIBI = 0;
   testBPM = 0;
@@ -112,13 +106,15 @@ void runTest(unsigned long startTime){
   firstBeatTime = -1;
   lastBeatTime = -1;
   Serial.println("\n\tSTART TEST");
-  pulseSensor.resume(); // start the sensing!
-  while((millis() - startTime) < TEST_DURATION){
-    Serial.println(pulseSensor.getLatestSample()); // print raw data for plotter or monitor review
-    if(pulseSensor.sawStartOfBeat()){
+  pulseSensor.resume();  // start the sensing!
+  while ((millis() - startTime) < TEST_DURATION) {
+    Serial.println(pulseSensor.getLatestSample());  // print raw data for plotter or monitor review
+    if (pulseSensor.sawStartOfBeat()) {
       beatCounter++;
-      if(firstBeatTime < 0){ firstBeatTime = pulseSensor.getLastBeatTime(); }
-      testBPM += pulseSensor.getBeatsPerMinute(); 
+      if (firstBeatTime < 0) {
+        firstBeatTime = pulseSensor.getLastBeatTime();
+      }
+      testBPM += pulseSensor.getBeatsPerMinute();
       testIBI += pulseSensor.getInterBeatIntervalMs();
       testAmp += pulseSensor.getPulseAmplitude();
     }
@@ -135,11 +131,11 @@ void runTest(unsigned long startTime){
   printInstructions();
   testing = false;
 }
-    
 
-void runNormal(){
-  if(pulseSensor.UsingHardwareTimer){
-    delay(20); 
+
+void runNormal() {
+  if (pulseSensor.UsingHardwareTimer) {
+    delay(20);
     pulseSensor.outputSample();
   } else {
     if (pulseSensor.sawNewSample()) {

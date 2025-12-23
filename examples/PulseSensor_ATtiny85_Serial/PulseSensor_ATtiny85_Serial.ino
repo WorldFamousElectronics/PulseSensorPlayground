@@ -61,17 +61,17 @@ const int OUTPUT_TYPE = PROCESSING_VISUALIZER;
       Adjust as neccesary.
 */
 const int PULSE_INPUT = A1;
-const int PULSE_BLINK = 1;    // Pin 13 is the on-board LED
+const int PULSE_BLINK = 1;  // Pin 13 is the on-board LED
 const int PULSE_FADE = 0;
-const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
-const int TX_PIN = 3;        // Using software serial
+const int THRESHOLD = 550;  // Adjust this number to avoid noise when idle
+const int TX_PIN = 3;       // Using software serial
 const int RX_PIN = 4;
 
 /*
    All the PulseSensor Playground functions.
 */
 PulseSensorPlayground pulseSensor;
-SoftwareSerial pulseUART(TX_PIN,RX_PIN);
+SoftwareSerial pulseUART(TX_PIN, RX_PIN);
 
 void setup() {
   /*
@@ -105,7 +105,7 @@ void setup() {
        If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
        which doesn't use interrupts.
     */
-    for(;;) {
+    for (;;) {
       // Flash the led to show things didn't work.
       digitalWrite(PULSE_BLINK, LOW);
       delay(50);
@@ -127,44 +127,44 @@ void loop() {
      will check to see how much time has passed, then read
      and process a sample (analog voltage) from the PulseSensor.
      Call this function often to maintain 500Hz sample rate,
-     that is every 2 milliseconds. Best not to have any delay() 
+     that is every 2 milliseconds. Best not to have any delay()
      functions in the loop when using a software timer.
 
      Check the compatibility of your hardware at this link
      <url>
      and delete the unused code portions in your saved copy, if you like.
   */
-if(pulseSensor.UsingHardwareTimer){
-  /*
-     Wait a bit.
-     We don't output every sample, because our baud rate
-     won't support that much I/O.
-  */
-  delay(20); 
-  // write the latest sample to Serial.
-  pulseSensor.outputSample();
-} else {
-/*
-    When using a software timer, we have to check to see if it is time
-    to acquire another sample. A call to sawNewSample will do that.
-*/
-  if (pulseSensor.sawNewSample()) {
+  if (pulseSensor.UsingHardwareTimer) {
     /*
+      Wait a bit.
+      We don't output every sample, because our baud rate
+      won't support that much I/O.
+    */
+    delay(20);
+    // write the latest sample to Serial.
+    pulseSensor.outputSample();
+  } else {
+    /*
+      When using a software timer, we have to check to see if it is time
+      to acquire another sample. A call to sawNewSample will do that.
+    */
+    if (pulseSensor.sawNewSample()) {
+      /*
         Every so often, send the latest Sample.
         We don't print every sample, because our baud rate
         won't support that much I/O.
-    */
-    if (--pulseSensor.samplesUntilReport == (byte) 0) {
-      pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-      pulseSensor.outputSample();
+      */
+      if (--pulseSensor.samplesUntilReport == (byte) 0) {
+        pulseSensor.samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+        pulseSensor.outputSample();
+      }
     }
   }
-}
   /*
-     If a beat has happened since we last checked,
-     write the per-beat information to Serial.
-   */
-    if (pulseSensor.sawStartOfBeat()) {
-      pulseSensor.outputBeat();
-    }
+    If a beat has happened since we last checked,
+    write the per-beat information to Serial.
+  */
+  if (pulseSensor.sawStartOfBeat()) {
+    pulseSensor.outputBeat();
+  }
 }
