@@ -12,7 +12,7 @@
  *   PulseSensor Power (Red)     - 3.3V
  *   PulseSensor Ground (Black)  - GND
  * 
- * >> https://pulsesensor.com/pages/esp32-getting-started
+ * >> https://pulsesensor.com/pages/pulsesensor_xiao_esp32s3
  *
  * Copyright World Famous Electronics LLC - see LICENSE
  * Contributors:
@@ -27,7 +27,7 @@
 
 #include <PulseSensorPlayground.h>
 
-const int PULSE_PIN = 0;
+const int PULSE_PIN = 1;
 const int LED_PIN = 21;
 
 PulseSensorPlayground pulseSensor;

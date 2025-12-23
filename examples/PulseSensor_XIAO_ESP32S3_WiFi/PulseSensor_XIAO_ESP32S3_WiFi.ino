@@ -12,7 +12,7 @@
  *   PulseSensor Power (Red)     - 3.3V
  *   PulseSensor Ground (Black)  - GND
  * 
- * >> https://pulsesensor.com/pages/esp32-getting-started
+ * >> https://pulsesensor.com/pages/pulsesensor_xiao_esp32s3
  *
  * Copyright World Famous Electronics LLC - see LICENSE
  * Contributors:
@@ -31,7 +31,7 @@
 #include <WebSocketsServer.h>
 
 const char* WIFI_NAME = "PulseSensor.com";
-const int PULSE_PIN = 0;
+const int PULSE_PIN = 1;
 const int LED_PIN = 21;
 
 PulseSensorPlayground pulseSensor;
@@ -117,7 +117,7 @@ const char DASHBOARD_HTML[] PROGMEM = R"rawliteral(
     canvas.height = 180;
     let data = [];
     const maxPts = 150;
-    
+
     const ws = new WebSocket('ws://' + location.hostname + ':81');
     ws.onopen = () => {
       document.getElementById('status').textContent = 'Connected';
@@ -132,12 +132,12 @@ const char DASHBOARD_HTML[] PROGMEM = R"rawliteral(
       const sig = parseInt(p[0]);
       const bpm = parseInt(p[1]);
       const beat = p[2] === '1';
-      
+
       const valid = bpm >= 40 && bpm <= 200;
       const bpmEl = document.getElementById('bpm');
       const heartEl = document.getElementById('heart');
       const hintEl = document.getElementById('hint');
-      
+
       if (valid) {
         bpmEl.textContent = bpm;
         bpmEl.className = 'bpm-value normal';
@@ -150,12 +150,12 @@ const char DASHBOARD_HTML[] PROGMEM = R"rawliteral(
         hintEl.textContent = 'Place finger on sensor';
       }
       if (beat && valid) setTimeout(() => heartEl.classList.remove('beat'), 150);
-      
+
       data.push(sig);
       if (data.length > maxPts) data.shift();
       drawWave();
     };
-    
+
     function drawWave() {
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(0, 0, canvas.width, canvas.height);

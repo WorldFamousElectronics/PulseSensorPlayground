@@ -16,7 +16,7 @@
  *   OLED VCC                    - 3.3V
  *   OLED GND                    - GND
  * 
- * >> https://pulsesensor.com/pages/esp32-getting-started
+ * >> https://pulsesensor.com/pages/pulsesensor_xiao_esp32s3
  *
  * Copyright World Famous Electronics LLC - see LICENSE
  * Contributors:
@@ -34,7 +34,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 
-const int PULSE_PIN = 0;
+const int PULSE_PIN = 1;
 const int LED_PIN = 21;
 
 PulseSensorPlayground pulseSensor;
@@ -60,7 +60,7 @@ void setup() {
   Wire.begin(5, 6);
   display.begin(0x3C, true);
   display.setTextColor(SH110X_WHITE);
-  
+
   // Splash screen
   display.clearDisplay();
   display.setTextSize(1);

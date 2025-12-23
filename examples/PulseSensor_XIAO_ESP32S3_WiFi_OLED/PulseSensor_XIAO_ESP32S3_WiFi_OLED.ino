@@ -17,7 +17,7 @@
  *   OLED VCC                    - 3.3V
  *   OLED GND                    - GND
  * 
- * >> https://pulsesensor.com/pages/esp32-getting-started
+ * >> https://pulsesensor.com/pages/pulsesensor_xiao_esp32s3
  *
  * Copyright World Famous Electronics LLC - see LICENSE
  * Contributors:
@@ -157,7 +157,6 @@ void updateDisplay() {
   display.clearDisplay();
   display.setTextSize(1);
 
-  // Runtime (top right)
   unsigned long secs = millis() / 1000;
   unsigned long mins = secs / 60;
   secs = secs % 60;
