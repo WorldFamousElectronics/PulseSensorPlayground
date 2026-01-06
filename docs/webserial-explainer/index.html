@@ -1,30 +1,17 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PulseSensor WebSerial Explainer</title>
+  <title>PulseSensor WebSerial</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
       background: #111; 
       color: white; 
-      min-height: 100vh; 
-      padding: 20px; 
-      line-height: 1.6;
+      padding: 15px; 
     }
-    .container { max-width: 1000px; margin: 0 auto; }
-    
-    h1 { text-align: center; margin: 30px 0 20px 0; font-size: 2em; font-weight: 600; }
-    h2 { font-size: 1.1em; color: #ff6b6b; margin: 15px 0 8px 0; font-weight: 600; }
-    h3 { font-size: 0.9em; color: #999; margin: 10px 0 6px 0; font-weight: 500; }
-    
-    p { font-size: 0.9em; opacity: 0.8; margin-bottom: 10px; line-height: 1.5; }
-    
-    a { color: #ff6b6b; text-decoration: none; }
-    a:hover { text-decoration: underline; }
     
     .connection-bar {
       display: flex;
@@ -33,8 +20,7 @@
       padding: 12px 15px;
       background: #1a1a1a;
       border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 0.9em;
+      margin-bottom: 15px;
     }
     
     .status-dot {
@@ -55,106 +41,23 @@
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 0.9em;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
     }
     
     button:hover { background: #ff5252; }
-    
-    .dashboard {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
     
     .panel {
       background: #1a1a1a;
       border: 1px solid #333;
       border-radius: 10px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
+      padding: 15px;
     }
     
-    .panel.large {
-      grid-column: 1 / -1;
-    }
-    
-    .data-value {
-      font-size: 2.5em;
-      font-weight: bold;
-      font-variant-numeric: tabular-nums;
+    .panel h2 {
+      font-size: 1em;
       color: #ff6b6b;
-      margin: 10px 0;
-    }
-    
-    .data-unit {
-      font-size: 0.85em;
-      opacity: 0.6;
-      margin-top: 5px;
-    }
-    
-    .signal-bar {
-      display: flex;
-      align-items: flex-end;
-      gap: 3px;
-      height: 60px;
-      margin: 15px 0;
-      background: #111;
-      border-radius: 4px;
-      padding: 5px;
-    }
-    
-    .signal-bar-item {
-      flex: 1;
-      background: #ff6b6b;
-      opacity: 0.5;
-      border-radius: 2px;
-      transition: opacity 0.1s;
-    }
-    
-    .bpm-range {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75em;
-      opacity: 0.5;
-      margin: 15px 0;
-      gap: 5px;
-    }
-    
-    .bpm-zone {
-      flex: 1;
-      padding: 8px;
-      border-radius: 4px;
-      text-align: center;
-      font-weight: 600;
-    }
-    
-    .bpm-zone.rest { background: rgba(100, 200, 100, 0.2); color: #64c864; }
-    .bpm-zone.normal { background: rgba(100, 150, 255, 0.2); color: #6496ff; }
-    .bpm-zone.active { background: rgba(255, 150, 100, 0.2); color: #ff9664; }
-    .bpm-zone.intense { background: rgba(255, 100, 100, 0.2); color: #ff6464; }
-    
-    .info-box {
-      background: rgba(255, 107, 107, 0.1);
-      border-left: 3px solid #ff6b6b;
-      padding: 12px;
-      border-radius: 4px;
-      font-size: 0.85em;
-      margin-top: 15px;
-    }
-    
-    .info-box strong { color: #ff6b6b; }
-    
-    .waveform-section {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     
     canvas {
@@ -165,321 +68,165 @@
       display: block;
     }
     
+    .variables {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .var-box {
+      background: #111;
+      padding: 10px;
+      border-radius: 6px;
+      border-left: 3px solid;
+    }
+    
+    .var-box .label { font-size: 0.75em; color: #888; }
+    .var-box .value { font-size: 1.4em; font-weight: bold; margin: 4px 0; }
+    .var-box .unit { font-size: 0.7em; color: #555; }
+    
+    .var-box.signal { border-color: #ff6b6b; }
+    .var-box.signal .value { color: #ff6b6b; }
+    .var-box.bpm { border-color: #44ff44; }
+    .var-box.bpm .value { color: #44ff44; }
+    .var-box.ibi { border-color: #ffaa44; }
+    .var-box.ibi .value { color: #ffaa44; }
+    .var-box.beat { border-color: #64c8ff; }
+    .var-box.beat .value { color: #64c8ff; }
+    
+    .heart {
+      display: inline-block;
+      font-size: 1.2em;
+      color: #ff6b6b;
+      transition: transform 0.1s;
+    }
+    
+    .heart.pulse { transform: scale(1.4); }
+    
+    .raw-serial {
+      margin-top: 12px;
+      padding: 10px;
+      background: #0a0a0a;
+      border-radius: 6px;
+      font-family: 'Monaco', 'Consolas', monospace;
+    }
+    
+    .raw-serial .label { font-size: 0.7em; color: #666; margin-bottom: 4px; }
+    .raw-serial .data { font-size: 0.85em; color: #44ff44; }
+    
+    .methods {
+      margin-top: 12px;
+      padding: 10px;
+      background: #0a0a0a;
+      border-radius: 6px;
+      border-left: 3px solid #ffaa44;
+    }
+    
+    .methods .label { font-size: 0.7em; color: #666; margin-bottom: 6px; }
+    .methods .method { font-size: 0.8em; color: #ccc; margin: 3px 0; }
+    .methods .func { color: #ffaa44; font-family: 'Monaco', 'Consolas', monospace; }
+    .methods .live { color: #44ff44; font-family: 'Monaco', 'Consolas', monospace; font-weight: bold; }
+    .methods .desc { color: #666; font-size: 0.85em; }
+    
     .error-message {
       background: #3a1a1a;
       border-left: 3px solid #ff6b6b;
-      padding: 12px;
+      padding: 10px;
       border-radius: 4px;
-      font-size: 0.9em;
-      margin: 15px 0;
+      margin-bottom: 15px;
       display: none;
+      font-size: 0.85em;
     }
     
     .error-message.show { display: block; }
     
-    .code-section {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-    }
-    
-    .code-section {
-      font-size: 1.05em;
-      line-height: 1.6;
-    }
-    
-    .code-section p {
-      font-size: 1.05em;
-    }
-    
-    h3 {
-      color: #ff6b6b;
-      margin-top: 20px;
-      font-size: 1.2em;
-    }
-    
-    .code-block {
-      background: #0a0a0a;
-      border: 1px solid #333;
-      padding: 15px;
-      border-radius: 6px;
-      font-family: 'Monaco', monospace;
-      font-size: 1em;
-      overflow-x: auto;
-      margin: 10px 0;
-      line-height: 1.6;
-      color: #e0e0e0;
+    @media (max-width: 500px) {
+      .variables { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>PulseSensor WebSerial Explainer</h1>
-    
-    <div class="connection-bar">
-      <div>
-        <span class="status-dot" id="statusDot"></span>
-        <span id="statusText">Disconnected</span>
-      </div>
-      <button id="connectBtn">Connect</button>
+  <div class="connection-bar">
+    <div>
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Disconnected</span>
     </div>
+    <button id="connectBtn">Connect</button>
+  </div>
+  
+  <div class="error-message" id="errorMessage"></div>
+  
+  <div class="panel">
+    <h2>Signal Waveform</h2>
+    <canvas id="waveformCanvas"></canvas>
     
-    <div class="error-message" id="errorMessage"></div>
-    
-    <div class="dashboard">
-      
-      <!-- SIGNAL + WAVEFORM PANEL (LARGE) -->
-      <div class="panel large">
-        <h2>Signal Waveform</h2>
-        <h3>Real-time heartbeat pattern + raw sensor reading (Last 12 seconds)</h3>
-        <canvas id="waveformCanvas"></canvas>
-        
-        <div style="margin-top: 15px;">
-          <div style="font-size: 0.9em; color: #999; margin-bottom: 5px;">Signal Value</div>
-          <div class="data-value" id="signalValue" style="font-size: 1.8em;">—</div>
-          <div class="data-unit">0–4095 ADC</div>
-          <div class="signal-bar" id="signalBar"></div>
-          <div style="margin-top: 15px; padding: 10px; background: #0a0a0a; border-radius: 6px; font-family: 'Monaco', monospace;">
-            <div style="font-size: 0.8em; color: #666; margin-bottom: 5px;">Raw Serial @ <span style="color: #ffaa44;">115200 baud</span></div>
-            <div id="rawSerial" style="font-size: 0.95em; color: #44ff44; word-break: break-all;">waiting for data...</div>
-          </div>
-        </div>
-        
-        <div class="info-box">
-          <strong>How to use:</strong> Watch the waveform—you should see smooth peaks and valleys matching your heartbeat. <strong>Jagged or flat = poor contact.</strong> Try: clean your finger, adjust pressure (not too hard!), or try a different finger. The signal value should be between 512–3584 for best results.
-        </div>
+    <div class="variables">
+      <div class="var-box signal">
+        <div class="label">Signal</div>
+        <div class="value" id="liveSignal">—</div>
+        <div class="unit">0–4095</div>
       </div>
-      
-    </div>
-    
-    <div class="code-section">
-      <h2 style="margin-top: 0;">Live Variables from the Board</h2>
-      <p>Real-time values that PulseSensorPlayground is calculating:</p>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; border-left: 3px solid #ff6b6b;">
-          <div style="font-size: 0.9em; color: #999;">Raw Signal</div>
-          <div style="font-size: 2.2em; font-weight: bold; color: #ff6b6b; margin: 10px 0;" id="liveSignal">—</div>
-          <div style="font-size: 0.85em; color: #666;">0–4095 ADC</div>
-        </div>
-        
-        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; border-left: 3px solid #44ff44;">
-          <div style="font-size: 0.9em; color: #999;">BPM (Calculated)</div>
-          <div style="font-size: 2.2em; font-weight: bold; color: #44ff44; margin: 10px 0;" id="liveBpm">—</div>
-          <div style="font-size: 0.85em; color: #666;">Beats per minute</div>
-        </div>
-        
-        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; border-left: 3px solid #ffaa44;">
-          <div style="font-size: 0.9em; color: #999;">IBI</div>
-          <div style="font-size: 2.2em; font-weight: bold; color: #ffaa44; margin: 10px 0;" id="liveIbi">—</div>
-          <div style="font-size: 0.85em; color: #666;">Time between beats (ms)</div>
-        </div>
-        
-        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; border-left: 3px solid #64c8ff;">
-          <div style="font-size: 0.9em; color: #999;">Beat Detected</div>
-          <div style="font-size: 2.2em; font-weight: bold; color: #64c8ff; margin: 10px 0;" id="liveBeat">—</div>
-          <div style="font-size: 0.85em; color: #666;">Heartbeat event</div>
-        </div>
+      <div class="var-box bpm">
+        <div class="label">BPM</div>
+        <div class="value" id="liveBpm">—</div>
+        <div class="unit">beats/min</div>
       </div>
-      
-      <h2 style="margin-top: 30px;">The Arduino Side: PulseSensorPlayground Library</h2>
-      <p>Your Arduino reads the sensor and does the math. Here's how:</p>
-      
-      <h3>Step 1: Install the Library</h3>
-      <p style="background: #1a1a1a; padding: 12px; border-radius: 4px;">
-        Arduino IDE → Sketch → Include Library → Manage Libraries → Search <span style="color: #ffaa44;">"PulseSensor"</span> → Install <span style="color: #ffaa44;">PulseSensor Playground</span> by World Famous Electronics
-      </p>
-      
-      <h3>Step 2: Include & Create</h3>
-      <div class="code-block">
-<span style="color: #ff6b6b;">#include</span> &lt;PulseSensorPlayground.h&gt;  <span style="color: #666;">// Include the library</span>
-PulseSensorPlayground pulseSensor;              <span style="color: #666;">// Create instance</span>
-
-<span style="color: #ff6b6b;">const int</span> PULSE_PIN = <span style="color: #44ff44;">1</span>;  <span style="color: #666;">// XIAO ESP32-S3</span>
+      <div class="var-box ibi">
+        <div class="label">IBI</div>
+        <div class="value" id="liveIbi">—</div>
+        <div class="unit">ms</div>
       </div>
-      
-      <h3>Step 3: Setup (Initialize)</h3>
-      <div class="code-block">
-<span style="color: #64c8ff;">void</span> <span style="color: #ffaa44;">setup</span>() {
-  Serial.<span style="color: #ffaa44;">begin</span>(<span style="color: #44ff44;">115200</span>);     <span style="color: #666;">// USB serial to browser</span>
-  pulseSensor.<span style="color: #ffaa44;">analogInput</span>(PULSE_PIN);
-  pulseSensor.<span style="color: #ffaa44;">setThreshold</span>(<span style="color: #44ff44;">550</span>);       <span style="color: #666;">// Sensitivity</span>
-  
-  <span style="color: #ff6b6b;">if</span> (pulseSensor.<span style="color: #ffaa44;">begin</span>()) {
-    Serial.<span style="color: #ffaa44;">println</span>(<span style="color: #ffaa44;">"PulseSensor ready"</span>);
-  }
-}
-      </div>
-      
-      <h3>Step 4: Loop (Read & Send)</h3>
-      <div class="code-block">
-<span style="color: #64c8ff;">void</span> <span style="color: #ffaa44;">loop</span>() {
-  <span style="color: #ff6b6b;">int</span> signal = pulseSensor.<span style="color: #ffaa44;">getLatestSample</span>();
-  <span style="color: #ff6b6b;">int</span> bpm = pulseSensor.<span style="color: #ffaa44;">getBeatsPerMinute</span>();
-  <span style="color: #ff6b6b;">int</span> ibi = pulseSensor.<span style="color: #ffaa44;">getInterBeatIntervalMs</span>();
-  <span style="color: #ff6b6b;">bool</span> beat = pulseSensor.<span style="color: #ffaa44;">sawStartOfBeat</span>();
-  
-  <span style="color: #666;">// Send to browser as CSV:</span>
-  Serial.<span style="color: #ffaa44;">print</span>(signal);       Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #ffaa44;">","</span>);
-  Serial.<span style="color: #ffaa44;">print</span>(bpm);          Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #ffaa44;">","</span>);
-  Serial.<span style="color: #ffaa44;">print</span>(ibi);          Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #ffaa44;">","</span>);
-  Serial.<span style="color: #ffaa44;">println</span>(beat ? <span style="color: #44ff44;">1</span> : <span style="color: #44ff44;">0</span>);
-  
-  <span style="color: #ffaa44;">delay</span>(<span style="color: #44ff44;">20</span>);  <span style="color: #666;">// ~50 samples per second</span>
-}
-      </div>
-      
-      <h3>Step 5: Full Sketch (Copy & Paste)</h3>
-      <p style="margin-bottom: 15px;">This complete sketch works on <strong>any Arduino-compatible board</strong>. Just change the pin number:</p>
-      <div style="background: #1a1a1a; border-left: 3px solid #64c8ff; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.95em;">
-        <div><span style="color: #64c8ff;">Arduino Uno/Nano/Mega:</span> <code style="color: #ffaa44;">const int PULSE_PIN = A0;</code></div>
-        <div><span style="color: #64c8ff;">XIAO ESP32-S3:</span> <code style="color: #ffaa44;">const int PULSE_PIN = 1;</code></div>
-        <div><span style="color: #64c8ff;">ESP32 DevKit:</span> <code style="color: #ffaa44;">const int PULSE_PIN = 34;</code> <span style="color: #666;">(or any ADC pin)</span></div>
-      </div>
-      <div class="code-block" style="max-height: 500px; overflow-y: auto; font-size: 0.9em;">
-<span style="color: #666;">/*
- * PulseSensor WebSerial Example
- * 
- * Reads PulseSensor and sends data over USB Serial
- * for browser visualization using WebSerial API
- * 
- * Wiring:
- *   PulseSensor Signal → A0 (or your board's ADC pin)
- *   PulseSensor +  → 3.3V (or 5V on classic Arduino)
- *   PulseSensor -  → GND
- * 
- * Install PulseSensorPlayground library:
- *   Arduino IDE → Sketch → Include Library → Manage Libraries
- *   Search "PulseSensor" → Install "PulseSensor Playground"
- * 
- * By: World Famous Electronics
- * License: MIT
- */</span>
-
-<span style="color: #ff6b6b;">#include</span> &lt;PulseSensorPlayground.h&gt;
-
-<span style="color: #666;">// Create an instance</span>
-PulseSensorPlayground pulseSensor;
-
-<span style="color: #666;">// Pin where your sensor is connected
-// Arduino Uno/Nano/Mega: use A0
-// XIAO ESP32-S3: use 1 (GPIO 1)
-// ESP32 DevKit: use 34 or other ADC pin</span>
-<span style="color: #ff6b6b;">const int</span> PULSE_PIN = <span style="color: #44ff44;">1</span>;  <span style="color: #666;">// ← Change for your board</span>
-
-<span style="color: #64c8ff;">void</span> <span style="color: #ffaa44;">setup</span>() {
-  Serial.<span style="color: #ffaa44;">begin</span>(<span style="color: #44ff44;">115200</span>);
-  <span style="color: #ffaa44;">delay</span>(<span style="color: #44ff44;">1000</span>);
-  
-  <span style="color: #666;">// Tell library which pin has the sensor</span>
-  pulseSensor.<span style="color: #ffaa44;">analogInput</span>(PULSE_PIN);
-  
-  <span style="color: #666;">// Optional: adjust sensitivity (higher = less sensitive)
-  // Try 550 as starting point, adjust if needed</span>
-  pulseSensor.<span style="color: #ffaa44;">setThreshold</span>(<span style="color: #44ff44;">550</span>);
-  
-  <span style="color: #666;">// Start the library</span>
-  <span style="color: #ff6b6b;">if</span> (pulseSensor.<span style="color: #ffaa44;">begin</span>()) {
-    Serial.<span style="color: #ffaa44;">println</span>(<span style="color: #ffaa44;">"PulseSensor ready"</span>);
-    Serial.<span style="color: #ffaa44;">println</span>(<span style="color: #ffaa44;">"Click 'Connect' above and put finger on sensor"</span>);
-  } <span style="color: #ff6b6b;">else</span> {
-    Serial.<span style="color: #ffaa44;">println</span>(<span style="color: #ffaa44;">"PulseSensor failed to initialize"</span>);
-    <span style="color: #ff6b6b;">while</span> (<span style="color: #44ff44;">1</span>) {
-      Serial.<span style="color: #ffaa44;">println</span>(<span style="color: #ffaa44;">"ERROR"</span>);
-      <span style="color: #ffaa44;">delay</span>(<span style="color: #44ff44;">1000</span>);
-    }
-  }
-}
-
-<span style="color: #64c8ff;">void</span> <span style="color: #ffaa44;">loop</span>() {
-  <span style="color: #666;">// Get the raw analog signal (0–4095 on ESP32, 0–1023 on classic Arduino)</span>
-  <span style="color: #ff6b6b;">int</span> signal = pulseSensor.<span style="color: #ffaa44;">getLatestSample</span>();
-  
-  <span style="color: #666;">// Get calculated BPM (beats per minute)</span>
-  <span style="color: #ff6b6b;">int</span> bpm = pulseSensor.<span style="color: #ffaa44;">getBeatsPerMinute</span>();
-  
-  <span style="color: #666;">// Get inter-beat interval in milliseconds</span>
-  <span style="color: #ff6b6b;">int</span> ibi = pulseSensor.<span style="color: #ffaa44;">getInterBeatIntervalMs</span>();
-  
-  <span style="color: #666;">// True if a beat was just detected</span>
-  <span style="color: #ff6b6b;">bool</span> beat = pulseSensor.<span style="color: #ffaa44;">sawStartOfBeat</span>();
-  
-  <span style="color: #666;">// Send to browser: signal,bpm,ibi,beat</span>
-  Serial.<span style="color: #ffaa44;">print</span>(signal);
-  Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #ffaa44;">","</span>);
-  Serial.<span style="color: #ffaa44;">print</span>(bpm);
-  Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #ffaa44;">","</span>);
-  Serial.<span style="color: #ffaa44;">print</span>(ibi);
-  Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #ffaa44;">","</span>);
-  Serial.<span style="color: #ffaa44;">println</span>(beat ? <span style="color: #44ff44;">1</span> : <span style="color: #44ff44;">0</span>);
-  
-  <span style="color: #ffaa44;">delay</span>(<span style="color: #44ff44;">20</span>);  <span style="color: #666;">// Send ~50x per second</span>
-}
-      </div>
-      
-      <h2>Key Methods (What the Library Does)</h2>
-      <div style="background: #1a1a1a; border-left: 3px solid #ffaa44; padding: 15px; border-radius: 6px; margin: 15px 0;">
-        <div style="font-size: 1.1em; line-height: 1.8; color: #fff;">
-          <div><span style="color: #ffaa44;">getLatestSample()</span> → raw ADC value <span style="color: #666;">(0–4095)</span></div>
-          <div><span style="color: #ffaa44;">getBeatsPerMinute()</span> → calculated BPM</div>
-          <div><span style="color: #ffaa44;">getInterBeatIntervalMs()</span> → milliseconds between beats</div>
-          <div><span style="color: #ffaa44;">sawStartOfBeat()</span> → true when heartbeat detected</div>
-          <div><span style="color: #ffaa44;">setThreshold(value)</span> → sensitivity (550 = good start)</div>
-        </div>
+      <div class="var-box beat">
+        <div class="label">Beat</div>
+        <div class="value"><span id="liveBeat">—</span> <span class="heart" id="heart">♥</span></div>
+        <div class="unit">detected</div>
       </div>
     </div>
     
-    <div style="background: #1a1a1a; border-left: 3px solid #ff9999; padding: 20px; border-radius: 8px; margin: 20px 0;">
-      <h2 style="margin-top: 0;">Why Web Serial?</h2>
-      <p>
-        The Web Serial API (W3C 2017, <a href="https://developer.chrome.com/articles/serial/" target="_blank">Google Chrome</a>) gives your browser direct USB access—no software to install, no WiFi needed. Your board does all the math using <a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground" target="_blank">PulseSensorPlayground</a>, sends only the results, and your browser visualizes them.
-      </p>
+    <div class="raw-serial">
+      <div class="label">Raw Serial @ 115200 baud</div>
+      <div class="data" id="rawSerial">waiting for data...</div>
     </div>
     
+    <div class="methods">
+      <div class="label">Key Methods (PulseSensorPlayground Library)</div>
+      <div class="method"><span class="func">getLatestSample()</span> → <span class="live" id="methodSignal">—</span> <span class="desc">raw ADC (0–4095)</span></div>
+      <div class="method"><span class="func">getBeatsPerMinute()</span> → <span class="live" id="methodBpm">—</span> <span class="desc">calculated BPM</span></div>
+      <div class="method"><span class="func">getInterBeatIntervalMs()</span> → <span class="live" id="methodIbi">—</span> <span class="desc">ms between beats</span></div>
+      <div class="method"><span class="func">sawStartOfBeat()</span> → <span class="live" id="methodBeat">—</span> <span class="desc">true when beat detected</span></div>
+      <div class="method"><span class="func">setThreshold(550)</span> <span class="desc">← sensitivity setting</span></div>
+    </div>
   </div>
 
   <script>
-    // WebSerial Helper (embedded)
     class PulseSensorSerial {
       constructor(options = {}) {
         this.port = null;
         this.reader = null;
-        this.writer = null;
         this.isConnected = false;
         this.baudRate = options.baudRate || 115200;
-        this.debug = options.debug || false;
         this.onData = options.onData || (() => {});
         this.onConnect = options.onConnect || (() => {});
         this.onDisconnect = options.onDisconnect || (() => {});
         this.onError = options.onError || (() => {});
       }
 
-      static isSupported() {
-        return 'serial' in navigator;
-      }
+      static isSupported() { return 'serial' in navigator; }
 
       async connect() {
         if (!PulseSensorSerial.isSupported()) {
-          const msg = 'WebSerial API not supported. Use Chrome, Edge, or Brave.';
-          console.error(msg);
-          this.onError(msg);
+          this.onError('WebSerial not supported. Use Chrome, Edge, or Brave.');
           return false;
         }
-
         try {
-          console.log('Requesting port...');
           this.port = await navigator.serial.requestPort();
-          console.log('Port selected, opening...');
           await this.port.open({ baudRate: this.baudRate });
-          console.log('Port opened');
           this.isConnected = true;
           this.onConnect();
           this.readLoop();
           return true;
         } catch (error) {
-          console.error('Connection error:', error);
           this.onError(`Connection failed: ${error.message}`);
           return false;
         }
@@ -487,20 +234,9 @@ PulseSensorPlayground pulseSensor;
 
       async disconnect() {
         this.isConnected = false;
-
         try {
-          if (this.reader) {
-            await this.reader.cancel();
-            this.reader = null;
-          }
-          if (this.writer) {
-            this.writer.releaseLock();
-            this.writer = null;
-          }
-          if (this.port) {
-            await this.port.close();
-            this.port = null;
-          }
+          if (this.reader) { await this.reader.cancel(); this.reader = null; }
+          if (this.port) { await this.port.close(); this.port = null; }
           this.onDisconnect();
         } catch (error) {
           this.onError(`Disconnect error: ${error.message}`);
@@ -509,88 +245,53 @@ PulseSensorPlayground pulseSensor;
 
       async readLoop() {
         try {
-          console.log('Starting readLoop...');
           const textDecoder = new TextDecoderStream();
-          const readableStreamClosed = this.port.readable.pipeTo(textDecoder.writable);
+          this.port.readable.pipeTo(textDecoder.writable);
           this.reader = textDecoder.readable.getReader();
-          this.writer = this.port.writable.getWriter();
-          console.log('Reader and writer ready');
-
           let buffer = '';
-
           while (this.isConnected) {
             const { value, done } = await this.reader.read();
             if (done) break;
-
             buffer += value;
             const lines = buffer.split('\n');
             buffer = lines.pop();
-
             for (const line of lines) {
               const trimmed = line.trim();
-              if (trimmed.length > 0) {
-                this.onData(trimmed);
-              }
+              if (trimmed.length > 0) this.onData(trimmed);
             }
           }
         } catch (error) {
-          console.error('ReadLoop error:', error);
-          if (this.isConnected) {
-            this.onError(`Read error: ${error.message}`);
-          }
+          if (this.isConnected) this.onError(`Read error: ${error.message}`);
         } finally {
           this.isConnected = false;
           this.onDisconnect();
         }
       }
-
-      async send(data) {
-        if (!this.isConnected || !this.writer) {
-          this.onError('Not connected');
-          return false;
-        }
-
-        try {
-          const encoder = new TextEncoder();
-          const encodedData = encoder.encode(data + '\n');
-          await this.writer.write(encodedData);
-          return true;
-        } catch (error) {
-          this.onError(`Send error: ${error.message}`);
-          return false;
-        }
-      }
     }
 
-    // Dashboard
-    const HISTORY_LENGTH = 600;  // 12 seconds at 50Hz
-    
+    const HISTORY_LENGTH = 600;
     let waveformHistory = new Array(HISTORY_LENGTH).fill(2048);
     let minSignal = 2048, maxSignal = 2048;
 
     const connectBtn = document.getElementById('connectBtn');
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
-    const signalValue = document.getElementById('signalValue');
-    const signalBar = document.getElementById('signalBar');
     const errorMessage = document.getElementById('errorMessage');
     const liveSignal = document.getElementById('liveSignal');
     const liveBpm = document.getElementById('liveBpm');
     const liveIbi = document.getElementById('liveIbi');
     const liveBeat = document.getElementById('liveBeat');
+    const heart = document.getElementById('heart');
     const rawSerial = document.getElementById('rawSerial');
-    
-    // Debug: verify button exists
-    console.log('Connect button found:', connectBtn !== null);
-    if (connectBtn === null) {
-      console.error('ERROR: Connect button not found in DOM!');
-    }
-    
+    const methodSignal = document.getElementById('methodSignal');
+    const methodBpm = document.getElementById('methodBpm');
+    const methodIbi = document.getElementById('methodIbi');
+    const methodBeat = document.getElementById('methodBeat');
     const canvas = document.getElementById('waveformCanvas');
     const ctx = canvas.getContext('2d');
 
     const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
+    let rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
@@ -598,9 +299,7 @@ PulseSensorPlayground pulseSensor;
     const sensor = new PulseSensorSerial({
       baudRate: 115200,
       onData: (line) => {
-        // Show raw serial data
         rawSerial.textContent = line;
-        
         const parts = line.split(',');
         if (parts.length < 4) return;
 
@@ -610,28 +309,25 @@ PulseSensorPlayground pulseSensor;
           const ibi = parseInt(parts[2]);
           const beat = parseInt(parts[3]);
 
-          // Update live variable displays
           liveSignal.textContent = signal;
           liveBpm.textContent = bpm > 0 ? bpm : '—';
-          liveIbi.textContent = ibi > 0 ? ibi : '—';
-          liveBeat.textContent = beat ? '✓ YES' : '—';
-          
+          liveIbi.textContent = bpm > 0 && ibi > 0 ? ibi : '—';
+          liveBeat.textContent = beat ? '1' : '0';
+
+          methodSignal.textContent = signal;
+          methodBpm.textContent = bpm > 0 ? bpm : '0';
+          methodIbi.textContent = ibi;
+          methodBeat.textContent = beat ? 'true' : 'false';
+
+          if (beat) {
+            heart.classList.add('pulse');
+            setTimeout(() => heart.classList.remove('pulse'), 150);
+          }
+
           waveformHistory.shift();
           waveformHistory.push(signal);
           minSignal = Math.min(...waveformHistory);
           maxSignal = Math.max(...waveformHistory);
-
-          signalValue.textContent = signal;
-
-          const normalized = (signal - 1024) / 1024;
-          const segments = 8;
-          let html = '';
-          for (let i = 0; i < segments; i++) {
-            const thresh = (i - segments/2) / (segments/2);
-            html += `<div class="signal-bar-item" style="opacity: ${normalized > thresh ? '0.8' : '0.2'}"></div>`;
-          }
-          signalBar.innerHTML = html;
-
           draw();
         } catch (e) {
           console.error('Parse error:', e);
@@ -646,6 +342,11 @@ PulseSensorPlayground pulseSensor;
         liveBpm.textContent = '—';
         liveIbi.textContent = '—';
         liveBeat.textContent = '—';
+        rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
       },
       onDisconnect: () => {
         connectBtn.textContent = 'Connect';
@@ -662,21 +363,9 @@ PulseSensorPlayground pulseSensor;
       }
     });
 
-    if (connectBtn) {
-      connectBtn.addEventListener('click', () => {
-        console.log('Button clicked! isConnected =', sensor.isConnected);
-        if (sensor.isConnected) {
-          console.log('Disconnecting...');
-          sensor.disconnect();
-        } else {
-          console.log('Connecting...');
-          sensor.connect();
-        }
-      });
-      console.log('Event listener attached to connect button');
-    } else {
-      console.error('ERROR: Cannot attach event listener - connectBtn is null!');
-    }
+    connectBtn.addEventListener('click', () => {
+      sensor.isConnected ? sensor.disconnect() : sensor.connect();
+    });
 
     function draw() {
       const width = canvas.width / dpr;
@@ -709,12 +398,7 @@ PulseSensorPlayground pulseSensor;
         const x = (i / HISTORY_LENGTH) * width;
         const normalized = (waveformHistory[i] - minSignal) * scale;
         const y = center - (normalized - range / 2 * scale);
-
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.stroke();
     }
