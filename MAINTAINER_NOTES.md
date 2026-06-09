@@ -11,6 +11,7 @@ The maintenance goals are:
 - make `sawNewSample()` match its documented behavior when hardware timers are used
 - align timer setup, pause, and resume platform macros for nRF52 and Due
 - fix small timer setup issues found by inspection before adding broader compile coverage
+- add an end-user ZIP install smoke test so the branch can be tested like an Arduino IDE library install
 
 Open follow-up areas:
 
