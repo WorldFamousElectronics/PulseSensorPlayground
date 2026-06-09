@@ -28,6 +28,13 @@ Automated/local:
 - XIAO ESP32-S3 BPM example compile with `arduino-cli`
 - ZIP install smoke test with `scripts/end-user-install-test.sh`
 - Remote GitHub branch ZIP install and compile smoke test
+- Expanded installed-library compile pass on `esp32:esp32:XIAO_ESP32S3`:
+  - `GettingStartedProject`
+  - `Getting_BPM_to_Monitor`
+  - `PulseSensor_BPM`
+  - `PulseSensor_Pulse_Transit_Time`
+  - `TwoPulseSensors_On_OneArduino`
+  - `PulseSensor_XIAO_ESP32S3_BPM`
 
 Manual hardware testing recommended before release:
 
