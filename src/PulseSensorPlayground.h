@@ -33,8 +33,8 @@
 /*
     Library version number
 */
-#define PULSESENSOR_PLAYGROUND_VERSION_STRING "v2.1.0"
-#define PULSESENSOR_PLAYGROUND_VERSION_NUMBER 210
+#define PULSESENSOR_PLAYGROUND_VERSION_STRING "v2.5.1"
+#define PULSESENSOR_PLAYGROUND_VERSION_NUMBER 251
 
 /*
    If you wish to perform timing statistics on your non-interrupt Sketch:
@@ -443,6 +443,7 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
 bool setupInterrupt();
 bool disableInterrupt();
 bool enableInterrupt();
+bool isValidSensorIndex(int sensorIndex);
 
 /*
    Varialbles

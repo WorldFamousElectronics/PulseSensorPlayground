@@ -34,7 +34,7 @@ PulseSensorPlayground::PulseSensorPlayground(int numberOfSensors) {
 #endif
 
   // Dynamically create the array to minimize ram usage.
-  SensorCount = (byte) numberOfSensors;
+  SensorCount = (byte) constrain(numberOfSensors, 1, 255);
   Sensors = new PulseSensor[SensorCount];
 
 // set our internal variable to reflect hardware timer use
@@ -83,21 +83,21 @@ bool PulseSensorPlayground::PulseSensorPlayground::begin() {
 }
 
 void PulseSensorPlayground::analogInput(int inputPin, int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return; // out of range.
   }
   Sensors[sensorIndex].analogInput(inputPin);
 }
 
 void PulseSensorPlayground::blinkOnPulse(int blinkPin, int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return; // out of range.
   }
   Sensors[sensorIndex].blinkOnPulse(blinkPin);
 }
 
 void PulseSensorPlayground::fadeOnPulse(int fadePin, int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return; // out of range.
   }
   Sensors[sensorIndex].fadeOnPulse(fadePin);
@@ -117,10 +117,10 @@ bool PulseSensorPlayground::sawNewSample() {
   if(!Paused){
     if (UsingHardwareTimer) {
       // Disable interrupts to avoid a race with the ISR.
-      // DISABLE_PULSE_SENSOR_INTERRUPTS;
+      DISABLE_PULSE_SENSOR_INTERRUPTS;
       bool sawOne = SawNewSample;
       SawNewSample = false;
-      // ENABLE_PULSE_SENSOR_INTERRUPTS;
+      ENABLE_PULSE_SENSOR_INTERRUPTS;
 
       result = sawOne;
     } else { 
@@ -166,46 +166,51 @@ void PulseSensorPlayground::onSampleTime() {
   }
 
   // Set the flag that says we've read a sample since the Sketch checked.
+  SawNewSample = true;
   // digitalWrite(timingPin,LOW); // optionally connect timingPin to oscilloscope to time algorithm run time
  }
 
+bool PulseSensorPlayground::isValidSensorIndex(int sensorIndex) {
+  return sensorIndex >= 0 && sensorIndex < SensorCount;
+}
+
 int PulseSensorPlayground::getLatestSample(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return -1; // out of range.
   }
   return Sensors[sensorIndex].getLatestSample();
 }
 
 int PulseSensorPlayground::getBeatsPerMinute(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return -1; // out of range.
   }
   return Sensors[sensorIndex].getBeatsPerMinute();
 }
 
 int PulseSensorPlayground::getInterBeatIntervalMs(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return -1; // out of range.
   }
   return Sensors[sensorIndex].getInterBeatIntervalMs();
 }
 
 bool PulseSensorPlayground::sawStartOfBeat(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return false; // out of range.
   }
   return Sensors[sensorIndex].sawStartOfBeat();
 }
 
 bool PulseSensorPlayground::isInsideBeat(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return false; // out of range.
   }
   return Sensors[sensorIndex].isInsideBeat();
 }
 
 void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return; // out of range.
   }
   Sensors[sensorIndex].setThreshold(threshold);
@@ -236,14 +241,14 @@ void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
 #endif
 
 int PulseSensorPlayground::getPulseAmplitude(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return -1; // out of range.
   }
   return Sensors[sensorIndex].getPulseAmplitude();
 }
 
 unsigned long PulseSensorPlayground::getLastBeatTime(int sensorIndex) {
-  if (sensorIndex != constrain(sensorIndex, 0, SensorCount)) {
+  if (!isValidSensorIndex(sensorIndex)) {
     return -1; // out of range.
   }
   return Sensors[sensorIndex].getLastBeatTime();
@@ -440,7 +445,7 @@ bool PulseSensorPlayground::setupInterrupt(){
     #elif F_CPU == 8000000L
       TCCR1 = 0x88;      // Clear Timer on Compare, Set Prescaler to 128
         #elif F_CPU == 1000000L
-            TCCR1 = 0x85            // Clear Timer on Compare, Set Prescaler to 16
+            TCCR1 = 0x85;           // Clear Timer on Compare, Set Prescaler to 16
     #endif
     bitSet(TIMSK,6);   // Enable interrupt on match between TCNT1 and OCR1A
     ENABLE_PULSE_SENSOR_INTERRUPTS;
@@ -450,15 +455,17 @@ bool PulseSensorPlayground::setupInterrupt(){
   #if defined(ARDUINO_ARCH_RENESAS)
     uint8_t timer_type = GPT_TIMER;
     int8_t tindex = FspTimer::get_available_timer(timer_type);
-    if(tindex == 0){
+    if(tindex < 0){
         FspTimer::force_use_of_pwm_reserved_timer();
         tindex = FspTimer::get_available_timer(timer_type);  
     }
-    sampleTimer.begin(TIMER_MODE_PERIODIC, timer_type, tindex, SAMPLE_RATE_500HZ, 0.0f, sampleTimerISR);
-    sampleTimer.setup_overflow_irq();
-    sampleTimer.open();
-    sampleTimer.start();
-    result = true;
+    if(tindex >= 0){
+      sampleTimer.begin(TIMER_MODE_PERIODIC, timer_type, tindex, SAMPLE_RATE_500HZ, 0.0f, sampleTimerISR);
+      sampleTimer.setup_overflow_irq();
+      sampleTimer.open();
+      sampleTimer.start();
+      result = true;
+    }
   #endif
 
   #if defined(ARDUINO_SAM_DUE)
@@ -497,9 +504,9 @@ bool PulseSensorPlayground::setupInterrupt(){
   #endif
 
   #if defined(ARDUINO_ARCH_ESP8266)
-        ESP8266Timer sampleTimer;
     sampleTimer.setFrequency(500,onInterrupt);
     sampleTimer.restartTimer();
+    result = true;
   #endif
 
   #if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_ARCH_SAMD)
@@ -566,7 +573,7 @@ bool PulseSensorPlayground::enableInterrupt(){
     result = true;
   #endif
 
-  #if defined(ARDUINO_ARCH_NRF52840)
+  #if defined(ARDUINO_NRF52_ADAFRUIT)
     sampleTimer.restartTimer();
     result = true;
   #endif
@@ -586,7 +593,7 @@ bool PulseSensorPlayground::enableInterrupt(){
     result = true;
   #endif
 
-  #if defined(ARDUINO_ARCH_SAM)
+  #if defined(ARDUINO_SAM_DUE)
     sampleTimer.start(2000);
     result = true;
   #endif
@@ -631,7 +638,7 @@ bool PulseSensorPlayground::disableInterrupt(){
         result = true;
     #else
         DISABLE_PULSE_SENSOR_INTERRUPTS;
-        TIMSK3 = 0x00;          // Disable OCR2A match interrupt
+        TIMSK2 = 0x00;          // Disable OCR2A match interrupt
         ENABLE_PULSE_SENSOR_INTERRUPTS;
         result = true;
     #endif
@@ -646,9 +653,10 @@ bool PulseSensorPlayground::disableInterrupt(){
 
   #if defined(ARDUINO_ARCH_ESP32)
     timerStop(sampleTimer);
+    result = true;
   #endif
 
-  #if defined(ARDUINO_ARCH_NRF52840)
+  #if defined(ARDUINO_NRF52_ADAFRUIT)
     sampleTimer.stopTimer();
     result = true;
   #endif
@@ -668,7 +676,7 @@ bool PulseSensorPlayground::disableInterrupt(){
     result = true;
   #endif
 
-  #if defined(ARDUINO_ARCH_SAM)
+  #if defined(ARDUINO_SAM_DUE)
     sampleTimer.stop();
     result = true;
   #endif
