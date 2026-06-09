@@ -167,9 +167,9 @@ We put together a [HANDY GUIDE](https://github.com/WorldFamousElectronics/PulseS
 
 Some PulseSensor projects are better kept outside the Arduino Library Manager package because they need browser features, display setup, or extra dependencies.
 
-- [PulseSensor and Webserial](https://pulsesensor.com/pages/pulsesensor-and-webserial)
+- [PulseSensor and WebSerial](https://pulsesensor.com/pages/pulsesensor-and-webserial)
 - [PulseSensor on CYD](https://pulsesensor.com/pages/cyd)
-- [Related project notes](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/RelatedProjects.md)
+- [Related project notes](resources/RelatedProjects.md)
 
 ---
 

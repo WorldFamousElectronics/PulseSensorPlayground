@@ -6,7 +6,7 @@ Keeping them linked here gives users a path from the core library to richer brow
 
 ## PulseSensor WebSerial
 
-- Tutorial: [PulseSensor and Webserial](https://pulsesensor.com/pages/pulsesensor-and-webserial)
+- Tutorial: [PulseSensor and WebSerial](https://pulsesensor.com/pages/pulsesensor-and-webserial)
 - Development repo: [yury-g/webserial](https://github.com/yury-g/webserial)
 - Local library resource: [webserial-explainer](webserial-explainer/index.html)
 
@@ -20,7 +20,7 @@ WebSerial lets Chrome, Edge, or Brave read USB serial data directly from an Ardu
 
 The CYD project targets ESP32-2432S028 display boards and demonstrates how Playground readings can drive an embedded display: waveform, BPM, IBI, pulse amplitude, beat state, and threshold behavior.
 
-## Why These Are Linked Instead Of Bundled
+## Why These Are Linked Instead of Bundled
 
 The Arduino Library Manager package should stay focused on examples that compile directly from Arduino IDE with predictable dependencies.
 
