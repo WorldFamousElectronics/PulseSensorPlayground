@@ -1,6 +1,6 @@
-# PulseSensor Playground 2.5.2 Draft Release Notes
+# PulseSensor Playground 2.5.2 Release Notes
 
-This draft assumes the maintenance branch is tested and merged after `v2.5.1`.
+This release note draft is prepared for the `2.5.2` bump branch after the maintenance fixes are tested and merged.
 
 ## Summary
 
@@ -46,10 +46,11 @@ Manual hardware testing recommended before release:
 
 ## Release Process Notes
 
-After merge and hardware validation:
+Before tagging the release:
 
-1. Bump `library.properties` from `2.5.1` to `2.5.2`.
-2. Bump `PULSESENSOR_PLAYGROUND_VERSION_STRING` to `v2.5.2`.
-3. Bump `PULSESENSOR_PLAYGROUND_VERSION_NUMBER` to `252`.
-4. Tag the release as `v2.5.2`.
-5. Publish release notes using this draft as the starting point.
+1. Confirm `library.properties` reports `2.5.2`.
+2. Confirm `PULSESENSOR_PLAYGROUND_VERSION_STRING` reports `v2.5.2`.
+3. Confirm `PULSESENSOR_PLAYGROUND_VERSION_NUMBER` reports `252`.
+4. Run the end-user install smoke test from the release bump branch.
+5. Tag the release as `v2.5.2`.
+6. Publish release notes using this file as the starting point.

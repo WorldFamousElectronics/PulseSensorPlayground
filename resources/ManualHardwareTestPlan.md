@@ -92,7 +92,7 @@ Checks:
 - `sensorIndex == SensorCount` should not access outside the sensor array.
 - `pause()` and `resume()` should return `true` on supported hardware timer platforms.
 - Unsupported boards should fall back to software timing with a compile warning.
-- Library version output should report `v2.5.1` while this branch remains a test branch.
+- Library version output should report `v2.5.2` on the release bump branch.
 
 ## Pass Criteria
 

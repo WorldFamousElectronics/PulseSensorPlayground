@@ -2,7 +2,7 @@
 
 ## 2026-06-09 maintenance branch
 
-This branch is intentionally kept on the `2.5.1` release line so behavior can be tested against the published release without introducing a new public version number.
+The maintenance branch was intentionally kept on the `2.5.1` release line so behavior could be tested against the published release before introducing a new public version number.
 
 The maintenance goals are:
 
