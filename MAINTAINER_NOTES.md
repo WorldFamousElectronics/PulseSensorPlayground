@@ -12,6 +12,7 @@ The maintenance goals are:
 - align timer setup, pause, and resume platform macros for nRF52 and Due
 - fix small timer setup issues found by inspection before adding broader compile coverage
 - add an end-user ZIP install smoke test so the branch can be tested like an Arduino IDE library install
+- add a manual hardware test plan and draft `2.5.2` release notes for the next maintainer pass
 
 Open follow-up areas:
 
