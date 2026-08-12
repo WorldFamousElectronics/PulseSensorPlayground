@@ -200,12 +200,12 @@ footer p { margin: 0; }
 @media (max-width: 1000px) {
   .topbar, footer { flex-direction: column; align-items: stretch; }
   .connection { min-width: 0; }
-  .wave-coach-layout { grid-template-columns: 1fr; }
-  .wave-coach-layout .wave-wrap { border-right: 0; border-bottom: 1px solid var(--grid); }
-  .graph-guide { grid-template-columns: 1fr; grid-template-rows: auto; }
 }
 
 @media (max-width: 760px) {
+  .wave-coach-layout { grid-template-columns: 1fr; }
+  .wave-coach-layout .wave-wrap { border-right: 0; border-bottom: 1px solid var(--grid); }
+  .graph-guide { grid-template-columns: 1fr; grid-template-rows: auto; }
   .readout-grid { grid-template-columns: 1fr; }
   .technical-grid { grid-template-columns: repeat(2, 1fr); }
   .connection-summary { flex-direction: column; gap: 4px; }
