@@ -1,4 +1,4 @@
-// Protocol parser shared by the Signal Coach transport and deterministic tests.
+// Protocol parser shared by the published Signal Coach and deterministic tests.
 export const PSWS_PREFIX = 'PSWS';
 export const PSWS_VERSIONS = Object.freeze([1, 2]);
 

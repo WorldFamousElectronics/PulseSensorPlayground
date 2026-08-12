@@ -1,4 +1,4 @@
-// Coach state model for the published four-value Arduino/ESP32 stream.
+// Coach state model for the published preview's Arduino/ESP32 stream.
 const Q_MAX = 12;
 
 export const COACH_COPY = Object.freeze({

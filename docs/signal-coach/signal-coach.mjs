@@ -1,4 +1,4 @@
-// Browser transport and rendering for the Signal Coach tester preview.
+// Browser transport and rendering for the published Signal Coach tester preview.
 import { parsePulseLine } from './pulse-webserial-protocol.mjs';
 import { LegacySignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs';
 

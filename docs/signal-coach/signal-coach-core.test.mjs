@@ -1,4 +1,4 @@
-// Deterministic Signal Coach state-transition tests.
+// Deterministic state-transition tests for the published Signal Coach.
 import assert from 'node:assert/strict';
 import { LegacySignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs';
 

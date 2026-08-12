@@ -1,4 +1,4 @@
-// Signal Coach protocol compatibility tests.
+// Signal Coach protocol compatibility tests for the published preview.
 import assert from 'node:assert/strict';
 import { parsePulseLine } from './pulse-webserial-protocol.mjs';
 

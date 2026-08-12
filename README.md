@@ -22,7 +22,7 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 ## Web Serial Signal Coach
 
 The browser dashboard in
-[`resources/signal-coach/`](resources/signal-coach/) connects
+[`docs/signal-coach/`](docs/signal-coach/) connects
 directly to supported USB serial boards from desktop Chrome or Edge. It accepts
 the published `signal,bpm,ibi,beat` Arduino/ESP32 stream and version-1 or
 version-2 `PSWS` frames from PulseLink M5Stack StickS3 firmware. The large live
@@ -36,16 +36,16 @@ Run it locally from the repository root:
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000/resources/signal-coach/>. Close other
+Then open <http://localhost:8000/docs/signal-coach/>. Close other
 serial monitors before clicking **Connect** because only one application can
 own the port. Protocol tests run with:
 
 ```bash
-node resources/signal-coach/protocol.test.mjs
-node resources/signal-coach/signal-coach-core.test.mjs
+node docs/signal-coach/protocol.test.mjs
+node docs/signal-coach/signal-coach-core.test.mjs
 ```
 
-The existing dashboard in `resources/webserial-explainer/` remains available
+The existing dashboard in `docs/webserial-explainer/` remains available
 unchanged while the separate Signal Coach preview is validated by testers.
 
 The normal customer URL never generates fallback data. An explicit
