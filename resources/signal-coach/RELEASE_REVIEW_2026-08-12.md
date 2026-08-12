@@ -19,6 +19,11 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
 - Responsive browser check: 390 × 844 layout remains readable and usable.
 - Attached StickS3 check: live PSWS v2 stream received at 115200 baud, waveform
   rendered, coach reached GOOD WAVE, and sequence gaps remained at zero.
+- Published Shopify iframe check: Web Serial permission chooser opened from the
+  cross-origin Signal Coach embed and the attached StickS3 streamed live PSWS v2
+  frames into the production page.
+- Preservation check: the existing Shopify page still contains its original
+  Signal Waveform and Four Values content and does not contain the new preview.
 
 ## Claims and support review
 
