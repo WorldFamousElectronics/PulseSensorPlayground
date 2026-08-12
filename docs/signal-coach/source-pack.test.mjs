@@ -48,6 +48,11 @@ assert.doesNotMatch(tutorial, /Signal Coach tester preview/);
 assert.doesNotMatch(tutorial, /See the wave\. Improve it\./);
 assert.match(tutorial, /1 Upload the sketch/);
 assert.match(tutorial, /3 Click Connect/);
+assert.match(tutorial, /Loading Signal Coach/);
+assert.match(tutorial, /Taking longer than expected/);
+assert.match(tutorial, /Open Signal Coach/);
+assert.match(tutorial, /pulsesensor-signal-coach-ready/);
+assert.match(dashboard, /pulsesensor-signal-coach-ready/);
 
 const releaseVersion = dashboard.match(/signal-coach\.mjs\?v=([a-z0-9-]+)/i)?.[1];
 assert.ok(releaseVersion, 'dashboard should version its browser module');

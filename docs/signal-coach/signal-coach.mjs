@@ -1,6 +1,6 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-action-first-r4';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-action-first-r4';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-action-first-r5';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-action-first-r5';
 
 const pageOptions = new URLSearchParams(location.search);
 if (window.self !== window.top || pageOptions.get('embedded') === '1') {

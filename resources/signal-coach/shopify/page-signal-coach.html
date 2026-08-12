@@ -5,12 +5,13 @@
   .psc-page{--ink:#17211b;--muted:#5d6962;--line:#dce7df;--soft:#f4f8f5;--blue:#087e91;max-width:1040px;margin:0 auto;color:var(--ink);font:inherit;line-height:1.6}
   .psc-page *{box-sizing:border-box}.psc-page h2,.psc-page h3{color:var(--ink);line-height:1.15}.psc-page h2{font-size:clamp(1.65rem,3vw,2.35rem);margin:2.4rem 0 .65rem}.psc-page h3{font-size:1.08rem;margin:.2rem 0 .35rem}.psc-page p{margin:.45rem 0 1rem}.psc-page a{color:#b33b3b}.psc-page code{padding:.15rem .35rem;border-radius:3px;background:#edf3ef}
   .psc-page .psc-start{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.2rem 1rem;margin:0 0 .65rem;padding:.65rem .8rem;border-left:4px solid var(--blue);background:var(--soft)}.psc-page .psc-start p{margin:0}.psc-page .psc-journey{font-weight:700}.psc-page .psc-arrow{padding:0 .25rem;color:var(--blue)}.psc-page .psc-browser{color:var(--muted);font-size:.82rem;white-space:nowrap}
-  .psc-page .psc-frame{display:block;width:100%;height:880px;border:1px solid var(--line);border-radius:8px;background:#f2f4f2}
+  .psc-page .psc-embed-shell{position:relative;min-height:880px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#f2f4f2}.psc-page .psc-frame{display:block;width:100%;height:880px;border:0;background:#f2f4f2}.psc-page .psc-embed-gate{position:absolute;inset:0;z-index:2;display:grid;place-items:center;padding:2rem;background:#f2f4f2;text-align:center}.psc-page .psc-embed-status{display:grid;justify-items:center;gap:.55rem;max-width:520px}.psc-page .psc-embed-status h2{margin:0;font-size:clamp(1.55rem,3vw,2.25rem)}.psc-page .psc-embed-status p{margin:0;color:var(--muted)}.psc-page .psc-loader{width:34px;height:34px;border:4px solid #c9d8cf;border-top-color:var(--blue);border-radius:50%;animation:psc-spin .8s linear infinite}.psc-page .psc-slow{display:none}.psc-page .psc-embed-shell.is-ready .psc-embed-gate{display:none}.psc-page .psc-embed-shell.is-slow .psc-waiting{display:none}.psc-page .psc-embed-shell.is-slow .psc-slow{display:grid}.psc-page .psc-embed-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem;margin-top:.5rem}.psc-page .psc-open-coach,.psc-page .psc-retry{display:inline-block;padding:.72rem 1rem;border:1px solid var(--blue);border-radius:4px;background:var(--blue);color:#fff!important;font:800 .95rem/1.2 inherit;text-decoration:none;cursor:pointer}.psc-page .psc-retry{background:#fff;color:var(--blue)!important}@keyframes psc-spin{to{transform:rotate(360deg)}}
   .psc-page .psc-about{display:grid;grid-template-columns:auto 1fr;gap:.65rem 1rem;margin:1.4rem 0;padding:1rem 1.15rem;border-left:4px solid var(--blue);background:#eff9fa}.psc-page .psc-release{margin:0;color:var(--muted);font-size:.78rem;white-space:nowrap}.psc-page .psc-beta{display:inline-block;margin-right:.45rem;padding:.18rem .42rem;border:1px solid #c8a100;background:#fff8d5;color:#765d00;font:800 .66rem/1 ui-monospace,Menlo,monospace;letter-spacing:.1em}.psc-page .psc-about-copy p{margin:0 0 .45rem}.psc-page .psc-about-copy p:last-child{margin:0;color:var(--muted);font-size:.88rem}
   .psc-page .psc-feedback{margin:2rem 0;padding:clamp(1rem,3vw,1.7rem);border:1px solid var(--line);border-top:5px solid var(--blue);background:var(--soft)}.psc-page .psc-feedback h2{margin:0 0 .5rem}.psc-page .psc-feedback-intro{max-width:720px;color:var(--muted)}.psc-page .psc-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.psc-page .psc-field{display:flex;flex-direction:column;gap:.35rem;font-weight:700}.psc-page .psc-field-wide{grid-column:1/-1}.psc-page .psc-field span{font-size:.9rem}.psc-page .psc-field input,.psc-page .psc-field select,.psc-page .psc-field textarea{width:100%;padding:.72rem;border:1px solid #aebbb3;border-radius:4px;background:#fff;color:var(--ink);font:inherit}.psc-page .psc-field textarea{min-height:120px;resize:vertical}.psc-page .psc-submit{justify-self:start;padding:.75rem 1.15rem;border:0;border-radius:4px;background:var(--blue);color:#fff;font:800 .95rem/1.2 inherit;cursor:pointer}.psc-page .psc-privacy{align-self:center;margin:0;color:var(--muted);font-size:.82rem}
   .psc-page .psc-hack{margin:2rem 0;padding:clamp(1.1rem,3vw,1.8rem);border:1px solid #b7dce2;background:#eff9fa}.psc-page .psc-hack h2{margin:0 0 .55rem}.psc-page .psc-hack-intro{max-width:760px;color:var(--muted)}.psc-page .psc-source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:1rem 0}.psc-page .psc-source-card{padding:1rem;border:1px solid #cfe2e5;background:#fff}.psc-page .psc-source-card p{margin:.35rem 0 0;color:var(--muted);font-size:.9rem}.psc-page .psc-source-actions{display:flex;flex-wrap:wrap;gap:.7rem}.psc-page .psc-source-button{display:inline-block;padding:.68rem .9rem;border:1px solid var(--blue);border-radius:4px;background:var(--blue);color:#fff!important;font-weight:800;text-decoration:none}.psc-page .psc-source-button-light{background:#fff;color:var(--blue)!important}.psc-page pre{margin:1rem 0;padding:1rem;border-radius:6px;overflow:auto;background:#151a17;color:#dce9df;font-size:.8rem;line-height:1.5}.psc-page pre code{padding:0;background:transparent;color:inherit}.psc-page .psc-hack pre{margin-bottom:0}
   .psc-page .psc-pin-table,.psc-page .psc-fix-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}.psc-page th,.psc-page td{padding:.7rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.psc-page th{background:var(--soft)}.psc-page details{margin:1rem 0;padding:.85rem 1rem;border:1px solid var(--line)}.psc-page summary{cursor:pointer;font-weight:700}.psc-page .psc-safety{margin:2rem 0 0;padding:1rem;background:#f4f5f4;color:#4f5953;font-size:.88rem;text-align:center}.psc-page .psc-cta{margin:2rem 0;padding:1.2rem;border:1px solid var(--line);background:var(--soft);text-align:center}
-  @media(max-width:760px){body.template-page #MainContent>h1{margin-bottom:.35rem}.psc-page .psc-start{display:block;padding:.5rem .65rem}.psc-page .psc-start p{font-size:.82rem}.psc-page .psc-browser{margin-top:.2rem;white-space:normal}.psc-page .psc-frame{height:1030px}.psc-page .psc-about,.psc-page .psc-form,.psc-page .psc-source-grid{grid-template-columns:1fr}.psc-page .psc-field-wide{grid-column:auto}.psc-page th,.psc-page td{padding:.55rem}.psc-page .psc-fix-table{font-size:.84rem}}
+  @media(max-width:760px){body.template-page #MainContent>h1{margin-bottom:.35rem}.psc-page .psc-start{display:block;padding:.5rem .65rem}.psc-page .psc-start p{font-size:.82rem}.psc-page .psc-browser{margin-top:.2rem;white-space:normal}.psc-page .psc-embed-shell{min-height:1030px}.psc-page .psc-frame{height:1030px}.psc-page .psc-embed-gate{padding:1.25rem}.psc-page .psc-about,.psc-page .psc-form,.psc-page .psc-source-grid{grid-template-columns:1fr}.psc-page .psc-field-wide{grid-column:auto}.psc-page th,.psc-page td{padding:.55rem}.psc-page .psc-fix-table{font-size:.84rem}}
+  @media(prefers-reduced-motion:reduce){.psc-page .psc-loader{animation:none}}
 </style>
 
 <div class="psc-page">
@@ -20,8 +21,58 @@
   </section>
 
   <div id="signal-coach">
-    <iframe class="psc-frame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r4" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
+    <div class="psc-embed-shell" id="SignalCoachEmbed">
+      <div class="psc-embed-gate" aria-live="polite">
+        <div class="psc-embed-status psc-waiting">
+          <span class="psc-loader" aria-hidden="true"></span>
+          <h2>Loading Signal Coach</h2>
+          <p>Getting the waveform and coach ready. This usually takes a moment.</p>
+        </div>
+        <div class="psc-embed-status psc-slow">
+          <h2>Taking longer than expected</h2>
+          <p>Open Signal Coach directly and keep going. Your Arduino setup stays the same.</p>
+          <div class="psc-embed-actions">
+            <a class="psc-open-coach" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" target="_blank" rel="noopener">Open Signal Coach</a>
+            <button class="psc-retry" id="SignalCoachRetry" type="button">Try again here</button>
+          </div>
+        </div>
+      </div>
+      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
+    </div>
   </div>
+
+  <script>
+    (() => {
+      const shell = document.getElementById('SignalCoachEmbed');
+      const frame = document.getElementById('SignalCoachFrame');
+      const retry = document.getElementById('SignalCoachRetry');
+      if (!shell || !frame || !retry) return;
+
+      let slowTimer;
+      const startWaiting = () => {
+        shell.classList.remove('is-ready', 'is-slow');
+        clearTimeout(slowTimer);
+        slowTimer = setTimeout(() => shell.classList.add('is-slow'), 6000);
+      };
+      const markReady = (event) => {
+        if (event.origin !== 'https://worldfamouselectronics.github.io') return;
+        if (event.source !== frame.contentWindow) return;
+        if (event.data?.type !== 'pulsesensor-signal-coach-ready') return;
+        clearTimeout(slowTimer);
+        shell.classList.add('is-ready');
+        shell.classList.remove('is-slow');
+      };
+
+      window.addEventListener('message', markReady);
+      retry.addEventListener('click', () => {
+        startWaiting();
+        const url = new URL(frame.src);
+        url.searchParams.set('retry', Date.now().toString());
+        frame.src = url.toString();
+      });
+      startWaiting();
+    })();
+  </script>
 
   <section class="psc-about" aria-label="About this beta">
     <p class="psc-release"><span class="psc-beta">BETA</span><time datetime="2026-08-12">August 12, 2026</time></p>

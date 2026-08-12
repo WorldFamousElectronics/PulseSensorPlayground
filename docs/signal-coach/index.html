@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#060a06">
   <title>PulseSensor Signal Coach</title>
   <meta name="description" content="Connect a PulseSensor over USB, see the live waveform, and get clear Signal Coach guidance before trusting BPM.">
-  <link rel="stylesheet" href="./signal-coach.css?v=20260812-action-first-r4">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260812-action-first-r5">
 </head>
 <body>
   <main class="coach-app">
@@ -120,6 +120,14 @@
     </footer>
   </main>
 
-  <script type="module" src="./signal-coach.mjs?v=20260812-action-first-r4"></script>
+  <script>
+    if (window.parent !== window) {
+      const announceReady = () => window.parent.postMessage({ type: 'pulsesensor-signal-coach-ready' }, '*');
+      announceReady();
+      window.addEventListener('load', announceReady, { once: true });
+      setTimeout(announceReady, 500);
+    }
+  </script>
+  <script type="module" src="./signal-coach.mjs?v=20260812-action-first-r5"></script>
 </body>
 </html>
