@@ -26,6 +26,8 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
   pulse waves, 12-bit ESP32 pulse waves, re-sync, and 50/100/200/500 samples/s.
 - Re-sync regression: a clean 12-bit wave re-qualifies within four seconds
   after stale timing, confidence, and threshold state are cleared.
+- Release-cache regression: the dashboard stylesheet and behavior module carry
+  the same blue-Re-sync version key so new markup cannot run an older script.
 - Deterministic browser replay: reaches QUALIFIED at 72 BPM with 12/12 quality
   and zero sequence gaps; the replay is visibly marked SIM.
 - Responsive browser check: 390 × 844 layout remains readable and usable.
