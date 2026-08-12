@@ -4,7 +4,7 @@
   body.template-page #MainContent>h1{margin-bottom:.55rem}
   .psc-page{--ink:#17211b;--muted:#5d6962;--line:#dce7df;--soft:#f4f8f5;--blue:#087e91;max-width:1040px;margin:0 auto;color:var(--ink);font:inherit;line-height:1.6}
   .psc-page *{box-sizing:border-box}.psc-page h2,.psc-page h3{color:var(--ink);line-height:1.15}.psc-page h2{font-size:clamp(1.65rem,3vw,2.35rem);margin:2.4rem 0 .65rem}.psc-page h3{font-size:1.08rem;margin:.2rem 0 .35rem}.psc-page p{margin:.45rem 0 1rem}.psc-page a{color:#b33b3b}.psc-page code{padding:.15rem .35rem;border-radius:3px;background:#edf3ef}
-  .psc-page .psc-start{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.2rem 1rem;margin:0 0 .65rem;padding:.65rem .8rem;border-left:4px solid var(--blue);background:var(--soft)}.psc-page .psc-start p{margin:0}.psc-page .psc-journey{font-weight:700}.psc-page .psc-arrow{padding:0 .25rem;color:var(--blue)}.psc-page .psc-browser{color:var(--muted);font-size:.82rem;white-space:nowrap}
+  .psc-page .psc-start{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.2rem 1rem;margin:0 0 .65rem;padding:.65rem .8rem;border-left:4px solid var(--blue);background:var(--soft)}.psc-page .psc-start p{margin:0}.psc-page .psc-journey{font-weight:700}.psc-page .psc-arrow{padding:0 .25rem;color:var(--blue)}.psc-page .psc-browser{color:var(--muted);font-size:.82rem;white-space:nowrap}.psc-page .psc-inline-direct{color:var(--blue)!important;font-weight:700}
   .psc-page .psc-embed-shell{position:relative;min-height:880px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#f2f4f2}.psc-page .psc-frame{display:block;width:100%;height:880px;border:0;background:#f2f4f2}.psc-page .psc-embed-gate{position:absolute;inset:0;z-index:2;display:grid;place-items:center;padding:2rem;background:#f2f4f2;text-align:center}.psc-page .psc-embed-status{display:grid;justify-items:center;gap:.55rem;max-width:520px}.psc-page .psc-embed-status h2{margin:0;font-size:clamp(1.55rem,3vw,2.25rem)}.psc-page .psc-embed-status p{margin:0;color:var(--muted)}.psc-page .psc-loader{width:34px;height:34px;border:4px solid #c9d8cf;border-top-color:var(--blue);border-radius:50%;animation:psc-spin .8s linear infinite}.psc-page .psc-slow{display:none}.psc-page .psc-embed-shell.is-ready .psc-embed-gate{display:none}.psc-page .psc-embed-shell.is-slow .psc-waiting{display:none}.psc-page .psc-embed-shell.is-slow .psc-slow{display:grid}.psc-page .psc-embed-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem;margin-top:.5rem}.psc-page .psc-open-coach,.psc-page .psc-retry{display:inline-block;padding:.72rem 1rem;border:1px solid var(--blue);border-radius:4px;background:var(--blue);color:#fff!important;font:800 .95rem/1.2 inherit;text-decoration:none;cursor:pointer}.psc-page .psc-retry{background:#fff;color:var(--blue)!important}@keyframes psc-spin{to{transform:rotate(360deg)}}
   .psc-page .psc-about{display:grid;grid-template-columns:auto 1fr;gap:.65rem 1rem;margin:1.4rem 0;padding:1rem 1.15rem;border-left:4px solid var(--blue);background:#eff9fa}.psc-page .psc-release{margin:0;color:var(--muted);font-size:.78rem;white-space:nowrap}.psc-page .psc-beta{display:inline-block;margin-right:.45rem;padding:.18rem .42rem;border:1px solid #c8a100;background:#fff8d5;color:#765d00;font:800 .66rem/1 ui-monospace,Menlo,monospace;letter-spacing:.1em}.psc-page .psc-about-copy p{margin:0 0 .45rem}.psc-page .psc-about-copy p:last-child{margin:0;color:var(--muted);font-size:.88rem}
   .psc-page .psc-feedback{margin:2rem 0;padding:clamp(1rem,3vw,1.7rem);border:1px solid var(--line);border-top:5px solid var(--blue);background:var(--soft)}.psc-page .psc-feedback h2{margin:0 0 .5rem}.psc-page .psc-feedback-intro{max-width:720px;color:var(--muted)}.psc-page .psc-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.psc-page .psc-field{display:flex;flex-direction:column;gap:.35rem;font-weight:700}.psc-page .psc-field-wide{grid-column:1/-1}.psc-page .psc-field span{font-size:.9rem}.psc-page .psc-field input,.psc-page .psc-field select,.psc-page .psc-field textarea{width:100%;padding:.72rem;border:1px solid #aebbb3;border-radius:4px;background:#fff;color:var(--ink);font:inherit}.psc-page .psc-field textarea{min-height:120px;resize:vertical}.psc-page .psc-submit{justify-self:start;padding:.75rem 1.15rem;border:0;border-radius:4px;background:var(--blue);color:#fff;font:800 .95rem/1.2 inherit;cursor:pointer}.psc-page .psc-privacy{align-self:center;margin:0;color:var(--muted);font-size:.82rem}
@@ -17,7 +17,7 @@
 <div class="psc-page">
   <section class="psc-start" aria-label="How to start Signal Coach">
     <p class="psc-journey"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">1 Upload the sketch</a><span class="psc-arrow" aria-hidden="true">&rarr;</span>2 Close Serial Monitor<span class="psc-arrow" aria-hidden="true">&rarr;</span>3 Click Connect<span class="psc-arrow" aria-hidden="true">&rarr;</span>4 Place the sensor gently</p>
-    <p class="psc-browser">Already sending pulse data? Start at Connect. Desktop Chrome, Edge, or Brave.</p>
+    <p class="psc-browser">Already sending pulse data? Start at Connect. Desktop Chrome, Edge, or Brave. <a class="psc-inline-direct" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" target="_blank" rel="noopener">Coach not loading? Open directly.</a></p>
   </section>
 
   <div id="signal-coach">
@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
+      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager" onload="this.dataset.loaded='true'"></iframe>
     </div>
   </div>
 
@@ -54,16 +54,20 @@
         clearTimeout(slowTimer);
         slowTimer = setTimeout(() => shell.classList.add('is-slow'), 6000);
       };
-      const markReady = (event) => {
-        if (event.origin !== 'https://worldfamouselectronics.github.io') return;
-        if (event.source !== frame.contentWindow) return;
-        if (event.data?.type !== 'pulsesensor-signal-coach-ready') return;
+      const revealCoach = () => {
         clearTimeout(slowTimer);
         shell.classList.add('is-ready');
         shell.classList.remove('is-slow');
       };
+      const markReady = (event) => {
+        if (event.origin !== 'https://worldfamouselectronics.github.io') return;
+        if (event.source !== frame.contentWindow) return;
+        if (event.data?.type !== 'pulsesensor-signal-coach-ready') return;
+        revealCoach();
+      };
 
       window.addEventListener('message', markReady);
+      frame.addEventListener('load', revealCoach);
       retry.addEventListener('click', () => {
         startWaiting();
         const url = new URL(frame.src);
@@ -71,6 +75,7 @@
         frame.src = url.toString();
       });
       startWaiting();
+      if (frame.dataset.loaded === 'true') revealCoach();
     })();
   </script>
 

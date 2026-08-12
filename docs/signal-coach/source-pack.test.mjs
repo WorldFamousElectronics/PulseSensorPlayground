@@ -51,6 +51,7 @@ assert.match(tutorial, /3 Click Connect/);
 assert.match(tutorial, /Loading Signal Coach/);
 assert.match(tutorial, /Taking longer than expected/);
 assert.match(tutorial, /Open Signal Coach/);
+assert.match(tutorial, /Coach not loading\? Open directly\./);
 assert.match(tutorial, /pulsesensor-signal-coach-ready/);
 assert.match(dashboard, /pulsesensor-signal-coach-ready/);
 
