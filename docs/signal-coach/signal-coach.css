@@ -196,6 +196,8 @@ footer p { margin: 0; }
 .is-embedded .topbar > div:first-child { display: none; }
 .is-embedded .topbar { justify-content: flex-end; }
 .is-embedded .connection { width: 100%; min-width: 0; }
+.is-embedded .screen-header { display: none; }
+.is-embedded .wave-coach-layout { border-top: 2px solid var(--grid); }
 
 @media (max-width: 1000px) {
   .topbar, footer { flex-direction: column; align-items: stretch; }
