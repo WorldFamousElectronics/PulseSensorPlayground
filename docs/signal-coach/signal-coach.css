@@ -80,7 +80,8 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 46px); line-height: .95; letter-spac
   cursor: pointer;
   font-weight: 800;
 }
-#connectBtn:hover, #connectBtn:focus-visible { background: var(--blue); color: var(--page); outline: none; }
+#connectBtn { background: var(--blue); color: #fff; }
+#connectBtn:hover, #connectBtn:focus-visible { background: #076f80; color: #fff; outline: 2px solid rgba(8,126,145,.25); outline-offset: 2px; }
 .resync-button { background: var(--blue); color: #fff; padding-inline: 12px; white-space: nowrap; box-shadow: none; }
 .resync-button:hover:not(:disabled), .resync-button:focus-visible:not(:disabled) { background: #076f80; border-color: #076f80; color: #fff; outline: 2px solid rgba(8,126,145,.25); outline-offset: 2px; }
 .resync-button.confirmed { background: #fff3b0; border-color: var(--yellow); color: #4e3d00; box-shadow: none; }
@@ -131,22 +132,18 @@ button:disabled { cursor: not-allowed; opacity: .38; }
 }
 .waiting-overlay[hidden] { display: none; }
 
-.graph-guide { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 9px; padding: clamp(12px, 1.5vw, 16px); background: linear-gradient(180deg, rgba(8,126,145,.055), transparent 45%), var(--panel); }
-.graph-guide-heading h3 { margin: 6px 0 0; color: var(--white); font-size: clamp(18px, 2vw, 23px); line-height: 1.04; letter-spacing: -.025em; }
-.coach-purpose { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
-.coach-purpose strong { color: var(--white); }
-.guide-states { display: grid; align-content: start; gap: 7px; }
-.guide-state { display: grid; gap: 2px; padding: 8px 9px; border-left: 3px solid currentColor; background: #fff; }
-.guide-state strong { font: 800 12px/1.2 ui-monospace, "SFMono-Regular", Menlo, monospace; }
-.guide-state span { color: var(--muted); font-size: 11px; line-height: 1.3; }
+.graph-guide { display: grid; align-content: start; gap: 13px; padding: clamp(14px, 1.8vw, 20px); background: var(--panel); }
+.graph-guide .coach-card { min-height: 0; border: 0; background: transparent; padding: 0; }
 .guide-blue { color: var(--blue); }
 .guide-yellow { color: var(--yellow); }
 .guide-green { color: var(--green); }
-.wear-guide { display: grid; gap: 3px; padding: 9px 10px; border: 1px solid var(--grid-soft); background: #fff; }
-.wear-guide strong { color: var(--green); font-size: 12px; }
-.wear-guide span { color: var(--muted); font-size: 11px; line-height: 1.35; }
+.guide-key { display: flex; flex-wrap: wrap; gap: 6px 12px; padding-top: 11px; border-top: 1px solid var(--grid); font-size: 11px; }
+.guide-key span { white-space: nowrap; }
+.guide-key b { color: var(--white); }
+.wear-guide { margin: 0; color: var(--muted); font-size: 12px; }
+.wear-guide strong { color: var(--green); }
 
-.readout-grid { display: grid; grid-template-columns: minmax(250px, .72fr) minmax(360px, 1.28fr); gap: 12px; margin-top: 12px; }
+.readout-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
 .bpm-card, .coach-card { min-height: 132px; border: 2px solid var(--grid); background: var(--panel); padding: clamp(14px, 2vw, 22px); }
 .bpm-card { display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto; align-items: center; gap: 4px 18px; }
 .card-label { color: var(--blue); font: 800 13px/1 ui-monospace, "SFMono-Regular", Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; }
@@ -198,6 +195,7 @@ footer p { margin: 0; }
 .is-embedded .connection { width: 100%; min-width: 0; }
 .is-embedded .screen-header { display: none; }
 .is-embedded .wave-coach-layout { border-top: 2px solid var(--grid); }
+.is-embedded .resync-button:disabled { display: none; }
 
 @media (max-width: 1000px) {
   .topbar, footer { flex-direction: column; align-items: stretch; }
@@ -205,23 +203,23 @@ footer p { margin: 0; }
   .wave-coach-layout { grid-template-columns: 1fr; }
   .wave-coach-layout .wave-wrap { border-right: 0; border-bottom: 1px solid var(--grid); }
   .graph-guide { grid-template-columns: 1fr; grid-template-rows: auto; }
-  .guide-states { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 760px) {
   .readout-grid { grid-template-columns: 1fr; }
   .technical-grid { grid-template-columns: repeat(2, 1fr); }
   .connection-summary { flex-direction: column; gap: 4px; }
-  .guide-states { grid-template-columns: 1fr; }
+  .connection { grid-template-columns: 9px minmax(0, 1fr) auto; }
+  .connection-copy { grid-column: 2/-1; }
+  .rate-control { grid-column: 2; }
+  #resyncBtn { grid-column: 3; }
+  #connectBtn { grid-column: 1/-1; width: 100%; }
+  #waveformCanvas { height: 220px; }
 }
 
 @media (max-width: 430px) {
   .coach-app { padding: 12px; }
-  .connection { grid-template-columns: 9px 1fr 1fr; }
-  .connection-copy { grid-column: 2/-1; }
-  .rate-control { grid-column: 2; }
-  #resyncBtn { grid-column: 3; font-size: 12px; }
-  #connectBtn { grid-column: 1/-1; width: 100%; }
+  #resyncBtn { font-size: 12px; }
   .screen-header { font-size: 14px; }
   .technical-grid { grid-template-columns: 1fr 1fr; }
 }

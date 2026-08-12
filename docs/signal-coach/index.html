@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#060a06">
   <title>PulseSensor Signal Coach</title>
   <meta name="description" content="Connect a PulseSensor over USB, see the live waveform, and get clear Signal Coach guidance before trusting BPM.">
-  <link rel="stylesheet" href="./signal-coach.css?v=20260812-wave-first">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260812-action-first-r2">
 </head>
 <body>
   <main class="coach-app">
@@ -57,20 +57,23 @@
           </div>
 
           <aside class="graph-guide" aria-labelledby="graphGuideTitle">
-            <div class="graph-guide-heading">
-              <span class="card-label">Use this while watching the wave</span>
-              <h3 id="graphGuideTitle">Read the coach. Improve the signal.</h3>
+            <article class="coach-card" id="coachCard">
+              <div class="coach-heading">
+                <span class="card-label" id="graphGuideTitle">Signal Coach</span>
+                <strong id="coachLabel">READY</strong>
+              </div>
+              <div class="quality-bar" id="qualityBar" aria-label="Signal confidence">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <p id="coachAdvice">Connect your board to begin.</p>
+            </article>
+            <div class="guide-key" aria-label="Coach color key">
+              <span class="guide-blue">Blue <b>Adjust</b></span>
+              <span class="guide-yellow">Yellow <b>Hold</b></span>
+              <span class="guide-green">Green <b>BPM ready</b></span>
             </div>
-            <p class="coach-purpose"><strong>What is Signal Coach?</strong> It watches the live pulse wave and tells you when to adjust, hold still, or trust the displayed BPM. Use the waveform and coach color together.</p>
-            <div class="guide-states">
-              <div class="guide-state guide-blue"><strong>Blue <span aria-hidden="true">&middot;</span> Find it</strong><span>Place gently and look for a repeatable wave.</span></div>
-              <div class="guide-state guide-yellow"><strong>Yellow <span aria-hidden="true">&middot;</span> Keep still</strong><span>Hold the same position while beats settle.</span></div>
-              <div class="guide-state guide-green"><strong>Green <span aria-hidden="true">&middot;</span> BPM ready</strong><span>Qualified means the recent wave is consistent.</span></div>
-            </div>
-            <div class="wear-guide">
-              <strong>Fingertip or earlobe</strong>
-              <span>Use a light touch. Squeezing can flatten the waveform.</span>
-            </div>
+            <p class="wear-guide"><strong>Light touch.</strong> Fingertip or earlobe.</p>
             <p class="resync-help" id="resyncHelp"><strong>Wave visible but not locking?</strong> Use <b>Re-sync Signal</b> to retune Chrome to the live wave.</p>
           </aside>
         </div>
@@ -80,18 +83,6 @@
             <span class="card-label">BPM</span>
             <strong id="liveBpm">--</strong>
             <span class="card-note" id="bpmNote">Wait for a clean signal</span>
-          </article>
-
-          <article class="coach-card" id="coachCard">
-            <div class="coach-heading">
-              <span class="card-label">Signal Coach</span>
-              <strong id="coachLabel">READY</strong>
-            </div>
-            <div class="quality-bar" id="qualityBar" aria-label="Signal confidence">
-              <span></span><span></span><span></span><span></span><span></span>
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <p id="coachAdvice">Connect your board to begin.</p>
           </article>
         </div>
       </div>
@@ -129,6 +120,6 @@
     </footer>
   </main>
 
-  <script type="module" src="./signal-coach.mjs?v=20260812-wave-first"></script>
+  <script type="module" src="./signal-coach.mjs?v=20260812-action-first-r2"></script>
 </body>
 </html>
