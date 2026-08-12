@@ -33,6 +33,11 @@ The blue **Re-sync Signal** button ports the PulseLink `v1.1-resync` recovery:
 it clears stale timing, seeds amplitude from the live range, retunes the
 threshold, and opens the six-second fast-lock window in Chrome.
 
+The complete no-build, no-minification home-hacking guide is
+[`docs/signal-coach/README.md`](docs/signal-coach/README.md). A minimal raw-wave
+Arduino/ESP32 sender lives at
+[`examples/SignalCoachWebSerial/SignalCoachWebSerial.ino`](examples/SignalCoachWebSerial/SignalCoachWebSerial.ino).
+
 Run it locally from the repository root:
 
 ```bash
@@ -46,6 +51,7 @@ own the port. Protocol tests run with:
 ```bash
 node docs/signal-coach/protocol.test.mjs
 node docs/signal-coach/signal-coach-core.test.mjs
+node docs/signal-coach/source-pack.test.mjs
 ```
 
 The existing dashboard in `docs/webserial-explainer/` remains available

@@ -129,7 +129,7 @@ export function parsePulseLine(line) {
     return pulseFrame({ source: 'pulse-serial', format: 'PulseSensor S-value samples', signal: prefixed[1] });
   }
 
-  const labeled = normalized.match(/^(?:signal|sig|sample|raw)\s*[:=]\s*(\d+)$/i);
+  const labeled = normalized.match(/^(?:signal|sig|sample|raw)(?:\s*[:=]\s*|\s+)(\d+)$/i);
   if (labeled) {
     return pulseFrame({ source: 'labeled', format: 'labeled pulse samples', signal: labeled[1] });
   }

@@ -1,6 +1,6 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-home-hack';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-home-hack';
 
 const HISTORY_LENGTH = 600;
 const canvas = document.querySelector('#waveformCanvas');

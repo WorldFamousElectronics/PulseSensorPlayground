@@ -28,6 +28,9 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
   after stale timing, confidence, and threshold state are cleared.
 - Release-cache regression: the dashboard stylesheet and behavior module carry
   the same blue-Re-sync version key so new markup cannot run an older script.
+- Public source-pack test: the unminified UI, coach core, transport adapters,
+  tests, MIT license, Shopify tutorial source, home-build guide, and minimal
+  Arduino sketch are present and cross-linked.
 - Deterministic browser replay: reaches QUALIFIED at 72 BPM with 12/12 quality
   and zero sequence gaps; the replay is visibly marked SIM.
 - Responsive browser check: 390 × 844 layout remains readable and usable.

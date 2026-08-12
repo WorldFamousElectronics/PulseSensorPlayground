@@ -17,6 +17,7 @@ assert.deepEqual(parsePulseLine('512'), {
 
 assert.equal(parsePulseLine('S:2048').signal, 2048);
 assert.equal(parsePulseLine('signal=612').signal, 612);
+assert.equal(parsePulseLine('Signal 613').signal, 613);
 assert.equal(parsePulseLine('1200,2048').timestampMs, 1200);
 assert.equal(parsePulseLine('1200,2048').signal, 2048);
 assert.equal(parsePulseLine('{"timestampMs":1200,"raw":2048,"bpm":70}').sourceBpm, 70);

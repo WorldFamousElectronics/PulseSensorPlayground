@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#060a06">
   <title>PulseSensor Signal Coach</title>
   <meta name="description" content="Connect a PulseSensor over USB, see the live waveform, and get clear Signal Coach guidance before trusting BPM.">
-  <link rel="stylesheet" href="./signal-coach.css?v=20260812-blue-resync">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260812-home-hack">
 </head>
 <body>
   <main class="coach-app">
@@ -112,16 +112,17 @@
 
     <details class="technical-details supported-inputs">
       <summary>Supported pulse streams</summary>
-      <p>Signal Coach needs a numeric pulse-wave sample. It accepts one number per line, <code>S512</code>, <code>signal=512</code>, <code>timestamp,signal</code>, JSON samples, the Arduino <code>signal,bpm,ibi,beat</code> sketch below, and PulseLink PSWS. Sender BPM and IBI never control the coach.</p>
+      <p>Signal Coach needs a numeric pulse-wave sample. It accepts one number per line, <code>S512</code>, <code>Signal 512</code>, <code>signal=512</code>, <code>timestamp,signal</code>, JSON samples, Arduino <code>signal,bpm,ibi,beat</code>, and PulseLink PSWS. Sender BPM and IBI never control the coach.</p>
       <p>Choose the rate your sketch prints. The default tutorial sends 50 samples each second.</p>
     </details>
 
     <footer>
       <p>Samples stay in this browser tab. They are not saved or uploaded.</p>
+      <p class="source-links"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/docs/signal-coach/README.md" target="_blank" rel="noopener">Build it at home</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/docs/signal-coach" target="_blank" rel="noopener">View all source</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">Arduino sketch</a></p>
       <p>Educational biofeedback project. Not a medical device and not for health decisions.</p>
     </footer>
   </main>
 
-  <script type="module" src="./signal-coach.mjs?v=20260812-blue-resync"></script>
+  <script type="module" src="./signal-coach.mjs?v=20260812-home-hack"></script>
 </body>
 </html>

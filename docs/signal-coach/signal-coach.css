@@ -177,6 +177,9 @@ button:disabled { cursor: not-allowed; opacity: .38; }
 
 footer { display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--grid-soft); padding-top: 14px; color: #6f7d74; font-size: 12px; }
 footer p { margin: 0; }
+.source-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 14px; }
+.source-links a { color: var(--blue); font-weight: 750; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.source-links a:hover, .source-links a:focus-visible { color: var(--white); outline-color: var(--blue); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 @media (max-width: 1000px) {
