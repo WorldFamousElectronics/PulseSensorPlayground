@@ -50,6 +50,13 @@ assert.ok(result.bpm >= 70 && result.bpm <= 74);
 result = esp32.resync(12020);
 assert.equal(result.state, 'RESYNC');
 assert.equal(result.quality, 0);
+let requalifiedAt = null;
+for (let timestamp = 12040; timestamp < 17000; timestamp += 20) {
+  result = esp32.update(pulseSample(timestamp, 512, 4), timestamp);
+  if (result.state === 'QUALIFIED' && requalifiedAt === null) requalifiedAt = timestamp;
+}
+assert.ok(requalifiedAt !== null, 'Re-sync should recover a clean live wave');
+assert.ok(requalifiedAt - 12020 < 4000, 'Re-sync fast-lock should recover within four seconds');
 
 assert.equal(stateColor('QUALIFIED'), 'green');
 assert.equal(stateColor('LOCKING'), 'yellow');

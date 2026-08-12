@@ -46,6 +46,7 @@ let lastFrame = null;
 let lastCoach = { state: 'READY', quality: 0, locked: false, range: 0, bpm: 0, ibi: 0, beat: false };
 let streamTimestamp = null;
 let lastDeviceTimestamp = null;
+let resyncUiTimer = null;
 const browserCoach = new BrowserSignalCoach();
 
 function resizeCanvas() {
@@ -200,6 +201,10 @@ function resetDisconnectedDisplay() {
   screenSource.textContent = 'CHROME';
   waitingOverlay.hidden = false;
   waitingOverlay.textContent = 'CONNECT A PULSE STREAM';
+  if (resyncUiTimer !== null) clearTimeout(resyncUiTimer);
+  resyncUiTimer = null;
+  resyncBtn.textContent = 'Re-sync Signal';
+  resyncBtn.classList.remove('confirmed');
   resyncBtn.disabled = true;
   sampleRate.disabled = false;
   liveBpm.textContent = '--';
@@ -309,7 +314,15 @@ resyncBtn.addEventListener('click', () => {
   if (streamTimestamp === null) return;
   lastCoach = browserCoach.resync(streamTimestamp);
   updateCoach(lastCoach);
-  coachLabel.textContent = 'RE-SYNC';
+  coachLabel.textContent = 'RESYNC';
+  resyncBtn.textContent = 'Retuned — keep still';
+  resyncBtn.classList.add('confirmed');
+  if (resyncUiTimer !== null) clearTimeout(resyncUiTimer);
+  resyncUiTimer = setTimeout(() => {
+    resyncBtn.textContent = 'Re-sync Signal';
+    resyncBtn.classList.remove('confirmed');
+    resyncUiTimer = null;
+  }, 900);
 });
 
 navigator.serial?.addEventListener('disconnect', (event) => {

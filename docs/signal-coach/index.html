@@ -32,7 +32,7 @@
             <option value="500">500</option>
           </select>
         </label>
-        <button class="secondary-button" id="resyncBtn" type="button" disabled>Re-sync</button>
+        <button class="resync-button" id="resyncBtn" type="button" aria-describedby="resyncHelp" title="Retune Chrome to the live waveform" disabled>Re-sync Signal</button>
         <button id="connectBtn" type="button">Connect</button>
       </div>
     </header>
@@ -41,6 +41,7 @@
     <aside class="simulation-warning" id="simulationWarning" hidden>
       SIMULATED BENCH SIGNAL — NOT A PERSON. This mode checks the interface only.
     </aside>
+    <p class="resync-help" id="resyncHelp"><strong>Wave visible, but the coach will not lock?</strong> Click the blue <b>Re-sync Signal</b> button. Chrome clears old beat timing, retunes to the wave on screen, and starts the proven fast-lock window.</p>
 
     <section class="display" aria-labelledby="displayTitle">
       <h2 id="displayTitle" class="sr-only">Live PulseSensor display</h2>

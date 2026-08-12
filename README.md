@@ -29,6 +29,9 @@ published `signal,bpm,ibi,beat` Arduino/ESP32 stream, and version-1 or version-2
 `PSWS` frames from PulseLink firmware. Beat detection, IBI, BPM, confidence,
 and every coaching state run in the browser from the raw pulse wave. Values
 calculated by the sender are diagnostic only and never control the coach.
+The blue **Re-sync Signal** button ports the PulseLink `v1.1-resync` recovery:
+it clears stale timing, seeds amplitude from the live range, retunes the
+threshold, and opens the six-second fast-lock window in Chrome.
 
 Run it locally from the repository root:
 

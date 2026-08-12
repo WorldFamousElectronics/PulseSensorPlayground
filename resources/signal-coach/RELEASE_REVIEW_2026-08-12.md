@@ -15,6 +15,8 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
 - Mark the public experience Beta with a visible release date and time.
 - Add an on-page Shopify contact form that delivers tester feedback to the
   store contact address without publishing that address.
+- Make the PulseLink v1.1 recovery a prominent blue `Re-sync Signal` button;
+  the action runs against the live wave in Chrome.
 
 ## Verification
 
@@ -22,6 +24,8 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
   JSON, legacy four-value, PSWS v1, and PSWS v2 frames.
 - Browser-native Signal Coach unit tests: pass for flat input, 10-bit Arduino
   pulse waves, 12-bit ESP32 pulse waves, re-sync, and 50/100/200/500 samples/s.
+- Re-sync regression: a clean 12-bit wave re-qualifies within four seconds
+  after stale timing, confidence, and threshold state are cleared.
 - Deterministic browser replay: reaches QUALIFIED at 72 BPM with 12/12 quality
   and zero sequence gaps; the replay is visibly marked SIM.
 - Responsive browser check: 390 × 844 layout remains readable and usable.
