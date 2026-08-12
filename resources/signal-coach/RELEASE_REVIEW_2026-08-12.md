@@ -8,12 +8,20 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
   leaving the existing WebSerial page unchanged for comparison and validation.
 - Keep the published `signal,bpm,ibi,beat` Arduino/ESP32 stream compatible.
 - Keep PulseLink StickS3 `PSWS` v1 and v2 streams compatible.
+- Run beat detection, confidence, IBI, BPM, and coach states in Chrome from the
+  pulse wave; sender-calculated values are diagnostic only.
+- Accept raw numeric, `S512`, labeled, timestamped CSV, and JSON pulse samples.
 - Move IBI, raw Signal, Beat, and transport diagnostics into Technical details.
+- Mark the public experience Beta with a visible release date and time.
+- Add an on-page Shopify contact form that delivers tester feedback to the
+  store contact address without publishing that address.
 
 ## Verification
 
-- Protocol unit tests: pass for legacy four-value, PSWS v1, and PSWS v2 frames.
-- Signal Coach unit test: pass through noisy, locking, and qualified states.
+- Protocol unit tests: pass for raw numeric, S-value, labeled, timestamped CSV,
+  JSON, legacy four-value, PSWS v1, and PSWS v2 frames.
+- Browser-native Signal Coach unit tests: pass for flat input, 10-bit Arduino
+  pulse waves, 12-bit ESP32 pulse waves, re-sync, and 50/100/200/500 samples/s.
 - Deterministic browser replay: reaches QUALIFIED at 72 BPM with 12/12 quality
   and zero sequence gaps; the replay is visibly marked SIM.
 - Responsive browser check: 390 × 844 layout remains readable and usable.
@@ -22,6 +30,8 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
 - Published Shopify iframe check: Web Serial permission chooser opened from the
   cross-origin Signal Coach embed and the attached StickS3 streamed live PSWS v2
   frames into the production page.
+- Feedback-form check: required result, notes, and reply-email controls render;
+  the form posts to Shopify `/contact` and was not submitted during QA.
 - Preservation check: the existing Shopify page still contains its original
   Signal Waveform and Four Values content and does not contain the new preview.
 
@@ -29,7 +39,9 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
 
 - The dashboard does not invent live sensor data or silently fall back to a
   simulation.
-- BPM is withheld until the coach accepts the recent signal.
+- BPM is withheld until the browser coach accepts the recent signal.
+- PulseLink and Arduino BPM/IBI/beat/quality values cannot qualify the browser
+  coach or make BPM appear.
 - Removed the old page's unsupported stress and resting-range claims.
 - Added local-processing and educational/not-medical disclosures.
 - Troubleshooting now maps coach states to concrete placement, pressure, motion,

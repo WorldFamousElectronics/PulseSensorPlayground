@@ -24,11 +24,11 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 The browser dashboard in
 [`docs/signal-coach/`](docs/signal-coach/) connects
 directly to supported USB serial boards from desktop Chrome or Edge. It accepts
-the published `signal,bpm,ibi,beat` Arduino/ESP32 stream and version-1 or
-version-2 `PSWS` frames from PulseLink M5Stack StickS3 firmware. The large live
-waveform and Signal Coach lead the experience; BPM appears after the incoming
-signal is steady enough, while Signal, Beat, IBI, and transport diagnostics stay
-available under Technical details.
+raw numeric samples, `S512` values, labeled samples, timestamped CSV, JSON, the
+published `signal,bpm,ibi,beat` Arduino/ESP32 stream, and version-1 or version-2
+`PSWS` frames from PulseLink firmware. Beat detection, IBI, BPM, confidence,
+and every coaching state run in the browser from the raw pulse wave. Values
+calculated by the sender are diagnostic only and never control the coach.
 
 Run it locally from the repository root:
 
@@ -46,7 +46,7 @@ node docs/signal-coach/signal-coach-core.test.mjs
 ```
 
 The existing dashboard in `docs/webserial-explainer/` remains available
-unchanged while the separate Signal Coach preview is validated by testers.
+unchanged while the separate, dated Beta Signal Coach is validated by testers.
 
 The normal customer URL never generates fallback data. An explicit
 `?bench=1` developer URL exposes a manually started, prominently labeled

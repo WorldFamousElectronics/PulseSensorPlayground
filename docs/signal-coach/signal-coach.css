@@ -47,13 +47,16 @@ button, summary { font: inherit; }
   text-transform: uppercase;
 }
 
+.release-line { margin: 0 0 12px; display: flex; align-items: center; gap: 9px; color: #819087; font: 700 10px/1.2 ui-monospace, "SFMono-Regular", Menlo, monospace; letter-spacing: .05em; text-transform: uppercase; }
+.beta-badge { display: inline-block; border: 1px solid var(--yellow); color: var(--yellow); padding: 4px 7px; letter-spacing: .12em; }
+
 h1 { margin: 0; font-size: clamp(32px, 5vw, 58px); line-height: .95; letter-spacing: -.045em; }
 .subhead { max-width: 680px; margin: 12px 0 0; color: #a7b4ac; font-size: clamp(15px, 1.5vw, 18px); }
 
 .connection {
-  min-width: 325px;
+  min-width: 560px;
   display: grid;
-  grid-template-columns: 10px 1fr auto;
+  grid-template-columns: 10px minmax(150px, 1fr) auto auto auto;
   align-items: center;
   gap: 11px;
   border: 1px solid var(--grid);
@@ -68,7 +71,7 @@ h1 { margin: 0; font-size: clamp(32px, 5vw, 58px); line-height: .95; letter-spac
 .connection-copy strong { font-size: 13px; }
 .connection-copy span { color: #839189; font-size: 11px; }
 
-#connectBtn {
+#connectBtn, .secondary-button {
   border: 1px solid var(--blue);
   border-radius: 0;
   background: transparent;
@@ -78,6 +81,11 @@ h1 { margin: 0; font-size: clamp(32px, 5vw, 58px); line-height: .95; letter-spac
   font-weight: 800;
 }
 #connectBtn:hover, #connectBtn:focus-visible { background: var(--blue); color: var(--page); outline: none; }
+.secondary-button { border-color: #63736a; color: #b0bcb4; padding-inline: 11px; }
+.secondary-button:hover:not(:disabled), .secondary-button:focus-visible:not(:disabled) { border-color: var(--yellow); color: var(--yellow); outline: none; }
+button:disabled { cursor: not-allowed; opacity: .38; }
+.rate-control { display: grid; gap: 2px; color: #7d8b83; font: 650 9px/1 ui-monospace, "SFMono-Regular", Menlo, monospace; text-transform: uppercase; }
+.rate-control select { min-width: 62px; border: 1px solid #405347; border-radius: 0; background: #071008; color: var(--white); padding: 5px 7px; font: 700 12px/1 ui-monospace, "SFMono-Regular", Menlo, monospace; }
 
 .error-message, .simulation-warning {
   padding: 12px 15px;
@@ -153,20 +161,26 @@ h1 { margin: 0; font-size: clamp(32px, 5vw, 58px); line-height: .95; letter-spac
 
 .technical-details { border-top: 1px solid var(--grid-soft); border-bottom: 1px solid var(--grid-soft); padding: 14px 0; }
 .technical-details summary { cursor: pointer; color: #a4b0a8; font-weight: 750; }
-.technical-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.technical-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .technical-grid div { padding: 12px; border: 1px solid var(--grid-soft); background: var(--panel); display: grid; gap: 4px; }
 .technical-grid span, .technical-grid small, .raw-line span { color: #748279; font-size: 11px; }
 .technical-grid strong { color: var(--blue); font: 800 24px/1 ui-monospace, "SFMono-Regular", Menlo, monospace; }
 .raw-line { display: grid; gap: 5px; margin: 12px 0 0; }
 .raw-line code { overflow-wrap: anywhere; color: #8da298; font-size: 10px; }
+.supported-inputs { color: #9dacA3; font-size: 13px; line-height: 1.55; }
+.supported-inputs p { margin: 12px 0 0; }
+.supported-inputs code { color: var(--blue); }
 
 footer { display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--grid-soft); padding-top: 14px; color: #6f7d74; font-size: 12px; }
 footer p { margin: 0; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
   .topbar, footer { flex-direction: column; align-items: stretch; }
   .connection { min-width: 0; }
+}
+
+@media (max-width: 760px) {
   .readout-grid, .placement { grid-template-columns: 1fr; }
   .technical-grid { grid-template-columns: repeat(2, 1fr); }
   .connection-summary { flex-direction: column; gap: 4px; }
@@ -175,7 +189,10 @@ footer p { margin: 0; }
 
 @media (max-width: 430px) {
   .coach-app { padding: 12px; }
-  .connection { grid-template-columns: 9px 1fr; }
+  .connection { grid-template-columns: 9px 1fr 1fr; }
+  .connection-copy { grid-column: 2/-1; }
+  .rate-control { grid-column: 2; }
+  #resyncBtn { grid-column: 3; }
   #connectBtn { grid-column: 1/-1; width: 100%; }
   .screen-header { font-size: 14px; }
   .technical-grid { grid-template-columns: 1fr 1fr; }

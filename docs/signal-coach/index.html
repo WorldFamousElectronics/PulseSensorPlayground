@@ -14,15 +14,25 @@
     <header class="topbar">
       <div>
         <p class="eyebrow">PulseSensor · Web Serial</p>
+        <p class="release-line"><span class="beta-badge">BETA</span><time datetime="2026-08-12T13:12:31-04:00">August 12, 2026 · 1:12 PM EDT</time></p>
         <h1>Signal Coach</h1>
-        <p class="subhead">Get a clean pulse waveform first. BPM appears only after the signal settles.</p>
+        <p class="subhead">Connect Arduino, ESP32, or any supported pulse-wave serial stream. Chrome finds the beats, coaches the signal, and shows BPM only after it settles.</p>
       </div>
       <div class="connection" aria-live="polite">
         <span class="status-dot" id="statusDot"></span>
         <div class="connection-copy">
           <strong id="statusText">Disconnected</strong>
-          <span id="sourceMeta">USB serial · 115200 baud</span>
+          <span id="sourceMeta">Pulse-wave input · 115200 baud</span>
         </div>
+        <label class="rate-control" for="sampleRate">Samples/s
+          <select id="sampleRate">
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+          </select>
+        </label>
+        <button class="secondary-button" id="resyncBtn" type="button" disabled>Re-sync</button>
         <button id="connectBtn" type="button">Connect</button>
       </div>
     </header>
@@ -38,12 +48,12 @@
         <div class="screen-header">
           <span id="sourceName">PulseSensor</span>
           <span class="heart" id="heart" aria-hidden="true">♥</span>
-          <span class="screen-source" id="screenSource">USB</span>
+          <span class="screen-source" id="screenSource">CHROME</span>
         </div>
 
         <div class="wave-wrap">
           <canvas id="waveformCanvas" width="900" height="300" aria-label="Live PulseSensor waveform"></canvas>
-          <div class="waiting-overlay" id="waitingOverlay">CONNECT YOUR BOARD</div>
+          <div class="waiting-overlay" id="waitingOverlay">CONNECT A PULSE STREAM</div>
         </div>
 
         <div class="readout-grid">
@@ -90,11 +100,19 @@
       <summary>Technical details</summary>
       <div class="technical-grid">
         <div><span>Signal</span><strong id="liveSignal">--</strong><small>raw ADC</small></div>
-        <div><span>Beat</span><strong id="liveBeat">--</strong><small>one-sample event</small></div>
-        <div><span>IBI</span><strong id="liveIbi">--</strong><small>milliseconds</small></div>
-        <div><span>Quality</span><strong id="liveQuality">--</strong><small>coach confidence</small></div>
+        <div><span>Browser beat</span><strong id="liveBeat">--</strong><small>detected in Chrome</small></div>
+        <div><span>Browser IBI</span><strong id="liveIbi">--</strong><small>milliseconds</small></div>
+        <div><span>Quality</span><strong id="liveQuality">--</strong><small>browser confidence</small></div>
+        <div><span>Input format</span><strong id="liveInputFormat">--</strong><small>auto detected</small></div>
+        <div><span>Sender values</span><strong id="sourceMetrics">--</strong><small>diagnostic only</small></div>
       </div>
       <p class="raw-line"><span>Latest frame</span><code id="rawSerial">waiting for data...</code></p>
+    </details>
+
+    <details class="technical-details supported-inputs">
+      <summary>Supported pulse streams</summary>
+      <p>Signal Coach needs a numeric pulse-wave sample. It accepts one number per line, <code>S512</code>, <code>signal=512</code>, <code>timestamp,signal</code>, JSON samples, the Arduino <code>signal,bpm,ibi,beat</code> sketch below, and PulseLink PSWS. Sender BPM and IBI never control the coach.</p>
+      <p>Choose the rate your sketch prints. The default tutorial sends 50 samples each second.</p>
     </details>
 
     <footer>

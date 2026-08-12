@@ -1,25 +1,60 @@
 <!-- PulseSensor Signal Coach / Web Serial page body -->
 <style>
   .psc-page{--ink:#17211b;--muted:#5d6962;--line:#dce7df;--soft:#f4f8f5;--blue:#087e91;--yellow:#997800;--green:#16784b;max-width:1040px;margin:0 auto;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
-  .psc-page *{box-sizing:border-box}.psc-page h2,.psc-page h3{line-height:1.15;color:var(--ink)}.psc-page h2{font-size:clamp(1.65rem,3vw,2.35rem);margin:2.4rem 0 .65rem}.psc-page h3{font-size:1.08rem;margin:.2rem 0 .35rem}.psc-page p{margin:.45rem 0 1rem}.psc-page a{color:#b33b3b}.psc-page code{background:#edf3ef;padding:.15rem .35rem;border-radius:3px}.psc-page .psc-hero{text-align:center;padding:1rem 0 1.4rem}.psc-page .psc-kicker{color:var(--blue);font:700 .72rem/1.2 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}.psc-page .psc-hero h2{font-size:clamp(2.3rem,6vw,4.8rem);letter-spacing:-.045em;margin:.35rem 0 .8rem}.psc-page .psc-hero p{max-width:720px;margin:.5rem auto;color:var(--muted);font-size:1.08rem}.psc-page .psc-try{display:inline-block;margin-top:.7rem;padding:.65rem 1rem;background:#18231c;color:#fff;font-weight:700;border-radius:4px}.psc-page .psc-frame{width:100%;height:1050px;border:0;border-radius:8px;background:#030604}.psc-page .psc-caption{color:var(--muted);font-size:.84rem;text-align:center;margin:.55rem 0 0}.psc-page .psc-callout{margin:1.5rem 0;padding:1rem 1.15rem;border-left:4px solid var(--blue);background:#eff9fa}.psc-page .psc-callout strong{color:#076f80}.psc-page .psc-steps,.psc-page .psc-coach-grid,.psc-page .psc-wear{display:grid;gap:12px}.psc-page .psc-steps{grid-template-columns:repeat(3,1fr);counter-reset:step;margin:1.2rem 0}.psc-page .psc-step{counter-increment:step;padding:1rem;border:1px solid var(--line);background:#fff}.psc-page .psc-step:before{content:counter(step);display:block;color:var(--blue);font:800 .78rem/1 ui-monospace,Menlo,monospace;margin-bottom:.7rem}.psc-page .psc-step p,.psc-page .psc-state p,.psc-page .psc-wear p{color:var(--muted);font-size:.92rem;margin:0}.psc-page .psc-coach-grid{grid-template-columns:repeat(3,1fr);margin:1rem 0}.psc-page .psc-state{padding:1rem;border:1px solid var(--line);border-top-width:4px;background:var(--soft)}.psc-page .psc-blue{border-top-color:#139db3}.psc-page .psc-yellow{border-top-color:#d1a700}.psc-page .psc-green{border-top-color:#28a469}.psc-page .psc-wear{grid-template-columns:1fr 1fr}.psc-page .psc-wear>div{padding:1rem;background:var(--soft);border-left:3px solid var(--green)}.psc-page pre{margin:1rem 0;padding:1rem;background:#151a17;color:#dce9df;border-radius:6px;overflow:auto;font-size:.8rem;line-height:1.5}.psc-page .psc-pin-table,.psc-page .psc-fix-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}.psc-page th,.psc-page td{text-align:left;padding:.7rem;border-bottom:1px solid var(--line);vertical-align:top}.psc-page th{background:var(--soft)}.psc-page details{margin:1rem 0;border:1px solid var(--line);padding:.85rem 1rem}.psc-page summary{cursor:pointer;font-weight:700}.psc-page .psc-note{padding:1rem;background:#fff9e8;border-left:4px solid #d6a700}.psc-page .psc-safety{margin:2rem 0 0;padding:1rem;background:#f4f5f4;color:#4f5953;font-size:.88rem;text-align:center}.psc-page .psc-cta{margin:2rem 0;padding:1.2rem;text-align:center;border:1px solid var(--line);background:var(--soft)}
-  @media(max-width:760px){.psc-page .psc-steps,.psc-page .psc-coach-grid,.psc-page .psc-wear{grid-template-columns:1fr}.psc-page .psc-frame{height:1180px}.psc-page th,.psc-page td{padding:.55rem}.psc-page .psc-fix-table{font-size:.84rem}}
+  .psc-page *{box-sizing:border-box}.psc-page h2,.psc-page h3{line-height:1.15;color:var(--ink)}.psc-page h2{font-size:clamp(1.65rem,3vw,2.35rem);margin:2.4rem 0 .65rem}.psc-page h3{font-size:1.08rem;margin:.2rem 0 .35rem}.psc-page p{margin:.45rem 0 1rem}.psc-page a{color:#b33b3b}.psc-page code{background:#edf3ef;padding:.15rem .35rem;border-radius:3px}.psc-page .psc-hero{text-align:center;padding:1rem 0 1.4rem}.psc-page .psc-kicker{color:var(--blue);font:700 .72rem/1.2 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}.psc-page .psc-release{display:flex;justify-content:center;align-items:center;gap:.55rem;margin:.65rem 0;color:var(--muted);font-size:.82rem}.psc-page .psc-beta{padding:.2rem .5rem;border:1px solid #c8a100;background:#fff8d5;color:#765d00;font:800 .68rem/1 ui-monospace,Menlo,monospace;letter-spacing:.12em}.psc-page .psc-hero h2{font-size:clamp(2.3rem,6vw,4.8rem);letter-spacing:-.045em;margin:.35rem 0 .8rem}.psc-page .psc-hero p{max-width:720px;margin:.5rem auto;color:var(--muted);font-size:1.08rem}.psc-page .psc-try{display:inline-block;margin-top:.7rem;padding:.65rem 1rem;background:#18231c;color:#fff;font-weight:700;border-radius:4px}.psc-page .psc-frame{width:100%;height:1050px;border:0;border-radius:8px;background:#030604}.psc-page .psc-caption{color:var(--muted);font-size:.84rem;text-align:center;margin:.55rem 0 0}.psc-page .psc-callout{margin:1.5rem 0;padding:1rem 1.15rem;border-left:4px solid var(--blue);background:#eff9fa}.psc-page .psc-callout strong{color:#076f80}.psc-page .psc-steps,.psc-page .psc-coach-grid,.psc-page .psc-wear{display:grid;gap:12px}.psc-page .psc-steps{grid-template-columns:repeat(3,1fr);counter-reset:step;margin:1.2rem 0}.psc-page .psc-step{counter-increment:step;padding:1rem;border:1px solid var(--line);background:#fff}.psc-page .psc-step:before{content:counter(step);display:block;color:var(--blue);font:800 .78rem/1 ui-monospace,Menlo,monospace;margin-bottom:.7rem}.psc-page .psc-step p,.psc-page .psc-state p,.psc-page .psc-wear p{color:var(--muted);font-size:.92rem;margin:0}.psc-page .psc-coach-grid{grid-template-columns:repeat(3,1fr);margin:1rem 0}.psc-page .psc-state{padding:1rem;border:1px solid var(--line);border-top-width:4px;background:var(--soft)}.psc-page .psc-blue{border-top-color:#139db3}.psc-page .psc-yellow{border-top-color:#d1a700}.psc-page .psc-green{border-top-color:#28a469}.psc-page .psc-wear{grid-template-columns:1fr 1fr}.psc-page .psc-wear>div{padding:1rem;background:var(--soft);border-left:3px solid var(--green)}.psc-page pre{margin:1rem 0;padding:1rem;background:#151a17;color:#dce9df;border-radius:6px;overflow:auto;font-size:.8rem;line-height:1.5}.psc-page .psc-pin-table,.psc-page .psc-fix-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}.psc-page th,.psc-page td{text-align:left;padding:.7rem;border-bottom:1px solid var(--line);vertical-align:top}.psc-page th{background:var(--soft)}.psc-page details{margin:1rem 0;border:1px solid var(--line);padding:.85rem 1rem}.psc-page summary{cursor:pointer;font-weight:700}.psc-page .psc-note{padding:1rem;background:#fff9e8;border-left:4px solid #d6a700}.psc-page .psc-feedback{margin:2rem 0;padding:clamp(1rem,3vw,1.7rem);border:1px solid var(--line);border-top:5px solid var(--blue);background:var(--soft)}.psc-page .psc-feedback h2{margin:0 0 .5rem}.psc-page .psc-feedback-intro{max-width:670px;color:var(--muted)}.psc-page .psc-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.psc-page .psc-field{display:flex;flex-direction:column;gap:.35rem;font-weight:700}.psc-page .psc-field-wide{grid-column:1/-1}.psc-page .psc-field span{font-size:.9rem}.psc-page .psc-field input,.psc-page .psc-field select,.psc-page .psc-field textarea{width:100%;padding:.72rem;border:1px solid #aebbb3;border-radius:4px;background:#fff;color:var(--ink);font:inherit}.psc-page .psc-field textarea{min-height:120px;resize:vertical}.psc-page .psc-submit{justify-self:start;padding:.75rem 1.15rem;border:0;border-radius:4px;background:#18231c;color:#fff;font:800 .95rem/1.2 inherit;cursor:pointer}.psc-page .psc-privacy{align-self:center;margin:0;color:var(--muted);font-size:.82rem}.psc-page .psc-safety{margin:2rem 0 0;padding:1rem;background:#f4f5f4;color:#4f5953;font-size:.88rem;text-align:center}.psc-page .psc-cta{margin:2rem 0;padding:1.2rem;text-align:center;border:1px solid var(--line);background:var(--soft)}
+  @media(max-width:760px){.psc-page .psc-steps,.psc-page .psc-coach-grid,.psc-page .psc-wear,.psc-page .psc-form{grid-template-columns:1fr}.psc-page .psc-field-wide{grid-column:auto}.psc-page .psc-frame{height:1180px}.psc-page th,.psc-page td{padding:.55rem}.psc-page .psc-fix-table{font-size:.84rem}}
 </style>
 
 <div class="psc-page">
   <section class="psc-hero">
     <span class="psc-kicker">Signal Coach tester preview</span>
+    <p class="psc-release"><span class="psc-beta">BETA</span><time datetime="2026-08-12T13:12:31-04:00">Released August 12, 2026 · 1:12 PM EDT</time></p>
     <h2>See Your Signal.<br>Make It Better.</h2>
-    <p>Signal Coach shows your live pulse waveform and tells you what to adjust. Once the signal is steady and repeatable, BPM appears.</p>
+    <p>Signal Coach shows your live pulse waveform and tells you what to adjust. Your Arduino or ESP32 only sends samples; Chrome finds the beats, evaluates the signal, and reveals BPM when it is steady.</p>
     <span class="psc-try">No account. No cloud. Nothing to install in the browser.</span>
     <p>This preview runs alongside the <a href="/pages/pulsesensor-and-webserial">current PulseSensor WebSerial page</a> while we collect more tester feedback.</p>
   </section>
 
   <div id="signal-coach">
-    <iframe class="psc-frame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-signal-coach" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
+    <iframe class="psc-frame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-browser-beta" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
     <p class="psc-caption">Use desktop Chrome, Edge, or Brave. The browser reads USB locally; samples are not saved or uploaded.</p>
   </div>
 
   <div class="psc-callout"><strong>Why Signal Coach?</strong> A BPM number is only useful after the waveform is usable. The coach helps you fix placement, pressure, motion, and wiring before it shows a confident BPM.</div>
+
+  <section class="psc-feedback" id="SignalCoachFeedback">
+    <h2>Help us tune Signal Coach</h2>
+    <p class="psc-feedback-intro">Tried it with a real PulseSensor? Tell us what happened. This short form goes directly to the PulseSensor team and helps us decide what to improve before Signal Coach leaves Beta.</p>
+    <form class="psc-form" method="post" action="/contact#SignalCoachFeedback" accept-charset="UTF-8">
+      <input type="hidden" name="form_type" value="contact">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="contact[tags]" value="signal-coach-beta">
+      <label class="psc-field">
+        <span>Did the coach help?</span>
+        <select name="contact[Signal Coach result]" required>
+          <option value="" selected disabled>Choose one</option>
+          <option value="Yes — I reached Qualified">Yes — I reached Qualified</option>
+          <option value="Somewhat — the guidance helped">Somewhat — the guidance helped</option>
+          <option value="No — I could not get a clean signal">No — I could not get a clean signal</option>
+          <option value="I found a bug">I found a bug</option>
+        </select>
+      </label>
+      <label class="psc-field">
+        <span>Board or setup</span>
+        <input type="text" name="contact[Board or setup]" placeholder="Arduino Uno, ESP32, PulseLink…">
+      </label>
+      <label class="psc-field psc-field-wide">
+        <span>What happened?</span>
+        <textarea name="contact[body]" required placeholder="What worked, what was confusing, or what should the coach say instead?"></textarea>
+      </label>
+      <label class="psc-field">
+        <span>Your email</span>
+        <input type="email" name="contact[email]" autocomplete="email" required placeholder="you@example.com">
+      </label>
+      <p class="psc-privacy">Used only to reply to this feedback. Your pulse samples are never attached or uploaded.</p>
+      <button class="psc-submit" type="submit">Send feedback</button>
+    </form>
+  </section>
 
   <h2>Start in three steps</h2>
   <div class="psc-steps">
@@ -106,7 +141,7 @@ void loop() {
 
   <details>
     <summary>How Web Serial works</summary>
-    <p>Your board sends <code>signal,bpm,ibi,beat</code> over USB at 115200 baud. The page reads those lines in the browser and draws the waveform. The Signal Coach uses recent waveform range and repeatable beat events to give placement guidance. No samples are sent to PulseSensor.com.</p>
+    <p>Your board sends raw pulse-wave samples over USB at 115200 baud. A single number per line is enough; the tutorial's <code>signal,bpm,ibi,beat</code> format works too. Chrome draws the waveform, detects beats, calculates IBI and BPM, and runs Signal Coach. Any BPM or IBI supplied by the board is shown only as a diagnostic and never controls the coach. No samples are sent to PulseSensor.com.</p>
   </details>
 
   <div class="psc-cta"><strong>Need a steadier hold?</strong><br>The current <a href="https://pulsesensor.com/products/pulse-sensor-amped">PulseSensor Kit</a> includes the TPU Stabilizer Ring, finger strap, ear clip, and insulation dots.</div>
