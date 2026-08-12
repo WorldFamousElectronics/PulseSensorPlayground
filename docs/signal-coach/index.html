@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#060a06">
   <title>PulseSensor Signal Coach</title>
   <meta name="description" content="Connect a PulseSensor over USB, see the live waveform, and get clear Signal Coach guidance before trusting BPM.">
-  <link rel="stylesheet" href="./signal-coach.css?v=20260812-home-hack">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260812-graph-guide">
 </head>
 <body>
   <main class="coach-app">
@@ -41,8 +41,6 @@
     <aside class="simulation-warning" id="simulationWarning" hidden>
       SIMULATED BENCH SIGNAL — NOT A PERSON. This mode checks the interface only.
     </aside>
-    <p class="resync-help" id="resyncHelp"><strong>Wave visible, but the coach will not lock?</strong> Click the blue <b>Re-sync Signal</b> button. Chrome clears old beat timing, retunes to the wave on screen, and starts the proven fast-lock window.</p>
-
     <section class="display" aria-labelledby="displayTitle">
       <h2 id="displayTitle" class="sr-only">Live PulseSensor display</h2>
       <div class="device-screen">
@@ -52,9 +50,29 @@
           <span class="screen-source" id="screenSource">CHROME</span>
         </div>
 
-        <div class="wave-wrap">
-          <canvas id="waveformCanvas" width="900" height="300" aria-label="Live PulseSensor waveform"></canvas>
-          <div class="waiting-overlay" id="waitingOverlay">CONNECT A PULSE STREAM</div>
+        <div class="wave-coach-layout">
+          <div class="wave-wrap">
+            <canvas id="waveformCanvas" width="900" height="300" aria-label="Live PulseSensor waveform"></canvas>
+            <div class="waiting-overlay" id="waitingOverlay">CONNECT A PULSE STREAM</div>
+          </div>
+
+          <aside class="graph-guide" aria-labelledby="graphGuideTitle">
+            <div class="graph-guide-heading">
+              <span class="card-label">Use this while watching the wave</span>
+              <h3 id="graphGuideTitle">Read the coach. Improve the signal.</h3>
+            </div>
+            <p class="coach-purpose"><strong>What is Signal Coach?</strong> It watches the live pulse wave and tells you when to adjust, hold still, or trust the displayed BPM. Use the waveform and coach color together.</p>
+            <div class="guide-states">
+              <div class="guide-state guide-blue"><strong>Blue <span aria-hidden="true">&middot;</span> Find it</strong><span>Place gently and look for a repeatable wave.</span></div>
+              <div class="guide-state guide-yellow"><strong>Yellow <span aria-hidden="true">&middot;</span> Keep still</strong><span>Hold the same position while beats settle.</span></div>
+              <div class="guide-state guide-green"><strong>Green <span aria-hidden="true">&middot;</span> BPM ready</strong><span>Qualified means the recent wave is consistent.</span></div>
+            </div>
+            <div class="wear-guide">
+              <strong>Fingertip or earlobe</strong>
+              <span>Use a light touch. Squeezing can flatten the waveform.</span>
+            </div>
+            <p class="resync-help" id="resyncHelp"><strong>Wave visible but not locking?</strong> Use <b>Re-sync Signal</b> to retune Chrome to the live wave.</p>
+          </aside>
         </div>
 
         <div class="readout-grid">
@@ -85,18 +103,6 @@
       </div>
     </section>
 
-    <section class="placement" aria-labelledby="placementTitle">
-      <div>
-        <p class="section-kicker">If the coach is not green</p>
-        <h2 id="placementTitle">Light touch. Keep still. Give it a few beats.</h2>
-      </div>
-      <ol>
-        <li><strong>Place</strong><span>Use the pad of a fingertip or an earlobe.</span></li>
-        <li><strong>Relax</strong><span>Hold gently. Squeezing can flatten the wave.</span></li>
-        <li><strong>Wait</strong><span>Stay still while Signal Coach builds confidence.</span></li>
-      </ol>
-    </section>
-
     <details class="technical-details">
       <summary>Technical details</summary>
       <div class="technical-grid">
@@ -123,6 +129,6 @@
     </footer>
   </main>
 
-  <script type="module" src="./signal-coach.mjs?v=20260812-home-hack"></script>
+  <script type="module" src="./signal-coach.mjs?v=20260812-graph-guide"></script>
 </body>
 </html>

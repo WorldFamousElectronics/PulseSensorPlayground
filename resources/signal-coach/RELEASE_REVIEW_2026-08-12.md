@@ -31,6 +31,11 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
 - Public source-pack test: the unminified UI, coach core, transport adapters,
   tests, MIT license, Shopify tutorial source, home-build guide, and minimal
   Arduino sketch are present and cross-linked.
+- Graph-companion layout keeps the short plain-English purpose, color states,
+  placement and pressure tips, and Re-sync action physically beside the wave.
+  The embedded app uses the PulseSensor.com light palette and site typography.
+- Feedback guidance asks for board/rate, expected and actual behavior,
+  repeatable steps, and whether a second finger or person reproduces the result.
 - Deterministic browser replay: reaches QUALIFIED at 72 BPM with 12/12 quality
   and zero sequence gaps; the replay is visibly marked SIM.
 - Responsive browser check: 390 × 844 layout remains readable and usable.

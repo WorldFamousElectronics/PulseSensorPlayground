@@ -6,22 +6,27 @@
 </style>
 <style>
   .psc-page .psc-hack{margin:2rem 0;padding:clamp(1.1rem,3vw,1.8rem);border:1px solid #b7dce2;background:#eff9fa}.psc-page .psc-hack h2{margin:0 0 .55rem}.psc-page .psc-hack-intro{max-width:760px;color:var(--muted)}.psc-page .psc-source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:1rem 0}.psc-page .psc-source-card{padding:1rem;border:1px solid #cfe2e5;background:#fff}.psc-page .psc-source-card p{margin:.35rem 0 0;color:var(--muted);font-size:.9rem}.psc-page .psc-source-actions{display:flex;flex-wrap:wrap;gap:.7rem}.psc-page .psc-source-button{display:inline-block;padding:.68rem .9rem;border:1px solid #087e91;background:#087e91;color:#fff!important;border-radius:4px;font-weight:800;text-decoration:none}.psc-page .psc-source-button-light{background:#fff;color:#087e91!important}.psc-page .psc-hack pre{margin-bottom:0}
-  @media(max-width:760px){.psc-page .psc-source-grid{grid-template-columns:1fr}}
+  .psc-page .psc-hero{display:grid;grid-template-columns:minmax(250px,.78fr) minmax(0,1.22fr);gap:clamp(1rem,3vw,2.2rem);align-items:center;text-align:left;padding:.3rem 0 .8rem}.psc-page .psc-hero h2{font-size:clamp(2rem,4vw,3.35rem);margin:.15rem 0 0;line-height:.96}.psc-page .psc-release{justify-content:flex-start;margin:.45rem 0}.psc-page .psc-hero-copy p{max-width:650px;margin:.25rem 0 .55rem;color:var(--muted);font-size:.98rem}.psc-page .psc-try{margin:0;padding:.45rem .7rem;font-size:.86rem}.psc-page .psc-parallel{font-size:.84rem!important}.psc-page .psc-frame{height:980px;background:#fff;border:1px solid var(--line)}
+  @media(max-width:760px){.psc-page .psc-source-grid,.psc-page .psc-hero{grid-template-columns:1fr}.psc-page .psc-frame{height:1380px}}
 </style>
 
 <div class="psc-page">
   <section class="psc-hero">
-    <span class="psc-kicker">Signal Coach tester preview</span>
-    <p class="psc-release"><span class="psc-beta">BETA</span><time datetime="2026-08-12T13:12:31-04:00">Released August 12, 2026 · 1:12 PM EDT</time></p>
-    <h2>See Your Signal.<br>Make It Better.</h2>
-    <p>Signal Coach shows your live pulse waveform and tells you what to adjust. Your Arduino or ESP32 only sends samples; Chrome finds the beats, evaluates the signal, and reveals BPM when it is steady.</p>
-    <span class="psc-try">No account. No cloud. Nothing to install in the browser.</span>
-    <p>This preview runs alongside the <a href="/pages/pulsesensor-and-webserial">current PulseSensor WebSerial page</a> while we collect more tester feedback.</p>
+    <div>
+      <span class="psc-kicker">Signal Coach tester preview</span>
+      <p class="psc-release"><span class="psc-beta">BETA</span><time datetime="2026-08-12T13:12:31-04:00">Released August 12, 2026 &middot; 1:12 PM EDT</time></p>
+      <h2>See Your Signal. Make It Better.</h2>
+    </div>
+    <div class="psc-hero-copy">
+      <p>Signal Coach watches the live pulse wave and tells you when to adjust, hold still, or trust the displayed BPM. Use the waveform and coach color together.</p>
+      <span class="psc-try">No account. No cloud. Nothing to install in the browser.</span>
+      <p class="psc-parallel">This Beta runs alongside the <a href="/pages/pulsesensor-and-webserial">current PulseSensor WebSerial page</a> while we collect tester feedback.</p>
+    </div>
   </section>
 
   <div id="signal-coach">
-    <iframe class="psc-frame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-home-hack" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
-    <p class="psc-caption">Use desktop Chrome, Edge, or Brave. The browser reads USB locally; samples are not saved or uploaded.</p>
+    <iframe class="psc-frame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-graph-guide" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager"></iframe>
+    <p class="psc-caption">The guide stays beside the waveform. Use desktop Chrome, Edge, or Brave; samples stay in this browser tab.</p>
   </div>
 
   <div class="psc-callout"><strong>Why Signal Coach?</strong> A BPM number is only useful after the waveform is usable. The coach helps you fix placement, pressure, motion, and wiring before it shows a confident BPM.</div>
@@ -29,7 +34,7 @@
 
   <section class="psc-feedback" id="SignalCoachFeedback">
     <h2>Help us tune Signal Coach</h2>
-    <p class="psc-feedback-intro">Tried it with a real PulseSensor? Tell us what happened. This short form goes directly to the PulseSensor team and helps us decide what to improve before Signal Coach leaves Beta.</p>
+    <p class="psc-feedback-intro">Useful feedback names your board and sample rate, what you expected, and exact steps that make an error happen again. If possible, try another finger or another person and tell us whether the result repeats.</p>
     <form class="psc-form" method="post" action="/contact#SignalCoachFeedback" accept-charset="UTF-8">
       <input type="hidden" name="form_type" value="contact">
       <input type="hidden" name="utf8" value="✓">
@@ -85,20 +90,6 @@
     <pre><code>python3 -m http.server 8000
 # Open http://localhost:8000/docs/signal-coach/ in Chrome</code></pre>
   </section>
-
-  <h2>Read the coach, not just the number</h2>
-  <div class="psc-coach-grid">
-    <div class="psc-state psc-blue"><h3>Blue · Find the signal</h3><p><strong>No Signal</strong>, <strong>Hold Steady</strong>, or <strong>Good Wave</strong> means the coach is helping you establish contact and see a repeatable waveform.</p></div>
-    <div class="psc-state psc-yellow"><h3>Yellow · Keep still</h3><p><strong>Locking</strong> means pulse-like beats are arriving, but the pattern needs a little more time before BPM is shown.</p></div>
-    <div class="psc-state psc-green"><h3>Green · BPM is ready</h3><p><strong>Qualified</strong> means the recent waveform and beat timing are consistent enough for the demo to show BPM.</p></div>
-  </div>
-
-  <h2>How to get a cleaner waveform</h2>
-  <div class="psc-wear">
-    <div><h3>Fingertip</h3><p>Use the pad of an index or middle finger. Rest it lightly on the sensor and keep your hand relaxed.</p></div>
-    <div><h3>Earlobe</h3><p>Clip gently and keep the cable from tugging. An earlobe can be steadier when hand motion is a problem.</p></div>
-  </div>
-  <div class="psc-note"><strong>Gentle pressure matters.</strong> Squeezing can reduce blood flow and flatten the waveform. If the coach drops back to blue, relax your grip and hold still for a few beats.</div>
 
   <h2>Arduino / ESP32 setup</h2>
   <p>No Arduino library is required for the simplest stream. Choose the signal pin for your board, upload this sketch, select <strong>50 samples/s</strong> above, and let Chrome do the beat detection and coaching. The same sketch is saved in the repo as <a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener"><code>SignalCoachWebSerial.ino</code></a>.</p>

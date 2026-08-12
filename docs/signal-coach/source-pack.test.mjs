@@ -32,11 +32,16 @@ for (const relativePath of required) {
 }
 assert.match(dashboard, /Build it at home/i);
 assert.match(dashboard, /View all source/i);
+assert.match(dashboard, /wave-coach-layout/);
+assert.match(dashboard, /What is Signal Coach\?/);
+assert.match(dashboard, /Fingertip or earlobe/);
 assert.match(sketch, /Serial\.println\(analogRead\(PULSE_PIN\)\)/);
 assert.match(sketch, /SAMPLE_PERIOD_MS = 20/);
 assert.match(tutorial, /Hack Signal Coach at home/i);
 assert.match(tutorial, /SignalCoachWebSerial\.ino/);
 assert.match(tutorial, /docs\/signal-coach\/README\.md/);
+assert.match(tutorial, /another finger or another person/);
+assert.doesNotMatch(tutorial, /<div class="psc-coach-grid">/);
 
 const releaseVersion = dashboard.match(/signal-coach\.mjs\?v=([a-z0-9-]+)/i)?.[1];
 assert.ok(releaseVersion, 'dashboard should version its browser module');

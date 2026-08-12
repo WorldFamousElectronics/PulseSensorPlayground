@@ -1,6 +1,6 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-home-hack';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-home-hack';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-graph-guide';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-graph-guide';
 
 const HISTORY_LENGTH = 600;
 const canvas = document.querySelector('#waveformCanvas');
@@ -61,10 +61,10 @@ function resizeCanvas() {
 function drawWaveform() {
   const width = canvas.getBoundingClientRect().width;
   const height = canvas.getBoundingClientRect().height;
-  context.fillStyle = '#060a06';
+  context.fillStyle = '#f4f8f5';
   context.fillRect(0, 0, width, height);
 
-  context.strokeStyle = '#143323';
+  context.strokeStyle = '#dce7df';
   context.lineWidth = 1;
   for (let x = 0; x <= width; x += width / 8) {
     context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke();
@@ -81,7 +81,7 @@ function drawWaveform() {
   const low = minimum - padding;
   const high = maximum + padding;
   const range = Math.max(1, high - low);
-  const color = stateColor(lastCoach.state) === 'green' ? '#6ef58a' : stateColor(lastCoach.state) === 'yellow' ? '#ffe34d' : '#5be7ff';
+  const color = stateColor(lastCoach.state) === 'green' ? '#16784b' : stateColor(lastCoach.state) === 'yellow' ? '#997800' : '#087e91';
 
   context.strokeStyle = color;
   context.lineWidth = 3;
