@@ -34,6 +34,9 @@ Status: **SHIP AS A PARALLEL TESTER PREVIEW**
 - Graph-companion layout keeps the short plain-English purpose, color states,
   placement and pressure tips, and Re-sync action physically beside the wave.
   The embedded app uses the PulseSensor.com light palette and site typography.
+- Embedded mode removes the dashboard's duplicate title and description so the
+  connection controls, waveform, and attached guide rise directly under the
+  page's short introduction; the standalone dashboard keeps its identity.
 - Feedback guidance asks for board/rate, expected and actual behavior,
   repeatable steps, and whether a second finger or person reproduces the result.
 - Deterministic browser replay: reaches QUALIFIED at 72 BPM with 12/12 quality

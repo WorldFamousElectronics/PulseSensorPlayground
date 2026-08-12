@@ -192,6 +192,11 @@ footer p { margin: 0; }
 .source-links a:hover, .source-links a:focus-visible { color: var(--white); outline-color: var(--blue); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
+.is-embedded .coach-app { padding: 10px 12px 14px; gap: 10px; }
+.is-embedded .topbar > div:first-child { display: none; }
+.is-embedded .topbar { justify-content: flex-end; }
+.is-embedded .connection { width: 100%; min-width: 0; }
+
 @media (max-width: 1000px) {
   .topbar, footer { flex-direction: column; align-items: stretch; }
   .connection { min-width: 0; }

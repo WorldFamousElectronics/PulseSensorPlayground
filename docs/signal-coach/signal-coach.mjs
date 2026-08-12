@@ -1,6 +1,11 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-graph-guide';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-graph-guide';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-light-fold';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-light-fold';
+
+const pageOptions = new URLSearchParams(location.search);
+if (window.self !== window.top || pageOptions.get('embedded') === '1') {
+  document.documentElement.classList.add('is-embedded');
+}
 
 const HISTORY_LENGTH = 600;
 const canvas = document.querySelector('#waveformCanvas');
@@ -361,7 +366,7 @@ function startReplay() {
   return timer;
 }
 
-if (new URLSearchParams(location.search).get('bench') === '1') startReplay();
+if (pageOptions.get('bench') === '1') startReplay();
 
 window.__PULSE_COACH_QA__ = {
   inject: (line, timestamp = null) => {
