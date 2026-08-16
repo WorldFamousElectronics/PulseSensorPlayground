@@ -1,6 +1,9 @@
 
 ![logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200)
 ## [PulseSensor.com](https://pulsesensor.com) Playground
+
+> **Current official Arduino library:** Install **PulseSensor Playground** in the Arduino Library Manager. New users should begin with [GettingStartedProject](examples/GettingStartedProject/GettingStartedProject.ino), then try [PulseSensor_BPM](examples/PulseSensor_BPM/PulseSensor_BPM.ino).
+
 [![How To Update Your Playground Code](https://github.com/yury-g/MyCodePlayground/blob/master/images/updateLib.png?raw=true)](https://youtu.be/Pt0fJvIeryY)
 
 ```
@@ -96,8 +99,8 @@ To install the PulseSensor Playground Library, in Arduino, to go
 <img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/ManageLibraries.png" width="500">
 
 
-In the Library Manager: Search for and Select
-`"PulseSensor.com`
+In the Library Manager, search for and select:
+`PulseSensor Playground`
 
 <img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/SearchForPulseSensor.png" width="500">
 
