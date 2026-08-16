@@ -562,6 +562,7 @@ function startReplay() {
   return timer;
 }
 
+if (pageOptions.get('mode') === 'ptt') coachMode.value = 'ptt';
 if (pageOptions.get('bench') === '1') startReplay();
 
 window.__PULSE_COACH_QA__ = {
