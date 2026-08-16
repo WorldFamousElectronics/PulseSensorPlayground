@@ -7,6 +7,7 @@ This index lists the example sketches that ship with the current library. Start 
 | [GettingStartedProject](../examples/GettingStartedProject/GettingStartedProject.ino) | Raw pulse signal in the Serial Plotter and heartbeat LED | First setup and signal troubleshooting |
 | [Getting_BPM_to_Monitor](../examples/Getting_BPM_to_Monitor/Getting_BPM_to_Monitor.ino) | BPM and beat messages in the Serial Monitor | A short beginner BPM sketch |
 | [SignalCoachWebSerial](../examples/SignalCoachWebSerial/SignalCoachWebSerial.ino) | Raw samples over Web Serial for Signal Coach | Browser-based signal coaching without library-side beat detection |
+| [SignalCoachDualWebSerial](../examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino) | Synchronized A0/A1 samples for Signal Coach | Two-sensor signal comparison and educational PTT experiments |
 | [PulseSensor_BPM](../examples/PulseSensor_BPM/PulseSensor_BPM.ino) | Full library BPM setup and serial output | Standard BPM projects |
 | [PulseSensor_ATtiny85_Serial](../examples/PulseSensor_ATtiny85_Serial/PulseSensor_ATtiny85_Serial.ino) | Beat detection with serial output on ATtiny85 | ATtiny85 projects with serial output |
 | [PulseSensor_ATtiny85_noSerial](../examples/PulseSensor_ATtiny85_noSerial/PulseSensor_ATtiny85_noSerial.ino) | Beat detection without serial output on ATtiny85 | Small standalone ATtiny85 projects |

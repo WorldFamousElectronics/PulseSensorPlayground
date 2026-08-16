@@ -71,6 +71,12 @@ class PulseSensor {
     // (internal to the library) Updtate the thresh variables.
     void setThreshold(int threshold);
 
+    // Select whether the threshold follows each detected pulse amplitude.
+    void setAdaptiveThreshold(bool enabled);
+
+    // Returns the threshold currently used by the beat detector.
+    int getCurrentThreshold();
+
 
   private:
     // Configuration
@@ -98,7 +104,8 @@ class PulseSensor {
     int N;                           // used to monitor duration between beats
     int P;                           // used to find peak in pulse wave, seeded (sample value)
     int T;                           // used to find trough in pulse wave, seeded (sample value)
-    int thresh;                      // used to find instant moment of heart beat, seeded (sample value)
+    volatile int thresh;             // used to find instant moment of heart beat, seeded (sample value)
+    bool AdaptiveThreshold;          // true: retune after each pulse; false: keep the user setting
     bool firstBeat;               // used to seed rate array so we startup with reasonable BPM
     bool secondBeat;              // used to seed rate array so we startup with reasonable BPM
 };

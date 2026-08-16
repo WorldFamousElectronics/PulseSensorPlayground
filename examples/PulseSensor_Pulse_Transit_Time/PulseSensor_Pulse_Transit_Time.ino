@@ -96,8 +96,10 @@ PulseSensorPlayground pulseSensor(PULSE_SENSOR_COUNT);
   Variables used to determine PTT.
   NOTE: This code assumes the Pulse Sensor on analog pin 0 is closer to he heart.
 */
-unsigned long lastBeatSampleNumber[PULSE_SENSOR_COUNT];
-int PTT;
+unsigned long proximalBeatTime = 0;
+bool proximalBeatPending = false;
+const unsigned long MIN_PTT_MS = 5;
+const unsigned long MAX_PTT_MS = 300;
 
 void setup() {
   /*
@@ -122,11 +124,13 @@ void setup() {
   pulseSensor.blinkOnPulse(PULSE_BLINK0, 0);
   pulseSensor.fadeOnPulse(PULSE_FADE0, 0);
   pulseSensor.setThreshold(THRESHOLD0, 0);
+  pulseSensor.setAdaptiveThreshold(false, 0);
 
   pulseSensor.analogInput(PULSE_INPUT1, 1);
   pulseSensor.blinkOnPulse(PULSE_BLINK1, 1);
   pulseSensor.fadeOnPulse(PULSE_FADE1, 1);
   pulseSensor.setThreshold(THRESHOLD1, 1);
+  pulseSensor.setAdaptiveThreshold(false, 1);
 
   pulseSensor.setSerial(Serial);
   pulseSensor.setOutputType(OUTPUT_TYPE);
@@ -205,10 +209,19 @@ void loop() {
     if (pulseSensor.sawStartOfBeat(i)) {
       pulseSensor.outputBeat(i);
 
-      lastBeatSampleNumber[i] = pulseSensor.getLastBeatTime(i);
-      if (i == 1) {
-        PTT = lastBeatSampleNumber[1] - lastBeatSampleNumber[0];
-        pulseSensor.outputToSerial('|', PTT);
+      const unsigned long beatTime = pulseSensor.getLastBeatTime(i);
+      if (i == 0) {
+        // A new proximal beat replaces any unpaired older beat. This prevents
+        // a missed distal beat from contaminating the next cardiac cycle.
+        proximalBeatTime = beatTime;
+        proximalBeatPending = true;
+      } else if (proximalBeatPending) {
+        const unsigned long ptt = beatTime - proximalBeatTime;
+        if (beatTime > proximalBeatTime && ptt >= MIN_PTT_MS && ptt <= MAX_PTT_MS) {
+          pulseSensor.outputToSerial('|', (int)ptt);
+        }
+        // One distal beat can consume at most one proximal beat.
+        proximalBeatPending = false;
       }
     }
   }

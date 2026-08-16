@@ -6,6 +6,7 @@
 
 const DEFAULTS = Object.freeze({
   pulseThreshold: 550,
+  thresholdMode: 'adaptive',
   refractoryMs: 250,
   noBeatTimeoutMs: 3000,
   staleMs: 1500,
@@ -54,7 +55,22 @@ function nowMs() {
 export class BrowserSignalCoach {
   constructor(options = {}) {
     this.options = { ...DEFAULTS, ...options };
+    if (!['adaptive', 'fixed'].includes(this.options.thresholdMode)) {
+      throw new Error('threshold mode must be adaptive or fixed');
+    }
     this.reset();
+  }
+
+  setThresholdMode(mode, threshold = this.options.pulseThreshold) {
+    if (!['adaptive', 'fixed'].includes(mode)) throw new Error('threshold mode must be adaptive or fixed');
+    if (!Number.isFinite(threshold) || threshold < 0 || threshold > 1023) throw new Error('threshold must be 0..1023');
+    this.options.thresholdMode = mode;
+    this.options.pulseThreshold = Math.round(threshold);
+    this.threshold = this.options.pulseThreshold;
+    this.peak = this.threshold;
+    this.trough = this.threshold;
+    this.pulsing = false;
+    return this.lastResult;
   }
 
   reset(timestamp = null) {
@@ -123,7 +139,9 @@ export class BrowserSignalCoach {
   }
 
   rearm(timestamp) {
-    const midpoint = this.maximum > this.minimum
+    const midpoint = this.options.thresholdMode === 'fixed'
+      ? this.options.pulseThreshold
+      : this.maximum > this.minimum
       ? Math.floor((this.minimum + this.maximum) / 2)
       : this.options.pulseThreshold;
     this.threshold = midpoint;
@@ -140,7 +158,9 @@ export class BrowserSignalCoach {
   }
 
   resync(timestamp = nowMs()) {
-    const midpoint = this.maximum > this.minimum
+    const midpoint = this.options.thresholdMode === 'fixed'
+      ? this.options.pulseThreshold
+      : this.maximum > this.minimum
       ? Math.floor((this.minimum + this.maximum) / 2)
       : this.options.pulseThreshold;
     this.threshold = midpoint;
@@ -213,7 +233,9 @@ export class BrowserSignalCoach {
     if (this.signal < this.threshold && this.pulsing) {
       this.pulsing = false;
       this.amplitude = this.peak - this.trough;
-      this.threshold = this.trough + Math.floor(this.amplitude / 2);
+      this.threshold = this.options.thresholdMode === 'adaptive'
+        ? this.trough + Math.floor(this.amplitude / 2)
+        : this.options.pulseThreshold;
       this.peak = this.threshold;
       this.trough = this.threshold;
     }
@@ -262,6 +284,7 @@ export class BrowserSignalCoach {
       qualifiedBeat,
       amplitude: Math.round(this.amplitude),
       threshold: Math.round(this.threshold),
+      thresholdMode: this.options.thresholdMode,
       range: Math.round(this.maximum - this.minimum),
       minimum: Math.round(this.minimum),
       maximum: Math.round(this.maximum),

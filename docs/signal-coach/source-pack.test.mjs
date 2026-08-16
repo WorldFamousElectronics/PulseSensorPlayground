@@ -11,10 +11,13 @@ const required = [
   'docs/signal-coach/signal-coach.css',
   'docs/signal-coach/signal-coach.mjs',
   'docs/signal-coach/signal-coach-core.mjs',
+  'docs/signal-coach/ptt-coach-core.mjs',
   'docs/signal-coach/pulse-webserial-protocol.mjs',
   'docs/signal-coach/protocol.test.mjs',
   'docs/signal-coach/signal-coach-core.test.mjs',
+  'docs/signal-coach/ptt-coach-core.test.mjs',
   'examples/SignalCoachWebSerial/SignalCoachWebSerial.ino',
+  'examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino',
   'resources/signal-coach/shopify/page-signal-coach.html',
   'LICENSE',
 ];
@@ -46,19 +49,25 @@ assert.match(tutorial, /another finger or person/);
 assert.doesNotMatch(tutorial, /<div class="psc-coach-grid">/);
 assert.doesNotMatch(tutorial, /Signal Coach tester preview/);
 assert.doesNotMatch(tutorial, /See the wave\. Improve it\./);
-assert.match(tutorial, /1 Upload the sketch/);
-assert.match(tutorial, /3 Click Connect/);
+assert.match(tutorial, /1 Upload the one- or two-sensor sketch/);
+assert.match(tutorial, /3 Choose the mode and Connect/);
 assert.match(tutorial, /Loading Signal Coach/);
 assert.match(tutorial, /Taking longer than expected/);
 assert.match(tutorial, /Open Signal Coach/);
 assert.match(tutorial, /Coach not loading\? Open directly\./);
 assert.match(tutorial, /pulsesensor-signal-coach-ready/);
 assert.match(dashboard, /pulsesensor-signal-coach-ready/);
+assert.match(dashboard, /Two sensors \/ PTT/);
+assert.match(dashboard, /id="proximalThresholdMode"/);
+assert.match(dashboard, /id="distalThresholdMode"/);
+assert.match(tutorial, /SignalCoachDualWebSerial\.ino/);
+assert.match(tutorial, /timing experiment, not a blood-pressure reading/i);
 
 const releaseVersion = dashboard.match(/signal-coach\.mjs\?v=([a-z0-9-]+)/i)?.[1];
 assert.ok(releaseVersion, 'dashboard should version its browser module');
 assert.ok(dashboard.includes(`signal-coach.css?v=${releaseVersion}`));
 assert.ok(browserApp.includes(`pulse-webserial-protocol.mjs?v=${releaseVersion}`));
 assert.ok(browserApp.includes(`signal-coach-core.mjs?v=${releaseVersion}`));
+assert.ok(browserApp.includes(`ptt-coach-core.mjs?v=${releaseVersion}`));
 
 console.log('Signal Coach public source-pack tests passed');

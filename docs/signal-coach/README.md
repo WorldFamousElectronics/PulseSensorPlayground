@@ -2,8 +2,9 @@
 
 This folder is the complete source for the public PulseSensor Signal Coach.
 There is no framework, package install, bundler, minified file, server-side
-detector, or private runtime. Chrome receives a pulse-wave sample and runs beat
-detection, IBI, BPM, confidence, coaching states, and Re-sync locally.
+detector, or private runtime. Chrome receives one or two pulse-wave samples and
+runs beat detection, IBI, BPM, confidence, coaching states, and same-cycle PTT
+pairing locally.
 
 Public app: <https://pulsesensor.com/pages/signal-coach>  
 Standalone dashboard: <https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/>
@@ -30,6 +31,23 @@ Close Arduino Serial Monitor before connecting because only one application can
 own the serial port at a time. Web Serial works on HTTPS pages and on
 `localhost`; opening `index.html` directly as a file is not supported.
 
+## Two-sensor PTT build
+
+1. Connect the proximal sensor to A0 and the distal sensor to A1. An earlobe
+   and fingertip are easier to stabilize than a wrist and fingertip.
+2. Upload
+   [`examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino`](../../examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino).
+3. In Signal Coach choose **Two sensors / PTT**, click **Connect**, and select
+   the board. This mode uses 500 synchronized samples/s at 250000 baud.
+4. Start with fixed thresholds. Move each threshold above its idle noise but
+   through the rising pulse wave. Use adaptive mode only when you deliberately
+   want the threshold to follow recent pulse amplitude.
+
+The lab accepts a distal beat only after a proximal beat in the same 5–300 ms
+window, consumes each beat once, and rejects weak or clipped channels. It never
+converts PTT to blood pressure. This is an educational timing experiment, not
+a medical measurement.
+
 ## Complete source map
 
 | File | What to hack |
@@ -39,11 +57,14 @@ own the serial port at a time. Web Serial works on HTTPS pages and on
 | [`signal-coach.css`](signal-coach.css) | Large waveform display, coaching colors, layout, and responsive styles. |
 | [`signal-coach.mjs`](signal-coach.mjs) | Web Serial connection, sample clock, canvas rendering, UI, and blue Re-sync action. |
 | [`signal-coach-core.mjs`](signal-coach-core.mjs) | Transport-neutral beat detector, BPM/IBI, confidence, state order, copy, and v1.1-resync recovery. |
+| [`ptt-coach-core.mjs`](ptt-coach-core.mjs) | Dual-channel signal quality, fixed/adaptive detector control, and one-to-one PTT pairing. |
 | [`pulse-webserial-protocol.mjs`](pulse-webserial-protocol.mjs) | Text/CSV/JSON/PSWS input adapters. |
 | [`signal-coach-core.test.mjs`](signal-coach-core.test.mjs) | 10-bit, 12-bit, multi-rate, flat-wave, false-sender, and Re-sync tests. |
+| [`ptt-coach-core.test.mjs`](ptt-coach-core.test.mjs) | Threshold-mode, missed-beat, timing-window, clipping, and synthetic PTT tests. |
 | [`protocol.test.mjs`](protocol.test.mjs) | Accepted and rejected serial-line examples. |
 | [`source-pack.test.mjs`](source-pack.test.mjs) | Verifies that the public home-build source pack and links stay complete. |
 | [`SignalCoachWebSerial.ino`](../../examples/SignalCoachWebSerial/SignalCoachWebSerial.ino) | Minimal Arduino/ESP32 raw pulse-wave sender. |
+| [`SignalCoachDualWebSerial.ino`](../../examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino) | Synchronized A0/A1 sender for the two-sensor PTT lab. |
 | [`page-signal-coach.html`](../../resources/signal-coach/shopify/page-signal-coach.html) | Complete source for the surrounding PulseSensor.com tutorial page. |
 
 The repository root [`LICENSE`](../../LICENSE) is the MIT License. You may use,
@@ -69,6 +90,13 @@ Signal Coach also accepts:
 - Arduino `signal,bpm,ibi,beat` CSV; and
 - PulseLink PSWS v1/v2.
 
+Two-sensor mode uses one versioned CSV record per synchronized sample:
+
+```text
+PTT1,timestamp_us,proximal,distal
+PTT1,123456,532,601
+```
+
 The browser uses sender timestamps when present. Otherwise it advances time
 using the **Samples/s** choice. Sender BPM, IBI, beat, quality, and coach state
 are diagnostics only; raw waveform data always controls the browser coach.
@@ -78,6 +106,9 @@ are diagnostics only; raw waveform data always controls the browser coach.
 ```text
 PulseSensor -> analogRead() -> USB serial -> input adapter
             -> BrowserSignalCoach -> waveform + guidance + qualified BPM
+
+Two PulseSensors -> synchronized timestamp + A0/A1 -> DualSignalCoach
+                 -> quality gates -> one-to-one pairing -> educational PTT
 ```
 
 The board is deliberately simple. This makes the same browser coach usable
@@ -109,12 +140,17 @@ root:
 ```sh
 node docs/signal-coach/protocol.test.mjs
 node docs/signal-coach/signal-coach-core.test.mjs
+node docs/signal-coach/ptt-coach-core.test.mjs
 node docs/signal-coach/source-pack.test.mjs
 ```
 
 For visual testing, open this explicitly simulated URL:
 
 <http://localhost:8000/docs/signal-coach/?bench=1>
+
+Two-sensor replay:
+
+<http://localhost:8000/docs/signal-coach/?bench=1&mode=ptt>
 
 The page must say **SIMULATED BENCH SIGNAL — NOT A PERSON**. The normal URL
 never invents fallback samples.

@@ -16,8 +16,8 @@
 
 <div class="psc-page">
   <section class="psc-start" aria-label="How to start Signal Coach">
-    <p class="psc-journey"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">1 Upload the sketch</a><span class="psc-arrow" aria-hidden="true">&rarr;</span>2 Close Serial Monitor<span class="psc-arrow" aria-hidden="true">&rarr;</span>3 Click Connect<span class="psc-arrow" aria-hidden="true">&rarr;</span>4 Place the sensor gently</p>
-    <p class="psc-browser">Already sending pulse data? Start at Connect. Desktop Chrome, Edge, or Brave. <a class="psc-inline-direct" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" target="_blank" rel="noopener">Coach not loading? Open directly.</a></p>
+    <p class="psc-journey"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/examples" target="_blank" rel="noopener">1 Upload the one- or two-sensor sketch</a><span class="psc-arrow" aria-hidden="true">&rarr;</span>2 Close Serial Monitor<span class="psc-arrow" aria-hidden="true">&rarr;</span>3 Choose the mode and Connect<span class="psc-arrow" aria-hidden="true">&rarr;</span>4 Place the sensor gently</p>
+    <p class="psc-browser">Already sending pulse data? Start at Connect. Desktop Chrome, Edge, or Brave. <a class="psc-inline-direct" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260816-dual-ptt-r1" target="_blank" rel="noopener">Coach not loading? Open directly.</a></p>
   </section>
 
   <div id="signal-coach">
@@ -32,12 +32,12 @@
           <h2>Taking longer than expected</h2>
           <p>Open Signal Coach directly and keep going. Your Arduino setup stays the same.</p>
           <div class="psc-embed-actions">
-            <a class="psc-open-coach" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" target="_blank" rel="noopener">Open Signal Coach</a>
+            <a class="psc-open-coach" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260816-dual-ptt-r1" target="_blank" rel="noopener">Open Signal Coach</a>
             <button class="psc-retry" id="SignalCoachRetry" type="button">Try again here</button>
           </div>
         </div>
       </div>
-      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager" onload="this.dataset.loaded='true'"></iframe>
+      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260816-dual-ptt-r1" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager" onload="this.dataset.loaded='true'"></iframe>
     </div>
   </div>
 
@@ -80,9 +80,9 @@
   </script>
 
   <section class="psc-about" aria-label="About this beta">
-    <p class="psc-release"><span class="psc-beta">BETA</span><time datetime="2026-08-12">August 12, 2026</time></p>
+    <p class="psc-release"><span class="psc-beta">BETA</span><time datetime="2026-08-16">August 16, 2026</time></p>
     <div class="psc-about-copy">
-      <p><strong>What the coach does:</strong> It reads your live pulse wave and tells you when to adjust the sensor, hold still, or trust the BPM.</p>
+      <p><strong>What the coach does:</strong> It reads one live pulse wave for BPM, or compares two synchronized sensors for an educational Pulse Transit Time experiment.</p>
       <p>Pulse samples stay in this browser tab. This beta runs alongside the <a href="/pages/pulsesensor-and-webserial">current WebSerial page</a>. Wave visible but not locking? Use <strong>Re-sync Signal</strong>.</p>
     </div>
   </section>
@@ -133,6 +133,7 @@
       <a class="psc-source-button" href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/docs/signal-coach/README.md" target="_blank" rel="noopener">Read the home-build guide</a>
       <a class="psc-source-button psc-source-button-light" href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/docs/signal-coach" target="_blank" rel="noopener">View all Chrome coach source</a>
       <a class="psc-source-button psc-source-button-light" href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">Open the Arduino sketch</a>
+      <a class="psc-source-button psc-source-button-light" href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino" target="_blank" rel="noopener">Open the two-sensor sketch</a>
       <a class="psc-source-button psc-source-button-light" href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/archive/refs/heads/master.zip">Download everything</a>
     </div>
     <pre><code>python3 -m http.server 8000
@@ -141,6 +142,10 @@
 
   <h2>Arduino / ESP32 setup</h2>
   <p>No Arduino library is required for the simplest stream. Choose the signal pin for your board, upload this sketch, select <strong>50 samples/s</strong> above, and let Chrome do the beat detection and coaching. The same sketch is saved in the repo as <a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener"><code>SignalCoachWebSerial.ino</code></a>.</p>
+
+  <h2>Two sensors / Pulse Transit Time</h2>
+  <p>For a two-sensor experiment, connect the proximal signal to <code>A0</code> and the distal signal to <code>A1</code>, upload <a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino" target="_blank" rel="noopener"><code>SignalCoachDualWebSerial.ino</code></a>, and choose <strong>Two sensors / PTT</strong> in Signal Coach. Start with an earlobe at A0 and fingertip at A1. The dashboard checks both waves, exposes fixed or adaptive thresholds, rejects clipped channels, and pairs each proximal beat with at most one distal beat in the same cardiac cycle.</p>
+  <p><strong>PTT is a timing experiment, not a blood-pressure reading.</strong> Do not use it for diagnosis, treatment, or health decisions.</p>
 
   <table class="psc-pin-table">
     <thead><tr><th>Board</th><th><code>PULSE_PIN</code></th><th>Sensor power</th></tr></thead>

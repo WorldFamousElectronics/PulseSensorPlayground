@@ -24,6 +24,13 @@ assert.equal(parsePulseLine('{"timestampMs":1200,"raw":2048,"bpm":70}').sourceBp
 assert.equal(parsePulseLine('B72'), null);
 assert.equal(parsePulseLine('Q833'), null);
 
+const ptt = parsePulseLine('PTT1,123456,520,618');
+assert.equal(ptt.source, 'ptt1');
+assert.equal(ptt.timestampUs, 123456);
+assert.equal(ptt.timestampMs, 123.456);
+assert.equal(ptt.signal, 520);
+assert.equal(ptt.secondarySignal, 618);
+
 const v1 = parsePulseLine('PSWS,1,SIM,42,12345,2840,72,833,1,12,QUALIFIED');
 assert.equal(v1.source, 'pulselink');
 assert.equal(v1.format, 'PulseLink PSWS v1');
@@ -43,5 +50,7 @@ assert.throws(() => parsePulseLine('70000'), /invalid signal/);
 assert.throws(() => parsePulseLine('PSWS,1,SIM,42,12345,70000,72,833,1,12,QUALIFIED'), /signal/);
 assert.throws(() => parsePulseLine('PSWS,1,UNKNOWN,42,12345,2048,72,833,1,12,QUALIFIED'), /mode/);
 assert.throws(() => parsePulseLine('PSWS,3,LIVE,42,12345,2048,72,833,1,12,QUALIFIED'), /unsupported/);
+assert.throws(() => parsePulseLine('PTT1,123,500'), /field count/);
+assert.throws(() => parsePulseLine('PTT1,123,500,70000'), /secondary signal/);
 
 console.log('PulseSensor pulse-stream adapter tests passed');

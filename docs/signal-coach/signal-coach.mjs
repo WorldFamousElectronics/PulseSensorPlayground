@@ -1,6 +1,7 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-action-first-r5';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-action-first-r5';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260816-dual-ptt-r1';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260816-dual-ptt-r1';
+import { DualSignalCoach } from './ptt-coach-core.mjs?v=20260816-dual-ptt-r1';
 
 const pageOptions = new URLSearchParams(location.search);
 if (window.self !== window.top || pageOptions.get('embedded') === '1') {
@@ -13,6 +14,7 @@ const context = canvas.getContext('2d');
 const display = document.querySelector('.display');
 const connectBtn = document.querySelector('#connectBtn');
 const resyncBtn = document.querySelector('#resyncBtn');
+const coachMode = document.querySelector('#coachMode');
 const sampleRate = document.querySelector('#sampleRate');
 const statusDot = document.querySelector('#statusDot');
 const statusText = document.querySelector('#statusText');
@@ -39,6 +41,26 @@ const liveQuality = document.querySelector('#liveQuality');
 const liveInputFormat = document.querySelector('#liveInputFormat');
 const sourceMetrics = document.querySelector('#sourceMetrics');
 const rawSerial = document.querySelector('#rawSerial');
+const singleWavePanel = document.querySelector('#singleWavePanel');
+const singleReadoutPanel = document.querySelector('#singleReadoutPanel');
+const pttWorkspace = document.querySelector('#pttWorkspace');
+const proximalCanvas = document.querySelector('#proximalCanvas');
+const distalCanvas = document.querySelector('#distalCanvas');
+const proximalThresholdMode = document.querySelector('#proximalThresholdMode');
+const distalThresholdMode = document.querySelector('#distalThresholdMode');
+const proximalThreshold = document.querySelector('#proximalThreshold');
+const distalThreshold = document.querySelector('#distalThreshold');
+const minimumPtt = document.querySelector('#minimumPtt');
+const maximumPtt = document.querySelector('#maximumPtt');
+const proximalQuality = document.querySelector('#proximalQuality');
+const distalQuality = document.querySelector('#distalQuality');
+const proximalMeta = document.querySelector('#proximalMeta');
+const distalMeta = document.querySelector('#distalMeta');
+const latestPtt = document.querySelector('#latestPtt');
+const medianPtt = document.querySelector('#medianPtt');
+const acceptedPairs = document.querySelector('#acceptedPairs');
+const rejectedPairs = document.querySelector('#rejectedPairs');
+const pttGuidance = document.querySelector('#pttGuidance');
 
 let port = null;
 let reader = null;
@@ -53,6 +75,11 @@ let streamTimestamp = null;
 let lastDeviceTimestamp = null;
 let resyncUiTimer = null;
 const browserCoach = new BrowserSignalCoach();
+let dualCoach = new DualSignalCoach();
+let proximalHistory = new Array(HISTORY_LENGTH).fill(null);
+let distalHistory = new Array(HISTORY_LENGTH).fill(null);
+let lastPtt = null;
+let lastPttRenderAt = -Infinity;
 
 function resizeCanvas() {
   const rectangle = canvas.getBoundingClientRect();
@@ -61,6 +88,54 @@ function resizeCanvas() {
   canvas.height = Math.max(1, Math.round(rectangle.height * dpr));
   context.setTransform(dpr, 0, 0, dpr, 0, 0);
   drawWaveform();
+  resizePttCanvas(proximalCanvas, proximalHistory, lastPtt?.proximal?.threshold ?? 550, '#087e91');
+  resizePttCanvas(distalCanvas, distalHistory, lastPtt?.distal?.threshold ?? 550, '#997800');
+}
+
+function resizePttCanvas(target, values, threshold, color) {
+  const rectangle = target.getBoundingClientRect();
+  if (!rectangle.width || !rectangle.height) return;
+  const dpr = window.devicePixelRatio || 1;
+  target.width = Math.max(1, Math.round(rectangle.width * dpr));
+  target.height = Math.max(1, Math.round(rectangle.height * dpr));
+  const drawing = target.getContext('2d');
+  drawing.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawPttWaveform(target, drawing, values, threshold, color);
+}
+
+function drawPttWaveform(target, drawing, values, threshold, color) {
+  const width = target.getBoundingClientRect().width;
+  const height = target.getBoundingClientRect().height;
+  drawing.fillStyle = '#fff';
+  drawing.fillRect(0, 0, width, height);
+  drawing.strokeStyle = '#dce7df';
+  drawing.lineWidth = 1;
+  for (let index = 1; index < 4; index += 1) {
+    drawing.beginPath(); drawing.moveTo(0, (height * index) / 4); drawing.lineTo(width, (height * index) / 4); drawing.stroke();
+  }
+  const present = values.filter((value) => value !== null);
+  if (present.length < 2) return;
+  const low = Math.max(0, Math.min(...present, threshold) - 35);
+  const high = Math.min(1023, Math.max(...present, threshold) + 35);
+  const range = Math.max(1, high - low);
+  const thresholdY = height - ((threshold - low) / range) * height;
+  drawing.save();
+  drawing.setLineDash([6, 5]);
+  drawing.strokeStyle = '#a12626';
+  drawing.beginPath(); drawing.moveTo(0, thresholdY); drawing.lineTo(width, thresholdY); drawing.stroke();
+  drawing.restore();
+  drawing.strokeStyle = color;
+  drawing.lineWidth = 2.5;
+  drawing.lineJoin = 'round';
+  drawing.beginPath();
+  let started = false;
+  values.forEach((value, index) => {
+    if (value === null) return;
+    const x = (index / (HISTORY_LENGTH - 1)) * width;
+    const y = height - ((value - low) / range) * height;
+    if (!started) { drawing.moveTo(x, y); started = true; } else drawing.lineTo(x, y);
+  });
+  drawing.stroke();
 }
 
 function drawWaveform() {
@@ -143,6 +218,10 @@ function updateCoach(coach) {
 }
 
 function updateFrame(frame, line, explicitTimestamp = null) {
+  if (frame.secondarySignal !== undefined) {
+    updatePttFrame(frame, line, explicitTimestamp);
+    return;
+  }
   const timestamp = nextSampleTimestamp(frame, explicitTimestamp);
   frameCount += 1;
   if (frame.sequence !== null && lastSequence !== null && frame.sequence !== ((lastSequence + 1) & 0x7fffffff)) gaps += 1;
@@ -179,6 +258,98 @@ function updateFrame(frame, line, explicitTimestamp = null) {
     heart.classList.add('beat');
     bpmCard.classList.add('invert');
     setTimeout(() => { heart.classList.remove('beat'); bpmCard.classList.remove('invert'); }, 180);
+  }
+}
+
+function qualityLabel(target, quality) {
+  target.textContent = quality.state;
+  target.className = quality.state === 'GOOD' ? 'good' : quality.state === 'CLIPPED' ? 'clipped' : '';
+}
+
+function updatePttFrame(frame, line, explicitTimestamp = null) {
+  if (coachMode.value !== 'ptt') {
+    coachMode.value = 'ptt';
+    setCoachMode('ptt');
+  }
+  const timestamp = nextSampleTimestamp(frame, explicitTimestamp);
+  frameCount += 1;
+  lastFrame = frame;
+  lastPtt = dualCoach.update(frame.signal, frame.secondarySignal, timestamp);
+  proximalHistory.shift(); proximalHistory.push(lastPtt.proximal.signal10);
+  distalHistory.shift(); distalHistory.push(lastPtt.distal.signal10);
+  if (timestamp - lastPttRenderAt < 33 && lastPtt.ptt.latest === null) return;
+  lastPttRenderAt = timestamp;
+  resizePttCanvas(proximalCanvas, proximalHistory, lastPtt.proximal.threshold, '#087e91');
+  resizePttCanvas(distalCanvas, distalHistory, lastPtt.distal.threshold, '#997800');
+  qualityLabel(proximalQuality, lastPtt.proximalQuality);
+  qualityLabel(distalQuality, lastPtt.distalQuality);
+  proximalMeta.textContent = `Signal ${lastPtt.proximal.signal10} · threshold ${lastPtt.proximal.threshold} ${lastPtt.proximal.thresholdMode}`;
+  distalMeta.textContent = `Signal ${lastPtt.distal.signal10} · threshold ${lastPtt.distal.threshold} ${lastPtt.distal.thresholdMode}`;
+  if (lastPtt.ptt.latest !== null) latestPtt.textContent = lastPtt.ptt.latest.toFixed(1);
+  medianPtt.textContent = lastPtt.ptt.median === null ? '--' : lastPtt.ptt.median.toFixed(1);
+  acceptedPairs.textContent = String(lastPtt.ptt.accepted);
+  rejectedPairs.textContent = `${lastPtt.ptt.rejected} / ${lastPtt.ptt.unmatched}`;
+  if (lastPtt.proximalQuality.state === 'CLIPPED' || lastPtt.distalQuality.state === 'CLIPPED') {
+    pttGuidance.textContent = 'A channel is clipping at the ADC rail. Reduce pressure, check power, and reposition before trusting PTT.';
+  } else if (lastPtt.proximalQuality.state !== 'GOOD' || lastPtt.distalQuality.state !== 'GOOD') {
+    pttGuidance.textContent = 'Hold both sensors lightly and still until both channels report GOOD.';
+  } else if (lastPtt.ptt.accepted === 0) {
+    pttGuidance.textContent = 'Both waves look usable. Waiting for repeatable same-cycle beat pairs.';
+  } else {
+    pttGuidance.textContent = 'Both channels pass signal quality. PTT is an educational timing measurement, not blood pressure.';
+  }
+  const simulated = frame.mode === 'SIM';
+  waitingOverlay.hidden = true;
+  resyncBtn.disabled = true;
+  statusDot.className = `status-dot ${simulated ? 'simulation' : 'connected'}`;
+  statusText.textContent = simulated ? 'Simulated two-sensor replay' : 'Two PulseSensors connected';
+  sourceMeta.textContent = `${frame.format} · 250000 baud`;
+  sourceName.textContent = simulated ? 'SIM DUAL PULSE' : 'Dual PulseSensor';
+  simulationWarning.hidden = !simulated;
+  modeChip.textContent = simulated ? 'SIM PTT' : 'LIVE PTT';
+  modeChip.className = simulated ? 'sim' : 'live';
+  frameMeta.textContent = `${frameCount.toLocaleString()} synchronized dual samples`;
+  signalMeta.textContent = `A0 ${lastPtt.proximal.signal10} · A1 ${lastPtt.distal.signal10}`;
+  liveSignal.textContent = `${lastPtt.proximal.signal10} / ${lastPtt.distal.signal10}`;
+  liveBeat.textContent = `${Number(lastPtt.proximal.qualifiedBeat)} / ${Number(lastPtt.distal.qualifiedBeat)}`;
+  liveIbi.textContent = lastPtt.ptt.latest === null ? '--' : lastPtt.ptt.latest.toFixed(1);
+  liveQuality.textContent = `${lastPtt.proximalQuality.state} / ${lastPtt.distalQuality.state}`;
+  liveInputFormat.textContent = frame.format;
+  sourceMetrics.textContent = 'Browser detector · one-to-one pairing';
+  rawSerial.textContent = line;
+}
+
+function resetPttState() {
+  dualCoach = new DualSignalCoach();
+  proximalHistory = new Array(HISTORY_LENGTH).fill(null);
+  distalHistory = new Array(HISTORY_LENGTH).fill(null);
+  lastPtt = null;
+  lastPttRenderAt = -Infinity;
+  latestPtt.textContent = '--';
+  medianPtt.textContent = '--';
+  acceptedPairs.textContent = '0';
+  rejectedPairs.textContent = '0 / 0';
+  applyPttSettings();
+}
+
+function applyPttSettings() {
+  dualCoach.configureChannel('proximal', proximalThresholdMode.value, Number(proximalThreshold.value));
+  dualCoach.configureChannel('distal', distalThresholdMode.value, Number(distalThreshold.value));
+  dualCoach.setPairingWindow(Number(minimumPtt.value), Number(maximumPtt.value));
+}
+
+function setCoachMode(mode) {
+  const ptt = mode === 'ptt';
+  singleWavePanel.hidden = ptt;
+  singleReadoutPanel.hidden = ptt;
+  pttWorkspace.hidden = !ptt;
+  sampleRate.value = ptt ? '500' : '50';
+  sourceMeta.textContent = ptt ? 'Dual PTT1 input · 250000 baud' : 'Single pulse-wave input · 115200 baud';
+  resyncBtn.hidden = ptt;
+  waitingOverlay.textContent = ptt ? 'CONNECT A PTT1 DUAL STREAM' : 'CONNECT A PULSE STREAM';
+  if (ptt) {
+    resetPttState();
+    requestAnimationFrame(resizeCanvas);
   }
 }
 
@@ -272,7 +443,8 @@ async function disconnect() {
   connectBtn.textContent = 'Connect';
   statusDot.className = 'status-dot';
   statusText.textContent = 'Disconnected';
-  sourceMeta.textContent = 'Pulse-wave input · 115200 baud';
+  coachMode.disabled = false;
+  sourceMeta.textContent = coachMode.value === 'ptt' ? 'Dual PTT1 input · 250000 baud' : 'Single pulse-wave input · 115200 baud';
   resetDisconnectedDisplay();
 }
 
@@ -283,7 +455,8 @@ async function connect() {
   }
   try {
     port = await navigator.serial.requestPort();
-    await port.open({ baudRate: 115200, bufferSize: 8192 });
+    const baudRate = coachMode.value === 'ptt' ? 250000 : 115200;
+    await port.open({ baudRate, bufferSize: 16384 });
     history = new Array(HISTORY_LENGTH).fill(null);
     frameCount = 0;
     gaps = 0;
@@ -292,9 +465,10 @@ async function connect() {
     reading = true;
     errorMessage.hidden = true;
     sampleRate.disabled = true;
+    coachMode.disabled = true;
     connectBtn.textContent = 'Disconnect';
     statusText.textContent = 'Waiting for samples';
-    sourceMeta.textContent = 'Connected · USB serial · 115200 baud';
+    sourceMeta.textContent = `Connected · USB serial · ${baudRate} baud`;
     waitingOverlay.textContent = 'WAITING FOR PULSE DATA';
     await readLoop();
   } catch (error) {
@@ -305,6 +479,7 @@ async function connect() {
       try { await failedPort.close(); } catch { /* Port never opened or already closed. */ }
     }
     sampleRate.disabled = false;
+    coachMode.disabled = false;
     connectBtn.textContent = 'Connect';
     if (error.name !== 'NotFoundError') showError(`Connection failed: ${error.message}`);
   }
@@ -313,6 +488,13 @@ async function connect() {
 connectBtn.addEventListener('click', () => {
   if (port) disconnect().catch((error) => showError(error.message));
   else connect().catch((error) => showError(error.message));
+});
+
+coachMode.addEventListener('change', () => setCoachMode(coachMode.value));
+[proximalThresholdMode, distalThresholdMode, proximalThreshold, distalThreshold, minimumPtt, maximumPtt].forEach((control) => {
+  control.addEventListener('change', () => {
+    try { applyPttSettings(); errorMessage.hidden = true; } catch (error) { showError(error.message); }
+  });
 });
 
 resyncBtn.addEventListener('click', () => {
@@ -336,11 +518,16 @@ navigator.serial?.addEventListener('disconnect', (event) => {
 
 window.addEventListener('resize', resizeCanvas);
 new ResizeObserver(resizeCanvas).observe(canvas);
+new ResizeObserver(resizeCanvas).observe(pttWorkspace);
 resizeCanvas();
 
 function startReplay() {
   connectBtn.hidden = true;
-  sampleRate.value = '50';
+  const pttReplay = pageOptions.get('mode') === 'ptt';
+  coachMode.value = pttReplay ? 'ptt' : 'single';
+  setCoachMode(coachMode.value);
+  coachMode.disabled = true;
+  sampleRate.value = pttReplay ? '500' : '50';
   sampleRate.disabled = true;
   resetCoachState();
   let sequence = 0;
@@ -360,6 +547,15 @@ function startReplay() {
       timestampMs: elapsed, signal, sourceBpm: null, sourceIbi: null,
       sourceBeat: null, sourceQuality: null, sourceState: null,
     };
+    if (pttReplay) {
+      const distalPhase = ((elapsed - 40) % 833 + 833) % 833;
+      let distalPulse = 0;
+      if (distalPhase < 55) distalPulse = distalPhase * 21;
+      else if (distalPhase < 145) distalPulse = 1155 - (distalPhase - 55) * 10;
+      else if (distalPhase < 205) distalPulse = 255 - (distalPhase - 145) * 4;
+      frame.secondarySignal = Math.max(0, Math.min(4095, 1880 + Math.max(0, distalPulse)));
+      frame.format = 'Browser bench PTT1';
+    }
     updateFrame(frame, String(signal));
     sequence = (sequence + 1) & 0x7fffffff;
   }, 20);
@@ -383,5 +579,7 @@ window.__PULSE_COACH_QA__ = {
     streamTimestamp = null;
     lastDeviceTimestamp = null;
   },
-  getState: () => ({ frameCount, gaps, lastFrame, coach: lastCoach, canvasWidth: canvas.width, canvasHeight: canvas.height }),
+  getState: () => ({ frameCount, gaps, lastFrame, coach: lastCoach, ptt: lastPtt, mode: coachMode.value, canvasWidth: canvas.width, canvasHeight: canvas.height }),
 };
+
+setCoachMode(coachMode.value);

@@ -22,7 +22,7 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 
 ---
 
-## Web Serial Signal Coach
+## Web Serial Signal Coach and two-sensor PTT lab
 
 The browser dashboard in
 [`docs/signal-coach/`](docs/signal-coach/) connects
@@ -41,6 +41,12 @@ The complete no-build, no-minification home-hacking guide is
 Arduino/ESP32 sender lives at
 [`examples/SignalCoachWebSerial/SignalCoachWebSerial.ino`](examples/SignalCoachWebSerial/SignalCoachWebSerial.ino).
 
+The same dashboard also has a **Two sensors / PTT** mode with synchronized A0
+and A1 waveforms, fixed or adaptive thresholds per sensor, clipping and weak
+signal gates, and one-to-one same-cycle beat pairing. Its 500 Hz sender is
+[`examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino`](examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino).
+The PTT lab is educational and does not estimate blood pressure.
+
 Run it locally from the repository root:
 
 ```bash
@@ -54,6 +60,7 @@ own the port. Protocol tests run with:
 ```bash
 node docs/signal-coach/protocol.test.mjs
 node docs/signal-coach/signal-coach-core.test.mjs
+node docs/signal-coach/ptt-coach-core.test.mjs
 node docs/signal-coach/source-pack.test.mjs
 ```
 
