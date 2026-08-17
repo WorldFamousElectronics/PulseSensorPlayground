@@ -208,6 +208,15 @@ button:disabled { cursor: not-allowed; opacity: .38; }
 .supported-inputs { color: #9dacA3; font-size: 13px; line-height: 1.55; }
 .supported-inputs p { margin: 12px 0 0; }
 .supported-inputs code { color: var(--blue); }
+.board-setup { color: #9daca3; font-size: 13px; line-height: 1.55; }
+.setup-callout { margin: 14px 0; padding: 12px 14px; border-left: 4px solid var(--yellow); background: #fff8d5; color: #4f4a2f; }
+.setup-callout p { margin: 0 0 8px; }
+.setup-callout p:last-child { margin-bottom: 0; }
+.sketch-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 8px; color: #7c8b82; font: 700 11px/1.4 ui-monospace, "SFMono-Regular", Menlo, monospace; }
+.copy-sketch-button { margin-left: auto; padding: 8px 12px; border: 1px solid var(--blue); border-radius: 3px; background: transparent; color: var(--blue); font-weight: 800; cursor: pointer; }
+.copy-sketch-button:hover, .copy-sketch-button:focus-visible { background: var(--blue); color: #fff; }
+.copy-status { min-width: 190px; color: var(--green); }
+.sketch-code { max-height: 430px; margin: 0; overflow: auto; border: 1px solid var(--grid); background: #040804; padding: 16px; color: #b9d9c5; font: 12px/1.55 ui-monospace, "SFMono-Regular", Menlo, monospace; tab-size: 2; }
 
 footer { display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--grid-soft); padding-top: 14px; color: #6f7d74; font-size: 12px; }
 footer p { margin: 0; }

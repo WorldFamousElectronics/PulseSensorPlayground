@@ -5,7 +5,9 @@
   Coach performs threshold crossing, signal-quality checks, beat pairing, and
   Pulse Transit Time (PTT) measurement in the browser.
 
-  Wiring on Arduino Uno/Nano/Mega:
+  Test target: Arduino UNO R4 WiFi. Also works on classic Uno/Nano/Mega boards.
+
+  Wiring:
     Proximal PulseSensor purple -> A0 (earlobe recommended)
     Distal PulseSensor purple   -> A1 (fingertip recommended)
     Both red wires              -> 5V
@@ -25,6 +27,10 @@ const unsigned long SAMPLE_PERIOD_US = 2000; // 500 samples/second.
 unsigned long nextSampleAt = 0;
 
 void setup() {
+#if defined(ARDUINO_UNOR4_WIFI)
+  // Signal Coach thresholds use the familiar 0-1023 Arduino ADC scale.
+  analogReadResolution(10);
+#endif
   Serial.begin(250000);
   delay(1000);
   nextSampleAt = micros();

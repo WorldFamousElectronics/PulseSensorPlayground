@@ -28,6 +28,7 @@ const guide = await readFile(path.join(folder, 'README.md'), 'utf8');
 const dashboard = await readFile(path.join(folder, 'index.html'), 'utf8');
 const browserApp = await readFile(path.join(folder, 'signal-coach.mjs'), 'utf8');
 const sketch = await readFile(path.join(root, 'examples/SignalCoachWebSerial/SignalCoachWebSerial.ino'), 'utf8');
+const dualSketch = await readFile(path.join(root, 'examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino'), 'utf8');
 const tutorial = await readFile(path.join(root, 'resources/signal-coach/shopify/page-signal-coach.html'), 'utf8');
 
 for (const relativePath of required) {
@@ -60,6 +61,13 @@ assert.match(dashboard, /pulsesensor-signal-coach-ready/);
 assert.match(dashboard, /Two sensors \/ PTT/);
 assert.match(dashboard, /id="proximalThresholdMode"/);
 assert.match(dashboard, /id="distalThresholdMode"/);
+assert.match(dashboard, /UNO R4 WiFi setup/);
+assert.match(dashboard, /Flash from this page: not yet/);
+assert.match(dashboard, /id="copySketchBtn"/);
+assert.match(dashboard, /Serial\.begin\(250000\)/);
+assert.match(dashboard, /Serial\.print\("PTT1,"\)/);
+assert.match(dashboard, /ARDUINO_UNOR4_WIFI/);
+assert.match(dualSketch, /analogReadResolution\(10\)/);
 assert.match(tutorial, /SignalCoachDualWebSerial\.ino/);
 assert.match(tutorial, /timing experiment, not a blood-pressure reading/i);
 

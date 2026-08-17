@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#060a06">
   <title>PulseSensor Signal Coach</title>
   <meta name="description" content="Connect one or two PulseSensors over USB for live waveform coaching, BPM, and educational pulse transit time experiments.">
-  <link rel="stylesheet" href="./signal-coach.css?v=20260816-dual-ptt-r1">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260817-unor4-r2">
 </head>
 <body>
   <main class="coach-app">
@@ -154,6 +154,54 @@
       </div>
     </section>
 
+    <details class="technical-details board-setup" id="unoR4Setup" open hidden>
+      <summary>UNO R4 WiFi setup · upload this sketch first</summary>
+      <div class="setup-callout">
+        <p><strong>Wire A0 to the proximal sensor and A1 to the distal sensor.</strong> Both sensors share 5V and GND. Upload the sketch below once, close the uploader, then return here and click <b>Connect</b>.</p>
+        <p><strong>Flash from this page: not yet.</strong> Connect reads the serial stream; it does not replace the UNO R4 WiFi uploader. You can use Arduino IDE 2, Arduino CLI, or Arduino Cloud Editor with its local Cloud Agent.</p>
+      </div>
+      <div class="sketch-toolbar">
+        <span>SignalCoachDualWebSerial.ino · 500 samples/s · 250000 baud</span>
+        <button class="copy-sketch-button" id="copySketchBtn" type="button">Copy sketch</button>
+        <span class="copy-status" id="copySketchStatus" role="status" aria-live="polite"></span>
+      </div>
+      <pre class="sketch-code"><code id="unoR4Sketch">/* PulseSensor Signal Coach — dual-channel PTT sender
+ * Test target: Arduino UNO R4 WiFi
+ * Proximal purple wire -&gt; A0; distal purple wire -&gt; A1
+ * Both red wires -&gt; 5V; both black wires -&gt; GND
+ */
+const int PROXIMAL_PIN = A0;
+const int DISTAL_PIN = A1;
+const unsigned long SAMPLE_PERIOD_US = 2000; // 500 samples/second
+
+unsigned long nextSampleAt = 0;
+
+void setup() {
+#if defined(ARDUINO_UNOR4_WIFI)
+  analogReadResolution(10); // Keep the dashboard scale at 0-1023.
+#endif
+  Serial.begin(250000);
+  delay(1000);
+  nextSampleAt = micros();
+}
+
+void loop() {
+  const unsigned long now = micros();
+  if ((long)(now - nextSampleAt) &lt; 0) return;
+  nextSampleAt += SAMPLE_PERIOD_US;
+
+  const int proximal = analogRead(PROXIMAL_PIN);
+  const int distal = analogRead(DISTAL_PIN);
+
+  Serial.print("PTT1,");
+  Serial.print(now);
+  Serial.print(',');
+  Serial.print(proximal);
+  Serial.print(',');
+  Serial.println(distal);
+}</code></pre>
+    </details>
+
     <details class="technical-details">
       <summary>Technical details</summary>
       <div class="technical-grid">
@@ -188,6 +236,6 @@
       setTimeout(announceReady, 500);
     }
   </script>
-  <script type="module" src="./signal-coach.mjs?v=20260816-dual-ptt-r1"></script>
+  <script type="module" src="./signal-coach.mjs?v=20260817-unor4-r2"></script>
 </body>
 </html>

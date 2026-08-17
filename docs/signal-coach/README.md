@@ -37,6 +37,8 @@ own the serial port at a time. Web Serial works on HTTPS pages and on
    and fingertip are easier to stabilize than a wrist and fingertip.
 2. Upload
    [`examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino`](../../examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino).
+   The complete UNO R4 WiFi sketch is also shown directly on the Signal Coach
+   page, with a **Copy sketch** button.
 3. In Signal Coach choose **Two sensors / PTT**, click **Connect**, and select
    the board. This mode uses 500 synchronized samples/s at 250000 baud.
 4. Start with fixed thresholds. Move each threshold above its idle noise but
@@ -47,6 +49,21 @@ The lab accepts a distal beat only after a proximal beat in the same 5–300 ms
 window, consumes each beat once, and rejects weak or clipped channels. It never
 converts PTT to blood pressure. This is an educational timing experiment, not
 a medical measurement.
+
+### UNO R4 WiFi upload options
+
+The full Arduino IDE is optional, but the first USB upload still needs local
+uploader tooling. Use one of these paths:
+
+- Arduino IDE 2 with the Arduino UNO R4 Boards package;
+- Arduino CLI with the Renesas core and its BOSSA uploader; or
+- Arduino Cloud Editor with Arduino Cloud Agent installed on the Mac.
+
+Signal Coach's **Connect** button uses Web Serial only after the sketch is on
+the board. It does not currently compile or flash the UNO R4 WiFi. The UNO R4
+upload sequence changes the port into bootloader mode and uses the SAM-BA/BOSSA
+protocol, so a trustworthy one-click browser flasher is separate work from the
+serial dashboard.
 
 ## Complete source map
 

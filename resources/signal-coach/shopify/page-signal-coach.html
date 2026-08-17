@@ -145,6 +145,34 @@
 
   <h2>Two sensors / Pulse Transit Time</h2>
   <p>For a two-sensor experiment, connect the proximal signal to <code>A0</code> and the distal signal to <code>A1</code>, upload <a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino" target="_blank" rel="noopener"><code>SignalCoachDualWebSerial.ino</code></a>, and choose <strong>Two sensors / PTT</strong> in Signal Coach. Start with an earlobe at A0 and fingertip at A1. The dashboard checks both waves, exposes fixed or adaptive thresholds, rejects clipped channels, and pairs each proximal beat with at most one distal beat in the same cardiac cycle.</p>
+  <p><strong>UNO R4 WiFi:</strong> the complete sketch is included inside Signal Coach with a Copy button. The first upload still needs Arduino IDE 2, Arduino CLI, or Arduino Cloud Editor plus its local Cloud Agent. The dashboard Connect button reads Web Serial after upload; it does not currently flash the board.</p>
+  <pre><code>const int PROXIMAL_PIN = A0;
+const int DISTAL_PIN = A1;
+const unsigned long SAMPLE_PERIOD_US = 2000;
+unsigned long nextSampleAt = 0;
+
+void setup() {
+#if defined(ARDUINO_UNOR4_WIFI)
+  analogReadResolution(10);
+#endif
+  Serial.begin(250000);
+  delay(1000);
+  nextSampleAt = micros();
+}
+
+void loop() {
+  const unsigned long now = micros();
+  if ((long)(now - nextSampleAt) &lt; 0) return;
+  nextSampleAt += SAMPLE_PERIOD_US;
+  const int proximal = analogRead(PROXIMAL_PIN);
+  const int distal = analogRead(DISTAL_PIN);
+  Serial.print("PTT1,");
+  Serial.print(now);
+  Serial.print(',');
+  Serial.print(proximal);
+  Serial.print(',');
+  Serial.println(distal);
+}</code></pre>
   <p><strong>PTT is a timing experiment, not a blood-pressure reading.</strong> Do not use it for diagnosis, treatment, or health decisions.</p>
 
   <table class="psc-pin-table">

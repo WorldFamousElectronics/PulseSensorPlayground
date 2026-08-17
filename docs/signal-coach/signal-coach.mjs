@@ -1,7 +1,7 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260816-dual-ptt-r1';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260816-dual-ptt-r1';
-import { DualSignalCoach } from './ptt-coach-core.mjs?v=20260816-dual-ptt-r1';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260817-unor4-r2';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260817-unor4-r2';
+import { DualSignalCoach } from './ptt-coach-core.mjs?v=20260817-unor4-r2';
 
 const pageOptions = new URLSearchParams(location.search);
 if (window.self !== window.top || pageOptions.get('embedded') === '1') {
@@ -61,6 +61,10 @@ const medianPtt = document.querySelector('#medianPtt');
 const acceptedPairs = document.querySelector('#acceptedPairs');
 const rejectedPairs = document.querySelector('#rejectedPairs');
 const pttGuidance = document.querySelector('#pttGuidance');
+const unoR4Setup = document.querySelector('#unoR4Setup');
+const copySketchBtn = document.querySelector('#copySketchBtn');
+const copySketchStatus = document.querySelector('#copySketchStatus');
+const unoR4Sketch = document.querySelector('#unoR4Sketch');
 
 let port = null;
 let reader = null;
@@ -343,6 +347,7 @@ function setCoachMode(mode) {
   singleWavePanel.hidden = ptt;
   singleReadoutPanel.hidden = ptt;
   pttWorkspace.hidden = !ptt;
+  unoR4Setup.hidden = !ptt;
   sampleRate.value = ptt ? '500' : '50';
   sourceMeta.textContent = ptt ? 'Dual PTT1 input · 250000 baud' : 'Single pulse-wave input · 115200 baud';
   resyncBtn.hidden = ptt;
@@ -352,6 +357,23 @@ function setCoachMode(mode) {
     requestAnimationFrame(resizeCanvas);
   }
 }
+
+copySketchBtn.addEventListener('click', async () => {
+  const sketch = unoR4Sketch.textContent.trim();
+  try {
+    await navigator.clipboard.writeText(sketch);
+    copySketchBtn.textContent = 'Copied';
+    copySketchStatus.textContent = 'Paste into a new Arduino sketch.';
+  } catch {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(unoR4Sketch);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    copySketchStatus.textContent = 'Sketch selected. Press Command-C to copy.';
+  }
+  setTimeout(() => { copySketchBtn.textContent = 'Copy sketch'; }, 1800);
+});
 
 function showError(message) {
   errorMessage.textContent = message;
