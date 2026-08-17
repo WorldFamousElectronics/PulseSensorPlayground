@@ -12,7 +12,6 @@ const HISTORY_LENGTH = 600;
 const canvas = document.querySelector('#waveformCanvas');
 const context = canvas.getContext('2d');
 const display = document.querySelector('.display');
-const deviceScreen = document.querySelector('.device-screen');
 const connectBtn = document.querySelector('#connectBtn');
 const resyncBtn = document.querySelector('#resyncBtn');
 const coachMode = document.querySelector('#coachMode');
@@ -88,15 +87,17 @@ let lastPttRenderAt = -Infinity;
 
 function resizeCanvas() {
   const rectangle = canvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  const width = Math.max(1, Math.round(rectangle.width * dpr));
-  const height = Math.max(1, Math.round(rectangle.height * dpr));
-  if (canvas.width !== width || canvas.height !== height) {
-    canvas.width = width;
-    canvas.height = height;
-    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (rectangle.width && rectangle.height) {
+    const dpr = window.devicePixelRatio || 1;
+    const width = Math.max(1, Math.round(rectangle.width * dpr));
+    const height = Math.max(1, Math.round(rectangle.height * dpr));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    drawWaveform();
   }
-  drawWaveform();
   resizePttCanvas(proximalCanvas, proximalHistory, lastPtt?.proximal?.threshold ?? 550, '#087e91');
   resizePttCanvas(distalCanvas, distalHistory, lastPtt?.distal?.threshold ?? 550, '#997800');
 }
@@ -154,6 +155,7 @@ function drawPttWaveform(target, drawing, values, threshold, color) {
 function drawWaveform() {
   const width = canvas.getBoundingClientRect().width;
   const height = canvas.getBoundingClientRect().height;
+  if (!width || !height) return;
   context.fillStyle = '#f4f8f5';
   context.fillRect(0, 0, width, height);
 
@@ -548,7 +550,6 @@ navigator.serial?.addEventListener('disconnect', (event) => {
 });
 
 window.addEventListener('resize', resizeCanvas);
-new ResizeObserver(resizeCanvas).observe(deviceScreen);
 resizeCanvas();
 
 function startReplay() {
