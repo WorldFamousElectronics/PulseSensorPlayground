@@ -12,6 +12,7 @@ const HISTORY_LENGTH = 600;
 const canvas = document.querySelector('#waveformCanvas');
 const context = canvas.getContext('2d');
 const display = document.querySelector('.display');
+const deviceScreen = document.querySelector('.device-screen');
 const connectBtn = document.querySelector('#connectBtn');
 const resyncBtn = document.querySelector('#resyncBtn');
 const coachMode = document.querySelector('#coachMode');
@@ -88,9 +89,13 @@ let lastPttRenderAt = -Infinity;
 function resizeCanvas() {
   const rectangle = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.max(1, Math.round(rectangle.width * dpr));
-  canvas.height = Math.max(1, Math.round(rectangle.height * dpr));
-  context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const width = Math.max(1, Math.round(rectangle.width * dpr));
+  const height = Math.max(1, Math.round(rectangle.height * dpr));
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
   drawWaveform();
   resizePttCanvas(proximalCanvas, proximalHistory, lastPtt?.proximal?.threshold ?? 550, '#087e91');
   resizePttCanvas(distalCanvas, distalHistory, lastPtt?.distal?.threshold ?? 550, '#997800');
@@ -100,10 +105,14 @@ function resizePttCanvas(target, values, threshold, color) {
   const rectangle = target.getBoundingClientRect();
   if (!rectangle.width || !rectangle.height) return;
   const dpr = window.devicePixelRatio || 1;
-  target.width = Math.max(1, Math.round(rectangle.width * dpr));
-  target.height = Math.max(1, Math.round(rectangle.height * dpr));
+  const width = Math.max(1, Math.round(rectangle.width * dpr));
+  const height = Math.max(1, Math.round(rectangle.height * dpr));
   const drawing = target.getContext('2d');
-  drawing.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (target.width !== width || target.height !== height) {
+    target.width = width;
+    target.height = height;
+    drawing.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
   drawPttWaveform(target, drawing, values, threshold, color);
 }
 
@@ -539,8 +548,7 @@ navigator.serial?.addEventListener('disconnect', (event) => {
 });
 
 window.addEventListener('resize', resizeCanvas);
-new ResizeObserver(resizeCanvas).observe(canvas);
-new ResizeObserver(resizeCanvas).observe(pttWorkspace);
+new ResizeObserver(resizeCanvas).observe(deviceScreen);
 resizeCanvas();
 
 function startReplay() {

@@ -68,6 +68,8 @@ assert.match(dashboard, /Serial\.begin\(250000\)/);
 assert.match(dashboard, /Serial\.print\("PTT1,"\)/);
 assert.match(dashboard, /ARDUINO_UNOR4_WIFI/);
 assert.match(dualSketch, /analogReadResolution\(10\)/);
+assert.match(browserApp, /ResizeObserver\(resizeCanvas\)\.observe\(deviceScreen\)/);
+assert.doesNotMatch(browserApp, /ResizeObserver\(resizeCanvas\)\.observe\((canvas|pttWorkspace)\)/);
 assert.match(tutorial, /SignalCoachDualWebSerial\.ino/);
 assert.match(tutorial, /timing experiment, not a blood-pressure reading/i);
 
