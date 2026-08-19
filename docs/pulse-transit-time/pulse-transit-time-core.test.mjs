@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { BrowserSignalCoach } from './signal-coach-core.mjs';
-import { DualSignalCoach, PttPairer } from './ptt-coach-core.mjs';
+import { BrowserSignalCoach } from '../signal-coach/signal-coach-core.mjs';
+import { PulseTransitTimeCoach, PttPairer } from './pulse-transit-time-core.mjs';
 
 function pulseSample(timestamp, delay = 0) {
   const phase = ((timestamp - delay) % 833 + 833) % 833;
@@ -28,23 +28,23 @@ pairer.pushProximal(4000);
 assert.equal(pairer.pushDistal(4400), null, 'out-of-window pair must be rejected');
 assert.equal(pairer.snapshot().rejected, 1);
 
-const dual = new DualSignalCoach({
+const coach = new PulseTransitTimeCoach({
   proximal: { pulseThreshold: 550, thresholdMode: 'fixed' },
   distal: { pulseThreshold: 550, thresholdMode: 'fixed' },
   quality: { windowSize: 500, warmupSize: 100 },
 });
 let result;
 for (let timestamp = 0; timestamp < 12000; timestamp += 2) {
-  result = dual.update(pulseSample(timestamp), pulseSample(timestamp, 40), timestamp);
+  result = coach.update(pulseSample(timestamp), pulseSample(timestamp, 40), timestamp);
 }
 assert.ok(result.ptt.accepted >= 5, 'clean dual wave should produce paired beats');
 assert.ok(result.ptt.median >= 36 && result.ptt.median <= 44, `expected about 40 ms, got ${result.ptt.median}`);
 
-const clipped = new DualSignalCoach({ quality: { windowSize: 100, warmupSize: 20 } });
+const clipped = new PulseTransitTimeCoach({ quality: { windowSize: 100, warmupSize: 20 } });
 for (let timestamp = 0; timestamp < 12000; timestamp += 2) {
   result = clipped.update(1023, pulseSample(timestamp, 40), timestamp);
 }
 assert.equal(result.proximalQuality.state, 'CLIPPED');
 assert.equal(result.ptt.accepted, 0, 'clipped channels must not produce accepted PTT');
 
-console.log('Signal Coach dual-channel PTT tests passed');
+console.log('Pulse Transit Time core tests passed');

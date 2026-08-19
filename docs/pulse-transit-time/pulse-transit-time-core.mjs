@@ -1,4 +1,4 @@
-import { BrowserSignalCoach } from './signal-coach-core.mjs';
+import { BrowserSignalCoach } from '../signal-coach/signal-coach-core.mjs?v=20260819-ptt-r1';
 
 function median(values) {
   if (!values.length) return null;
@@ -93,7 +93,7 @@ export class PttPairer {
   }
 }
 
-export class DualSignalCoach {
+export class PulseTransitTimeCoach {
   constructor(options = {}) {
     const channelDefaults = { pulseThreshold: 550, thresholdMode: 'fixed' };
     this.proximal = new BrowserSignalCoach({ ...channelDefaults, ...options.proximal });

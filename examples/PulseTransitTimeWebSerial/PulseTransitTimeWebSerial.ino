@@ -1,9 +1,9 @@
 /*
-  PulseSensor Signal Coach — dual-channel PTT sender
+  PulseSensor Pulse Transit Time — dual-channel Web Serial sender
 
-  Sends two raw PulseSensor readings plus the board sample timestamp. Signal
-  Coach performs threshold crossing, signal-quality checks, beat pairing, and
-  Pulse Transit Time (PTT) measurement in the browser.
+  Sends two raw PulseSensor readings plus the board sample timestamp. The
+  Pulse Transit Time Lab performs threshold crossing, signal-quality checks,
+  beat pairing, and educational PTT measurement in the browser.
 
   Test target: Arduino UNO R4 WiFi. Also works on classic Uno/Nano/Mega boards.
 
@@ -13,7 +13,7 @@
     Both red wires              -> 5V
     Both black wires            -> GND
 
-  Open Signal Coach, choose "Two sensors / PTT", then connect at 250000 baud.
+  Open Pulse Transit Time Lab, then connect at 250000 baud.
   Educational experiment only. Not a medical device or blood-pressure tool.
 
   World Famous Electronics LLC
@@ -28,7 +28,7 @@ unsigned long nextSampleAt = 0;
 
 void setup() {
 #if defined(ARDUINO_UNOR4_WIFI)
-  // Signal Coach thresholds use the familiar 0-1023 Arduino ADC scale.
+  // The PTT Lab thresholds use the familiar 0-1023 Arduino ADC scale.
   analogReadResolution(10);
 #endif
   Serial.begin(250000);

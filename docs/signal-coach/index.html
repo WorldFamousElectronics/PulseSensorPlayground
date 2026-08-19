@@ -6,30 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a06">
   <title>PulseSensor Signal Coach</title>
-  <meta name="description" content="Connect one or two PulseSensors over USB for live waveform coaching, BPM, and educational pulse transit time experiments.">
-  <link rel="stylesheet" href="./signal-coach.css?v=20260817-unor4-r2">
+  <meta name="description" content="Connect a PulseSensor over USB, see the live waveform, and get clear Signal Coach guidance before trusting BPM.">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260819-single-r6">
 </head>
 <body>
   <main class="coach-app">
     <header class="topbar">
       <div>
         <p class="eyebrow">PulseSensor · Web Serial</p>
-        <p class="release-line"><span class="beta-badge">BETA</span><time datetime="2026-08-16">August 16, 2026</time></p>
+        <p class="release-line"><span class="beta-badge">BETA</span><time datetime="2026-08-12T13:12:31-04:00">August 12, 2026 · 1:12 PM EDT</time></p>
         <h1>Signal Coach</h1>
-        <p class="subhead">Coach one pulse signal for BPM, or compare two synchronized sensors for educational Pulse Transit Time. Detection and pairing stay in your browser.</p>
+        <p class="subhead">Connect Arduino, ESP32, or any supported pulse-wave serial stream. Chrome finds the beats, coaches the signal, and shows BPM only after it settles.</p>
       </div>
       <div class="connection" aria-live="polite">
         <span class="status-dot" id="statusDot"></span>
         <div class="connection-copy">
           <strong id="statusText">Disconnected</strong>
-          <span id="sourceMeta">Single pulse-wave input · 115200 baud</span>
+          <span id="sourceMeta">Pulse-wave input · 115200 baud</span>
         </div>
-        <label class="rate-control" for="coachMode">Mode
-          <select id="coachMode">
-            <option value="single" selected>One sensor / BPM</option>
-            <option value="ptt">Two sensors / PTT</option>
-          </select>
-        </label>
         <label class="rate-control" for="sampleRate">Samples/s
           <select id="sampleRate">
             <option value="50" selected>50</option>
@@ -56,7 +50,7 @@
           <span class="screen-source" id="screenSource">CHROME</span>
         </div>
 
-        <div class="wave-coach-layout" id="singleWavePanel">
+        <div class="wave-coach-layout">
           <div class="wave-wrap">
             <canvas id="waveformCanvas" width="900" height="300" aria-label="Live PulseSensor waveform"></canvas>
             <div class="waiting-overlay" id="waitingOverlay">CONNECT A PULSE STREAM</div>
@@ -84,67 +78,13 @@
           </aside>
         </div>
 
-        <div class="readout-grid" id="singleReadoutPanel">
+        <div class="readout-grid">
           <article class="bpm-card" id="bpmCard">
             <span class="card-label">BPM</span>
             <strong id="liveBpm">--</strong>
             <span class="card-note" id="bpmNote">Wait for a clean signal</span>
           </article>
         </div>
-
-        <section class="ptt-workspace" id="pttWorkspace" aria-labelledby="pttTitle" hidden>
-          <div class="ptt-heading">
-            <div>
-              <span class="card-label">Two synchronized sensors</span>
-              <h2 id="pttTitle">Pulse Transit Time Lab</h2>
-              <p>A0 proximal at the earlobe; A1 distal at the fingertip. The browser accepts only one-to-one beats from the same cycle.</p>
-            </div>
-            <span class="experimental-badge">EDUCATIONAL · NOT BLOOD PRESSURE</span>
-          </div>
-
-          <div class="ptt-controls" aria-label="PTT detector settings">
-            <fieldset>
-              <legend>A0 · Proximal</legend>
-              <label>Threshold mode
-                <select id="proximalThresholdMode"><option value="fixed" selected>Fixed</option><option value="adaptive">Adaptive</option></select>
-              </label>
-              <label>Threshold <input id="proximalThreshold" type="number" min="0" max="1023" value="550"></label>
-            </fieldset>
-            <fieldset>
-              <legend>A1 · Distal</legend>
-              <label>Threshold mode
-                <select id="distalThresholdMode"><option value="fixed" selected>Fixed</option><option value="adaptive">Adaptive</option></select>
-              </label>
-              <label>Threshold <input id="distalThreshold" type="number" min="0" max="1023" value="550"></label>
-            </fieldset>
-            <fieldset>
-              <legend>Pairing window</legend>
-              <label>Minimum ms <input id="minimumPtt" type="number" min="0" max="299" value="5"></label>
-              <label>Maximum ms <input id="maximumPtt" type="number" min="1" max="1000" value="300"></label>
-            </fieldset>
-          </div>
-
-          <div class="dual-wave-grid">
-            <article class="channel-panel">
-              <div class="channel-header"><strong>A0 PROXIMAL</strong><span id="proximalQuality">WARMING</span></div>
-              <canvas id="proximalCanvas" width="900" height="220" aria-label="Proximal PulseSensor waveform"></canvas>
-              <p id="proximalMeta">Signal -- · threshold 550 fixed</p>
-            </article>
-            <article class="channel-panel">
-              <div class="channel-header"><strong>A1 DISTAL</strong><span id="distalQuality">WARMING</span></div>
-              <canvas id="distalCanvas" width="900" height="220" aria-label="Distal PulseSensor waveform"></canvas>
-              <p id="distalMeta">Signal -- · threshold 550 fixed</p>
-            </article>
-          </div>
-
-          <div class="ptt-readouts">
-            <article><span>Latest PTT</span><strong id="latestPtt">--</strong><small>milliseconds</small></article>
-            <article><span>Rolling median</span><strong id="medianPtt">--</strong><small>last 20 accepted pairs</small></article>
-            <article><span>Accepted</span><strong id="acceptedPairs">0</strong><small>quality + timing pass</small></article>
-            <article><span>Rejected / unmatched</span><strong id="rejectedPairs">0 / 0</strong><small>never carried into next cycle</small></article>
-          </div>
-          <p class="ptt-guidance" id="pttGuidance">Upload the dual-channel sketch, then connect both sensors.</p>
-        </section>
       </div>
 
       <div class="connection-summary" aria-live="polite">
@@ -153,54 +93,6 @@
         <span id="signalMeta">Signal --</span>
       </div>
     </section>
-
-    <details class="technical-details board-setup" id="unoR4Setup" open hidden>
-      <summary>UNO R4 WiFi setup · upload this sketch first</summary>
-      <div class="setup-callout">
-        <p><strong>Wire A0 to the proximal sensor and A1 to the distal sensor.</strong> Both sensors share 5V and GND. Upload the sketch below once, close the uploader, then return here and click <b>Connect</b>.</p>
-        <p><strong>Flash from this page: not yet.</strong> Connect reads the serial stream; it does not replace the UNO R4 WiFi uploader. You can use Arduino IDE 2, Arduino CLI, or Arduino Cloud Editor with its local Cloud Agent.</p>
-      </div>
-      <div class="sketch-toolbar">
-        <span>SignalCoachDualWebSerial.ino · 500 samples/s · 250000 baud</span>
-        <button class="copy-sketch-button" id="copySketchBtn" type="button">Copy sketch</button>
-        <span class="copy-status" id="copySketchStatus" role="status" aria-live="polite"></span>
-      </div>
-      <pre class="sketch-code"><code id="unoR4Sketch">/* PulseSensor Signal Coach — dual-channel PTT sender
- * Test target: Arduino UNO R4 WiFi
- * Proximal purple wire -&gt; A0; distal purple wire -&gt; A1
- * Both red wires -&gt; 5V; both black wires -&gt; GND
- */
-const int PROXIMAL_PIN = A0;
-const int DISTAL_PIN = A1;
-const unsigned long SAMPLE_PERIOD_US = 2000; // 500 samples/second
-
-unsigned long nextSampleAt = 0;
-
-void setup() {
-#if defined(ARDUINO_UNOR4_WIFI)
-  analogReadResolution(10); // Keep the dashboard scale at 0-1023.
-#endif
-  Serial.begin(250000);
-  delay(1000);
-  nextSampleAt = micros();
-}
-
-void loop() {
-  const unsigned long now = micros();
-  if ((long)(now - nextSampleAt) &lt; 0) return;
-  nextSampleAt += SAMPLE_PERIOD_US;
-
-  const int proximal = analogRead(PROXIMAL_PIN);
-  const int distal = analogRead(DISTAL_PIN);
-
-  Serial.print("PTT1,");
-  Serial.print(now);
-  Serial.print(',');
-  Serial.print(proximal);
-  Serial.print(',');
-  Serial.println(distal);
-}</code></pre>
-    </details>
 
     <details class="technical-details">
       <summary>Technical details</summary>
@@ -217,13 +109,13 @@ void loop() {
 
     <details class="technical-details supported-inputs">
       <summary>Supported pulse streams</summary>
-      <p>Single mode accepts one number per line, <code>S512</code>, labeled or timestamped samples, JSON, Arduino <code>signal,bpm,ibi,beat</code>, and PulseLink PSWS. Dual mode accepts <code>PTT1,timestamp_us,proximal,distal</code>. Sender BPM and IBI never control the coach.</p>
+      <p>Signal Coach needs a numeric pulse-wave sample. It accepts one number per line, <code>S512</code>, <code>Signal 512</code>, <code>signal=512</code>, <code>timestamp,signal</code>, JSON samples, Arduino <code>signal,bpm,ibi,beat</code>, and PulseLink PSWS. Sender BPM and IBI never control the coach.</p>
       <p>Choose the rate your sketch prints. The default tutorial sends 50 samples each second.</p>
     </details>
 
     <footer>
       <p>Samples stay in this browser tab. They are not saved or uploaded.</p>
-      <p class="source-links"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/docs/signal-coach/README.md" target="_blank" rel="noopener">Build it at home</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/docs/signal-coach" target="_blank" rel="noopener">View all source</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">One-sensor sketch</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino" target="_blank" rel="noopener">Two-sensor sketch</a></p>
+      <p class="source-links"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/docs/signal-coach/README.md" target="_blank" rel="noopener">Build it at home</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/docs/signal-coach" target="_blank" rel="noopener">View all source</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">Arduino sketch</a></p>
       <p>Educational biofeedback project. Not a medical device and not for health decisions.</p>
     </footer>
   </main>
@@ -236,6 +128,6 @@ void loop() {
       setTimeout(announceReady, 500);
     }
   </script>
-  <script type="module" src="./signal-coach.mjs?v=20260817-unor4-r2"></script>
+  <script type="module" src="./signal-coach.mjs?v=20260819-single-r6"></script>
 </body>
 </html>

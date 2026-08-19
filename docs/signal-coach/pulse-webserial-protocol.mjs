@@ -63,19 +63,6 @@ export function parsePulseLine(line) {
   if (json) return json;
 
   const fields = normalized.split(',').map((field) => field.trim());
-  if (fields[0] === 'PTT1') {
-    if (fields.length !== 4) throw new Error('invalid PTT1 field count');
-    const timestampUs = integer(Number(fields[1]), 'timestamp', 0, 0xffffffff);
-    const frame = pulseFrame({
-      source: 'ptt1',
-      format: 'PulseSensor dual-channel PTT1',
-      signal: fields[2],
-      timestampMs: timestampUs / 1000,
-    });
-    frame.timestampUs = timestampUs;
-    frame.secondarySignal = integer(Number(fields[3]), 'secondary signal', 0, 65535);
-    return frame;
-  }
   if (fields[0] === PSWS_PREFIX) {
     const version = integer(Number(fields[1]), 'protocol version', 1, 255);
     if (!PSWS_VERSIONS.includes(version)) throw new Error(`unsupported PSWS version ${version}`);

@@ -22,7 +22,7 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 
 ---
 
-## Web Serial Signal Coach and two-sensor PTT lab
+## Web Serial Signal Coach
 
 The browser dashboard in
 [`docs/signal-coach/`](docs/signal-coach/) connects
@@ -41,12 +41,6 @@ The complete no-build, no-minification home-hacking guide is
 Arduino/ESP32 sender lives at
 [`examples/SignalCoachWebSerial/SignalCoachWebSerial.ino`](examples/SignalCoachWebSerial/SignalCoachWebSerial.ino).
 
-The same dashboard also has a **Two sensors / PTT** mode with synchronized A0
-and A1 waveforms, fixed or adaptive thresholds per sensor, clipping and weak
-signal gates, and one-to-one same-cycle beat pairing. Its 500 Hz sender is
-[`examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino`](examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino).
-The PTT lab is educational and does not estimate blood pressure.
-
 Run it locally from the repository root:
 
 ```bash
@@ -60,7 +54,6 @@ own the port. Protocol tests run with:
 ```bash
 node docs/signal-coach/protocol.test.mjs
 node docs/signal-coach/signal-coach-core.test.mjs
-node docs/signal-coach/ptt-coach-core.test.mjs
 node docs/signal-coach/source-pack.test.mjs
 ```
 
@@ -70,6 +63,29 @@ unchanged while the separate, dated Beta Signal Coach is validated by testers.
 The normal customer URL never generates fallback data. An explicit
 `?bench=1` developer URL exposes a manually started, prominently labeled
 browser replay for UI QA; it is not physiology or sensor evidence.
+
+## Pulse Transit Time Lab
+
+[`docs/pulse-transit-time/`](docs/pulse-transit-time/) is the separate
+two-sensor research project. It has its own page, strict `PTT1` protocol,
+250000-baud firmware, documentation, tests, and physical validation gate. It
+deliberately shares only the transport-neutral beat-detection algorithm in
+`signal-coach-core.mjs`; it is not a Signal Coach mode.
+
+The dedicated 500 Hz A0/A1 sender is
+[`examples/PulseTransitTimeWebSerial/PulseTransitTimeWebSerial.ino`](examples/PulseTransitTimeWebSerial/PulseTransitTimeWebSerial.ino).
+After starting the same local server, open
+<http://localhost:8000/docs/pulse-transit-time/>. Its checks run with:
+
+```bash
+node docs/pulse-transit-time/pulse-transit-time-protocol.test.mjs
+node docs/pulse-transit-time/pulse-transit-time-core.test.mjs
+node docs/pulse-transit-time/source-pack.test.mjs
+```
+
+Pulse Transit Time Lab is an educational timing experiment and does not
+estimate blood pressure. Browser transport success does not clear its real
+two-sensor physiological HOLD gate.
 
 ---
 

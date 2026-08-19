@@ -11,13 +11,10 @@ const required = [
   'docs/signal-coach/signal-coach.css',
   'docs/signal-coach/signal-coach.mjs',
   'docs/signal-coach/signal-coach-core.mjs',
-  'docs/signal-coach/ptt-coach-core.mjs',
   'docs/signal-coach/pulse-webserial-protocol.mjs',
   'docs/signal-coach/protocol.test.mjs',
   'docs/signal-coach/signal-coach-core.test.mjs',
-  'docs/signal-coach/ptt-coach-core.test.mjs',
   'examples/SignalCoachWebSerial/SignalCoachWebSerial.ino',
-  'examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino',
   'resources/signal-coach/shopify/page-signal-coach.html',
   'LICENSE',
 ];
@@ -28,7 +25,6 @@ const guide = await readFile(path.join(folder, 'README.md'), 'utf8');
 const dashboard = await readFile(path.join(folder, 'index.html'), 'utf8');
 const browserApp = await readFile(path.join(folder, 'signal-coach.mjs'), 'utf8');
 const sketch = await readFile(path.join(root, 'examples/SignalCoachWebSerial/SignalCoachWebSerial.ino'), 'utf8');
-const dualSketch = await readFile(path.join(root, 'examples/SignalCoachDualWebSerial/SignalCoachDualWebSerial.ino'), 'utf8');
 const tutorial = await readFile(path.join(root, 'resources/signal-coach/shopify/page-signal-coach.html'), 'utf8');
 
 for (const relativePath of required) {
@@ -43,6 +39,30 @@ assert.match(dashboard, /Blue <b>Adjust<\/b>/);
 assert.match(dashboard, /Light touch/);
 assert.match(sketch, /Serial\.println\(analogRead\(PULSE_PIN\)\)/);
 assert.match(sketch, /SAMPLE_PERIOD_MS = 20/);
+assert.match(sketch, /nextSampleAt = millis\(\)/);
+const normalizedTutorial = tutorial.replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+const inlineSketch = normalizedTutorial.match(/<pre><code>(\/\* PulseSensor Signal Coach[\s\S]*?)<\/code><\/pre>/)?.[1];
+assert.ok(inlineSketch, 'Shopify source pack should include the inline Signal Coach sender');
+const functionalSketch = (source) => source
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/\/\/.*$/gm, '')
+  .replace(/\s+/g, '');
+assert.equal(
+  functionalSketch(inlineSketch),
+  functionalSketch(sketch),
+  'Shopify inline and checked-in Signal Coach senders must remain functionally identical',
+);
+for (const schedulingLine of [
+  'const unsigned long SAMPLE_PERIOD_MS = 20;',
+  'unsigned long nextSampleAt = 0;',
+  'nextSampleAt = millis();',
+  'if ((long)(millis() - nextSampleAt) < 0) return;',
+  'nextSampleAt += SAMPLE_PERIOD_MS;',
+  'Serial.println(analogRead(PULSE_PIN));',
+]) {
+  assert.ok(sketch.includes(schedulingLine), `checked-in sender should include ${schedulingLine}`);
+  assert.ok(normalizedTutorial.includes(schedulingLine), `Shopify sender should include ${schedulingLine}`);
+}
 assert.match(tutorial, /Hack Signal Coach at home/i);
 assert.match(tutorial, /SignalCoachWebSerial\.ino/);
 assert.match(tutorial, /docs\/signal-coach\/README\.md/);
@@ -50,34 +70,28 @@ assert.match(tutorial, /another finger or person/);
 assert.doesNotMatch(tutorial, /<div class="psc-coach-grid">/);
 assert.doesNotMatch(tutorial, /Signal Coach tester preview/);
 assert.doesNotMatch(tutorial, /See the wave\. Improve it\./);
-assert.match(tutorial, /1 Upload the one- or two-sensor sketch/);
-assert.match(tutorial, /3 Choose the mode and Connect/);
+assert.match(tutorial, /1 Upload the sketch/);
+assert.match(tutorial, /3 Click Connect/);
 assert.match(tutorial, /Loading Signal Coach/);
 assert.match(tutorial, /Taking longer than expected/);
 assert.match(tutorial, /Open Signal Coach/);
 assert.match(tutorial, /Coach not loading\? Open directly\./);
 assert.match(tutorial, /pulsesensor-signal-coach-ready/);
 assert.match(dashboard, /pulsesensor-signal-coach-ready/);
-assert.match(dashboard, /Two sensors \/ PTT/);
-assert.match(dashboard, /id="proximalThresholdMode"/);
-assert.match(dashboard, /id="distalThresholdMode"/);
-assert.match(dashboard, /UNO R4 WiFi setup/);
-assert.match(dashboard, /Flash from this page: not yet/);
-assert.match(dashboard, /id="copySketchBtn"/);
-assert.match(dashboard, /Serial\.begin\(250000\)/);
-assert.match(dashboard, /Serial\.print\("PTT1,"\)/);
-assert.match(dashboard, /ARDUINO_UNOR4_WIFI/);
-assert.match(dualSketch, /analogReadResolution\(10\)/);
+assert.doesNotMatch(dashboard, /Pulse Transit Time|Two sensors \/ PTT|PTT1/i);
+assert.doesNotMatch(guide, /Pulse Transit Time|Two sensors \/ PTT|PTT1/i);
+assert.doesNotMatch(browserApp, /DualSignalCoach|secondarySignal|coachMode/);
+assert.doesNotMatch(tutorial, /Pulse Transit Time|Two sensors \/ PTT|PTT1/i);
 assert.doesNotMatch(browserApp, /ResizeObserver\(resizeCanvas\)/);
 assert.match(browserApp, /if \(!width \|\| !height\) return;/);
-assert.match(tutorial, /SignalCoachDualWebSerial\.ino/);
-assert.match(tutorial, /timing experiment, not a blood-pressure reading/i);
+assert.match(browserApp, /async function finalizeConnection\(targetPort\)/);
+assert.match(browserApp, /if \(!targetPort \|\| targetPort !== port\) return false;/);
+assert.match(browserApp, /finalizeConnection\(event\.target\)/);
 
 const releaseVersion = dashboard.match(/signal-coach\.mjs\?v=([a-z0-9-]+)/i)?.[1];
 assert.ok(releaseVersion, 'dashboard should version its browser module');
 assert.ok(dashboard.includes(`signal-coach.css?v=${releaseVersion}`));
 assert.ok(browserApp.includes(`pulse-webserial-protocol.mjs?v=${releaseVersion}`));
 assert.ok(browserApp.includes(`signal-coach-core.mjs?v=${releaseVersion}`));
-assert.ok(browserApp.includes(`ptt-coach-core.mjs?v=${releaseVersion}`));
 
 console.log('Signal Coach public source-pack tests passed');
