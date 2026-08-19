@@ -57,7 +57,15 @@ By default, Playground will output Serial data in `SERIAL_PLOTTER` format. Chang
 
 ---
 ### setThreshold(int)
-Set a value that the PulseSensor signal has to cross when going up. Adjusting this can be useful to combat noise. We set the default value at 550
+Set the starting value that the PulseSensor signal must cross while rising. The default is 550. By default the detector adapts this threshold after each pulse; call `setAdaptiveThreshold(false)` to keep your chosen value fixed.
+
+---
+### setAdaptiveThreshold(bool)
+Choose how the beat detector uses the threshold. `true` (the default) moves the threshold to the midpoint of each detected pulse. `false` keeps the value supplied to `setThreshold()` fixed. Fixed mode is useful when comparing two channels or reproducing a detection setup.
+
+---
+### getCurrentThreshold()
+Returns the threshold currently used by the beat detector. In adaptive mode this can differ from the value passed to `setThreshold()`. Type = int.
 
 ---
 ### getLatestSample()
@@ -85,7 +93,7 @@ Returns `true` if a new heartbeat pulse has been detected. Type = bool.
 
 ---
 ### isInsideBeat()
-Returns `true` for the time when a measured heartbeat wave is above the value set by the setThreshold() function, and `false` when it's not.
+Returns `true` while a measured pulse wave is above the detector's current threshold, and `false` when it is not.
 
 ---
 ### outputSample()

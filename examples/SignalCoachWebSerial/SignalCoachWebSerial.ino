@@ -28,6 +28,7 @@ unsigned long nextSampleAt = 0;
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  nextSampleAt = millis();
 }
 
 void loop() {

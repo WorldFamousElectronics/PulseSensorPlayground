@@ -38,6 +38,8 @@ PulseSensor::PulseSensor() {
   InputPin = A0;
   BlinkPin = -1;
   FadePin = -1;
+  threshSetting = 550;
+  AdaptiveThreshold = true;
 
   // Initialize (seed) the pulse detector
   sampleIntervalMs = PulseSensorPlayground::MICROS_PER_READ / 1000;
@@ -80,6 +82,24 @@ void PulseSensor::setThreshold(int threshold) {
   threshSetting = threshold; // this is the backup we get from the main .ino
   thresh = threshold; // this is the one that updates in software
   ENABLE_PULSE_SENSOR_INTERRUPTS;
+}
+
+void PulseSensor::setAdaptiveThreshold(bool enabled) {
+  DISABLE_PULSE_SENSOR_INTERRUPTS;
+  AdaptiveThreshold = enabled;
+  if (!AdaptiveThreshold) {
+    thresh = threshSetting;
+    P = thresh;
+    T = thresh;
+  }
+  ENABLE_PULSE_SENSOR_INTERRUPTS;
+}
+
+int PulseSensor::getCurrentThreshold() {
+  DISABLE_PULSE_SENSOR_INTERRUPTS;
+  int currentThreshold = thresh;
+  ENABLE_PULSE_SENSOR_INTERRUPTS;
+  return currentThreshold;
 }
 
 int PulseSensor::getLatestSample() {
@@ -182,7 +202,11 @@ void PulseSensor::processLatestSample() {
   if (Signal < thresh && Pulse == true) {  // when the values are going down, the beat is over
     Pulse = false;                         // reset the Pulse flag so we can do it again
     amp = P - T;                           // get amplitude of the pulse wave
-    thresh = amp / 2 + T;                  // set thresh at 50% of the amplitude
+    if (AdaptiveThreshold) {
+      thresh = amp / 2 + T;                // set thresh at 50% of the amplitude
+    } else {
+      thresh = threshSetting;              // keep the threshold selected by the user
+    }
     P = thresh;                            // reset these for next time
     T = thresh;
   }

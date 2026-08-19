@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#060a06">
+  <title>PulseSensor Pulse Transit Time Lab</title>
+  <meta name="description" content="Compare two synchronized PulseSensors for an educational pulse transit time experiment in Chrome.">
+  <link rel="stylesheet" href="./pulse-transit-time.css?v=20260819-ptt-r1">
+</head>
+<body>
+  <main class="ptt-app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PulseSensor · Two-channel Web Serial</p>
+        <p class="release-line"><span class="beta-badge">RESEARCH BETA</span><time datetime="2026-08-19">August 19, 2026</time></p>
+        <h1>Pulse Transit Time Lab</h1>
+        <p class="subhead">Compare synchronized proximal and distal pulse waves. Pairing and quality checks run locally in this browser.</p>
+      </div>
+      <div class="connection" aria-live="polite">
+        <span class="status-dot" id="statusDot"></span>
+        <div class="connection-copy">
+          <strong id="statusText">Disconnected</strong>
+          <span id="sourceMeta">PTT1 dual stream · 250000 baud</span>
+        </div>
+        <button id="connectBtn" type="button">Connect two-sensor stream</button>
+      </div>
+    </header>
+
+    <div class="error-message" id="errorMessage" role="alert" hidden></div>
+    <aside class="simulation-warning" id="simulationWarning" hidden>
+      SIMULATED BENCH SIGNAL — NOT A PERSON. This mode checks the interface only.
+    </aside>
+    <aside class="experiment-warning">
+      EDUCATIONAL TIMING EXPERIMENT — NOT BLOOD PRESSURE AND NOT A MEDICAL DEVICE.
+    </aside>
+
+    <section class="workspace" aria-labelledby="workspaceTitle">
+      <div class="workspace-heading">
+        <div>
+          <span class="card-label">Two synchronized sensors</span>
+          <h2 id="workspaceTitle">A0 proximal · A1 distal</h2>
+          <p>Start with an earlobe at A0 and a fingertip at A1. The lab accepts only one-to-one beats inside the selected timing window.</p>
+        </div>
+        <span class="protocol-badge">PTT1 · 500 samples/s</span>
+      </div>
+
+      <div class="ptt-controls" aria-label="Pulse Transit Time detector settings">
+        <fieldset>
+          <legend>A0 · Proximal</legend>
+          <label>Threshold mode
+            <select id="proximalThresholdMode"><option value="fixed" selected>Fixed</option><option value="adaptive">Adaptive</option></select>
+          </label>
+          <label>Threshold <input id="proximalThreshold" type="number" min="0" max="1023" value="550"></label>
+        </fieldset>
+        <fieldset>
+          <legend>A1 · Distal</legend>
+          <label>Threshold mode
+            <select id="distalThresholdMode"><option value="fixed" selected>Fixed</option><option value="adaptive">Adaptive</option></select>
+          </label>
+          <label>Threshold <input id="distalThreshold" type="number" min="0" max="1023" value="550"></label>
+        </fieldset>
+        <fieldset>
+          <legend>Pairing window</legend>
+          <label>Minimum ms <input id="minimumPtt" type="number" min="0" max="299" value="5"></label>
+          <label>Maximum ms <input id="maximumPtt" type="number" min="1" max="1000" value="300"></label>
+        </fieldset>
+      </div>
+
+      <div class="dual-wave-grid">
+        <article class="channel-panel">
+          <div class="channel-header"><strong>A0 PROXIMAL</strong><span id="proximalQuality">WARMING</span></div>
+          <canvas id="proximalCanvas" width="900" height="220" aria-label="Proximal PulseSensor waveform"></canvas>
+          <p id="proximalMeta">Signal -- · threshold 550 fixed</p>
+        </article>
+        <article class="channel-panel">
+          <div class="channel-header"><strong>A1 DISTAL</strong><span id="distalQuality">WARMING</span></div>
+          <canvas id="distalCanvas" width="900" height="220" aria-label="Distal PulseSensor waveform"></canvas>
+          <p id="distalMeta">Signal -- · threshold 550 fixed</p>
+        </article>
+      </div>
+
+      <div class="ptt-readouts">
+        <article><span>Latest PTT</span><strong id="latestPtt">--</strong><small>milliseconds</small></article>
+        <article><span>Rolling median</span><strong id="medianPtt">--</strong><small>last 20 accepted pairs</small></article>
+        <article><span>Accepted</span><strong id="acceptedPairs">0</strong><small>quality + timing pass</small></article>
+        <article><span>Rejected / unmatched</span><strong id="rejectedPairs">0 / 0</strong><small>never carried into next cycle</small></article>
+      </div>
+      <p class="ptt-guidance" id="pttGuidance">Upload the Pulse Transit Time sender, then connect both sensors.</p>
+
+      <div class="connection-summary" aria-live="polite">
+        <span id="modeChip">WAITING</span>
+        <span id="frameMeta">No synchronized samples received</span>
+        <span id="signalMeta">A0 -- · A1 --</span>
+      </div>
+    </section>
+
+    <details class="technical-details board-setup" open>
+      <summary>UNO R4 WiFi setup · upload this dedicated sketch first</summary>
+      <div class="setup-callout">
+        <p><strong>Wire A0 to the proximal sensor and A1 to the distal sensor.</strong> Both sensors share 5V and GND. Upload the sketch, close Arduino Serial Monitor, then return here and connect.</p>
+        <p>The browser reads Web Serial after upload; it does not flash the board.</p>
+      </div>
+      <div class="sketch-toolbar">
+        <span>PulseTransitTimeWebSerial.ino · 500 samples/s · 250000 baud</span>
+        <button class="copy-sketch-button" id="copySketchBtn" type="button">Copy sketch</button>
+        <span class="copy-status" id="copySketchStatus" role="status" aria-live="polite"></span>
+      </div>
+      <pre class="sketch-code"><code id="unoR4Sketch">/* PulseSensor Pulse Transit Time — dual-channel Web Serial sender
+ * Test target: Arduino UNO R4 WiFi
+ * Proximal purple wire -&gt; A0; distal purple wire -&gt; A1
+ * Both red wires -&gt; 5V; both black wires -&gt; GND
+ */
+const int PROXIMAL_PIN = A0;
+const int DISTAL_PIN = A1;
+const unsigned long SAMPLE_PERIOD_US = 2000;
+unsigned long nextSampleAt = 0;
+
+void setup() {
+#if defined(ARDUINO_UNOR4_WIFI)
+  analogReadResolution(10);
+#endif
+  Serial.begin(250000);
+  delay(1000);
+  nextSampleAt = micros();
+}
+
+void loop() {
+  const unsigned long now = micros();
+  if ((long)(now - nextSampleAt) &lt; 0) return;
+  nextSampleAt += SAMPLE_PERIOD_US;
+  const int proximal = analogRead(PROXIMAL_PIN);
+  const int distal = analogRead(DISTAL_PIN);
+  Serial.print("PTT1,");
+  Serial.print(now);
+  Serial.print(',');
+  Serial.print(proximal);
+  Serial.print(',');
+  Serial.println(distal);
+}</code></pre>
+    </details>
+
+    <details class="technical-details">
+      <summary>Protocol and latest frame</summary>
+      <p>The dedicated sender emits <code>PTT1,timestamp_us,proximal,distal</code>. Other serial formats are ignored.</p>
+      <p class="raw-line"><span>Latest frame</span><code id="rawSerial">waiting for PTT1 data...</code></p>
+    </details>
+
+    <footer>
+      <p>Samples stay in this browser tab. They are not saved or uploaded.</p>
+      <p class="source-links"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/docs/pulse-transit-time/README.md" target="_blank" rel="noopener">Build it at home</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/docs/pulse-transit-time" target="_blank" rel="noopener">View PTT source</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/PulseTransitTimeWebSerial/PulseTransitTimeWebSerial.ino" target="_blank" rel="noopener">Two-sensor sketch</a></p>
+      <p>Educational experiment only. Not for diagnosis, treatment, or health decisions.</p>
+    </footer>
+  </main>
+
+  <script>
+    if (window.parent !== window) {
+      const announceReady = () => window.parent.postMessage({ type: 'pulsesensor-pulse-transit-time-ready' }, '*');
+      announceReady();
+      window.addEventListener('load', announceReady, { once: true });
+      setTimeout(announceReady, 500);
+    }
+  </script>
+  <script type="module" src="./pulse-transit-time.mjs?v=20260819-ptt-r1"></script>
+</body>
+</html>

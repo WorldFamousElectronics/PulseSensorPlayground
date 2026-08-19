@@ -39,6 +39,30 @@ assert.match(dashboard, /Blue <b>Adjust<\/b>/);
 assert.match(dashboard, /Light touch/);
 assert.match(sketch, /Serial\.println\(analogRead\(PULSE_PIN\)\)/);
 assert.match(sketch, /SAMPLE_PERIOD_MS = 20/);
+assert.match(sketch, /nextSampleAt = millis\(\)/);
+const normalizedTutorial = tutorial.replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+const inlineSketch = normalizedTutorial.match(/<pre><code>(\/\* PulseSensor Signal Coach[\s\S]*?)<\/code><\/pre>/)?.[1];
+assert.ok(inlineSketch, 'Shopify source pack should include the inline Signal Coach sender');
+const functionalSketch = (source) => source
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/\/\/.*$/gm, '')
+  .replace(/\s+/g, '');
+assert.equal(
+  functionalSketch(inlineSketch),
+  functionalSketch(sketch),
+  'Shopify inline and checked-in Signal Coach senders must remain functionally identical',
+);
+for (const schedulingLine of [
+  'const unsigned long SAMPLE_PERIOD_MS = 20;',
+  'unsigned long nextSampleAt = 0;',
+  'nextSampleAt = millis();',
+  'if ((long)(millis() - nextSampleAt) < 0) return;',
+  'nextSampleAt += SAMPLE_PERIOD_MS;',
+  'Serial.println(analogRead(PULSE_PIN));',
+]) {
+  assert.ok(sketch.includes(schedulingLine), `checked-in sender should include ${schedulingLine}`);
+  assert.ok(normalizedTutorial.includes(schedulingLine), `Shopify sender should include ${schedulingLine}`);
+}
 assert.match(tutorial, /Hack Signal Coach at home/i);
 assert.match(tutorial, /SignalCoachWebSerial\.ino/);
 assert.match(tutorial, /docs\/signal-coach\/README\.md/);
@@ -54,6 +78,15 @@ assert.match(tutorial, /Open Signal Coach/);
 assert.match(tutorial, /Coach not loading\? Open directly\./);
 assert.match(tutorial, /pulsesensor-signal-coach-ready/);
 assert.match(dashboard, /pulsesensor-signal-coach-ready/);
+assert.doesNotMatch(dashboard, /Pulse Transit Time|Two sensors \/ PTT|PTT1/i);
+assert.doesNotMatch(guide, /Pulse Transit Time|Two sensors \/ PTT|PTT1/i);
+assert.doesNotMatch(browserApp, /DualSignalCoach|secondarySignal|coachMode/);
+assert.doesNotMatch(tutorial, /Pulse Transit Time|Two sensors \/ PTT|PTT1/i);
+assert.doesNotMatch(browserApp, /ResizeObserver\(resizeCanvas\)/);
+assert.match(browserApp, /if \(!width \|\| !height\) return;/);
+assert.match(browserApp, /async function finalizeConnection\(targetPort\)/);
+assert.match(browserApp, /if \(!targetPort \|\| targetPort !== port\) return false;/);
+assert.match(browserApp, /finalizeConnection\(event\.target\)/);
 
 const releaseVersion = dashboard.match(/signal-coach\.mjs\?v=([a-z0-9-]+)/i)?.[1];
 assert.ok(releaseVersion, 'dashboard should version its browser module');

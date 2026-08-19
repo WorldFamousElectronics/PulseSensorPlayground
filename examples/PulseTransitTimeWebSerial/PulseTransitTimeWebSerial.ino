@@ -1,0 +1,53 @@
+/*
+  PulseSensor Pulse Transit Time — dual-channel Web Serial sender
+
+  Sends two raw PulseSensor readings plus the board sample timestamp. The
+  Pulse Transit Time Lab performs threshold crossing, signal-quality checks,
+  beat pairing, and educational PTT measurement in the browser.
+
+  Test target: Arduino UNO R4 WiFi. Also works on classic Uno/Nano/Mega boards.
+
+  Wiring:
+    Proximal PulseSensor purple -> A0 (earlobe recommended)
+    Distal PulseSensor purple   -> A1 (fingertip recommended)
+    Both red wires              -> 5V
+    Both black wires            -> GND
+
+  Open Pulse Transit Time Lab, then connect at 250000 baud.
+  Educational experiment only. Not a medical device or blood-pressure tool.
+
+  World Famous Electronics LLC
+  MIT License — see ../../LICENSE
+*/
+
+const int PROXIMAL_PIN = A0;
+const int DISTAL_PIN = A1;
+const unsigned long SAMPLE_PERIOD_US = 2000; // 500 samples/second.
+
+unsigned long nextSampleAt = 0;
+
+void setup() {
+#if defined(ARDUINO_UNOR4_WIFI)
+  // The PTT Lab thresholds use the familiar 0-1023 Arduino ADC scale.
+  analogReadResolution(10);
+#endif
+  Serial.begin(250000);
+  delay(1000);
+  nextSampleAt = micros();
+}
+
+void loop() {
+  const unsigned long now = micros();
+  if ((long)(now - nextSampleAt) < 0) return;
+  nextSampleAt += SAMPLE_PERIOD_US;
+
+  const int proximal = analogRead(PROXIMAL_PIN);
+  const int distal = analogRead(DISTAL_PIN);
+
+  Serial.print("PTT1,");
+  Serial.print(now);
+  Serial.print(',');
+  Serial.print(proximal);
+  Serial.print(',');
+  Serial.println(distal);
+}

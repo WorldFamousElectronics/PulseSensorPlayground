@@ -211,6 +211,20 @@ void PulseSensorPlayground::setThreshold(int threshold, int sensorIndex) {
   Sensors[sensorIndex].setThreshold(threshold);
 }
 
+void PulseSensorPlayground::setAdaptiveThreshold(bool enabled, int sensorIndex) {
+  if (sensorIndex < 0 || sensorIndex >= SensorCount) {
+    return;
+  }
+  Sensors[sensorIndex].setAdaptiveThreshold(enabled);
+}
+
+int PulseSensorPlayground::getCurrentThreshold(int sensorIndex) {
+  if (sensorIndex < 0 || sensorIndex >= SensorCount) {
+    return -1;
+  }
+  return Sensors[sensorIndex].getCurrentThreshold();
+}
+
 #if USE_SERIAL
 
   void PulseSensorPlayground::setSerial(Stream &output) {

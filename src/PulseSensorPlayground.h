@@ -303,6 +303,21 @@ vvvvvvvv  THIS NEEDS MODIFICATION FOR V2 vvvvvvvv
     */
     void setThreshold(int threshold, int sensorIndex = 0);
 
+    /*
+       By default, the detector adapts its threshold after each pulse.
+       Pass false to keep the value supplied to setThreshold() fixed.
+
+       sensorIndex = optional, index (0..numberOfSensors - 1).
+    */
+    void setAdaptiveThreshold(bool enabled, int sensorIndex = 0);
+
+    /*
+       Returns the threshold currently used by the detector.
+
+       sensorIndex = optional, index (0..numberOfSensors - 1).
+    */
+    int getCurrentThreshold(int sensorIndex = 0);
+
 
     //---------- Serial Output functions
 #if USE_SERIAL

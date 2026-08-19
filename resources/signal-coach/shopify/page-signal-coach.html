@@ -17,7 +17,7 @@
 <div class="psc-page">
   <section class="psc-start" aria-label="How to start Signal Coach">
     <p class="psc-journey"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">1 Upload the sketch</a><span class="psc-arrow" aria-hidden="true">&rarr;</span>2 Close Serial Monitor<span class="psc-arrow" aria-hidden="true">&rarr;</span>3 Click Connect<span class="psc-arrow" aria-hidden="true">&rarr;</span>4 Place the sensor gently</p>
-    <p class="psc-browser">Already sending pulse data? Start at Connect. Desktop Chrome, Edge, or Brave. <a class="psc-inline-direct" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" target="_blank" rel="noopener">Coach not loading? Open directly.</a></p>
+    <p class="psc-browser">Already sending pulse data? Start at Connect. Desktop Chrome, Edge, or Brave. <a class="psc-inline-direct" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260819-single-r6" target="_blank" rel="noopener">Coach not loading? Open directly.</a></p>
   </section>
 
   <div id="signal-coach">
@@ -32,12 +32,12 @@
           <h2>Taking longer than expected</h2>
           <p>Open Signal Coach directly and keep going. Your Arduino setup stays the same.</p>
           <div class="psc-embed-actions">
-            <a class="psc-open-coach" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" target="_blank" rel="noopener">Open Signal Coach</a>
+            <a class="psc-open-coach" href="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260819-single-r6" target="_blank" rel="noopener">Open Signal Coach</a>
             <button class="psc-retry" id="SignalCoachRetry" type="button">Try again here</button>
           </div>
         </div>
       </div>
-      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260812-action-first-r5" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager" onload="this.dataset.loaded='true'"></iframe>
+      <iframe class="psc-frame" id="SignalCoachFrame" src="https://worldfamouselectronics.github.io/PulseSensorPlayground/signal-coach/?v=20260819-single-r6" title="PulseSensor Signal Coach Web Serial dashboard" allow="serial" loading="eager" onload="this.dataset.loaded='true'"></iframe>
     </div>
   </div>
 
@@ -163,6 +163,7 @@ unsigned long nextSampleAt = 0;
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  nextSampleAt = millis();
 }
 
 void loop() {

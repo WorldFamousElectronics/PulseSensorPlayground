@@ -1,6 +1,6 @@
 // Browser transport, browser-native coaching, and rendering for Signal Coach.
-import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260812-action-first-r5';
-import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260812-action-first-r5';
+import { parsePulseLine } from './pulse-webserial-protocol.mjs?v=20260819-single-r6';
+import { BrowserSignalCoach, adviceFor, stateColor } from './signal-coach-core.mjs?v=20260819-single-r6';
 
 const pageOptions = new URLSearchParams(location.search);
 if (window.self !== window.top || pageOptions.get('embedded') === '1') {
@@ -42,6 +42,7 @@ const rawSerial = document.querySelector('#rawSerial');
 
 let port = null;
 let reader = null;
+let readTask = null;
 let reading = false;
 let history = new Array(HISTORY_LENGTH).fill(null);
 let frameCount = 0;
@@ -56,16 +57,22 @@ const browserCoach = new BrowserSignalCoach();
 
 function resizeCanvas() {
   const rectangle = canvas.getBoundingClientRect();
+  if (!rectangle.width || !rectangle.height) return;
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.max(1, Math.round(rectangle.width * dpr));
-  canvas.height = Math.max(1, Math.round(rectangle.height * dpr));
-  context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const width = Math.max(1, Math.round(rectangle.width * dpr));
+  const height = Math.max(1, Math.round(rectangle.height * dpr));
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
   drawWaveform();
 }
 
 function drawWaveform() {
   const width = canvas.getBoundingClientRect().width;
   const height = canvas.getBoundingClientRect().height;
+  if (!width || !height) return;
   context.fillStyle = '#f4f8f5';
   context.fillRect(0, 0, width, height);
 
@@ -236,10 +243,11 @@ async function readLoop() {
   const decoder = new TextDecoder();
   let buffer = '';
   while (reading && port?.readable) {
-    reader = port.readable.getReader();
+    const activeReader = port.readable.getReader();
+    reader = activeReader;
     try {
       while (reading) {
-        const { value, done } = await reader.read();
+        const { value, done } = await activeReader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split(/\r?\n/);
@@ -257,23 +265,32 @@ async function readLoop() {
         }
       }
     } finally {
-      reader.releaseLock();
-      reader = null;
+      activeReader.releaseLock();
+      if (reader === activeReader) reader = null;
     }
   }
 }
 
-async function disconnect() {
+async function finalizeConnection(targetPort) {
+  if (!targetPort || targetPort !== port) return false;
   reading = false;
-  if (reader) await reader.cancel();
-  const activePort = port;
   port = null;
-  if (activePort) await activePort.close();
+  const activeReader = reader;
+  const activeReadTask = readTask;
+  if (activeReader) {
+    try { await activeReader.cancel(); } catch { /* The stream already failed or closed. */ }
+  }
+  if (activeReadTask) {
+    try { await activeReadTask; } catch { /* The caller reports read failures after cleanup. */ }
+  }
+  if (readTask === activeReadTask) readTask = null;
+  try { await targetPort.close(); } catch { /* The device may already be gone or never opened. */ }
   connectBtn.textContent = 'Connect';
   statusDot.className = 'status-dot';
   statusText.textContent = 'Disconnected';
   sourceMeta.textContent = 'Pulse-wave input · 115200 baud';
   resetDisconnectedDisplay();
+  return true;
 }
 
 async function connect() {
@@ -281,9 +298,11 @@ async function connect() {
     showError('Web Serial is unavailable. Use desktop Chrome, Edge, or Brave over HTTPS.');
     return;
   }
+  let requestedPort = null;
   try {
-    port = await navigator.serial.requestPort();
-    await port.open({ baudRate: 115200, bufferSize: 8192 });
+    requestedPort = await navigator.serial.requestPort();
+    port = requestedPort;
+    await requestedPort.open({ baudRate: 115200, bufferSize: 8192 });
     history = new Array(HISTORY_LENGTH).fill(null);
     frameCount = 0;
     gaps = 0;
@@ -296,22 +315,17 @@ async function connect() {
     statusText.textContent = 'Waiting for samples';
     sourceMeta.textContent = 'Connected · USB serial · 115200 baud';
     waitingOverlay.textContent = 'WAITING FOR PULSE DATA';
-    await readLoop();
+    readTask = readLoop();
+    await readTask;
+    if (port === requestedPort) await finalizeConnection(requestedPort);
   } catch (error) {
-    reading = false;
-    const failedPort = port;
-    port = null;
-    if (failedPort) {
-      try { await failedPort.close(); } catch { /* Port never opened or already closed. */ }
-    }
-    sampleRate.disabled = false;
-    connectBtn.textContent = 'Connect';
+    if (requestedPort && port === requestedPort) await finalizeConnection(requestedPort);
     if (error.name !== 'NotFoundError') showError(`Connection failed: ${error.message}`);
   }
 }
 
 connectBtn.addEventListener('click', () => {
-  if (port) disconnect().catch((error) => showError(error.message));
+  if (port) finalizeConnection(port).catch((error) => showError(error.message));
   else connect().catch((error) => showError(error.message));
 });
 
@@ -331,11 +345,10 @@ resyncBtn.addEventListener('click', () => {
 });
 
 navigator.serial?.addEventListener('disconnect', (event) => {
-  if (event.target === port) disconnect().catch(() => {});
+  finalizeConnection(event.target).catch(() => {});
 });
 
 window.addEventListener('resize', resizeCanvas);
-new ResizeObserver(resizeCanvas).observe(canvas);
 resizeCanvas();
 
 function startReplay() {
@@ -383,5 +396,16 @@ window.__PULSE_COACH_QA__ = {
     streamTimestamp = null;
     lastDeviceTimestamp = null;
   },
-  getState: () => ({ frameCount, gaps, lastFrame, coach: lastCoach, canvasWidth: canvas.width, canvasHeight: canvas.height }),
+  getState: () => ({
+    frameCount,
+    gaps,
+    lastFrame,
+    coach: lastCoach,
+    canvasWidth: canvas.width,
+    canvasHeight: canvas.height,
+    connected: Boolean(port),
+    button: connectBtn.textContent,
+    status: statusText.textContent,
+    source: sourceMeta.textContent,
+  }),
 };
