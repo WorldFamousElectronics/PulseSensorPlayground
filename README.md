@@ -209,6 +209,16 @@ We put together a [HANDY GUIDE](https://github.com/WorldFamousElectronics/PulseS
 
 ---
 
+### Related Projects
+
+Some PulseSensor projects are better kept outside the Arduino Library Manager package because they need browser features, display setup, or extra dependencies.
+
+- [PulseSensor and WebSerial](https://pulsesensor.com/pages/pulsesensor-and-webserial)
+- [PulseSensor on CYD](https://pulsesensor.com/pages/cyd)
+- [Related project notes](resources/RelatedProjects.md)
+
+---
+
 ### Troubleshooting Your Signal:
 
  <b><details><summary><code> Ugh, Where's the Beat ? </code>😵</summary></b>
