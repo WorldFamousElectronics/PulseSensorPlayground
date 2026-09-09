@@ -20,8 +20,8 @@ This Playground is a collection of code for the most popular uses of PulseSensor
 ## Buy PulseSensor
 
 - **United States:** [Buy the PulseSensor kit on Amazon](https://www.amazon.com/dp/B01CPP4QM0).
-- **International:** Buy from [Adafruit](https://www.adafruit.com/product/1093) or [SparkFun](https://www.sparkfun.com/pulse-sensor.html). Check shipping to your country and the listed kit contents with the seller.
-- **More buying options:** [PulseSensor buying guide](https://github.com/WorldFamousElectronics/PulseSensorPlayground/wiki/Buy-%22Verified-PulseSensor.com%22).
+- **International:** Buy from [SparkFun](https://www.sparkfun.com/pulse-sensor.html) or [Adafruit](https://www.adafruit.com/product/1093).
+- **Schools, labs & bulk orders:** [Request ordering options](https://pulsesensor.com/pages/school-bulk-orders).
 
 
 ---
