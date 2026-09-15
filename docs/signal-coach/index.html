@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- PulseSensor Signal Coach parallel tester preview -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#060a06">
+  <title>PulseSensor Signal Coach</title>
+  <meta name="description" content="Connect a PulseSensor over USB, see the live waveform, and get clear Signal Coach guidance before trusting BPM.">
+  <link rel="stylesheet" href="./signal-coach.css?v=20260812-action-first-r5">
+</head>
+<body>
+  <main class="coach-app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PulseSensor · Web Serial</p>
+        <p class="release-line"><span class="beta-badge">BETA</span><time datetime="2026-08-12T13:12:31-04:00">August 12, 2026 · 1:12 PM EDT</time></p>
+        <h1>Signal Coach</h1>
+        <p class="subhead">Connect Arduino, ESP32, or any supported pulse-wave serial stream. Chrome finds the beats, coaches the signal, and shows BPM only after it settles.</p>
+      </div>
+      <div class="connection" aria-live="polite">
+        <span class="status-dot" id="statusDot"></span>
+        <div class="connection-copy">
+          <strong id="statusText">Disconnected</strong>
+          <span id="sourceMeta">Pulse-wave input · 115200 baud</span>
+        </div>
+        <label class="rate-control" for="sampleRate">Samples/s
+          <select id="sampleRate">
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+          </select>
+        </label>
+        <button class="resync-button" id="resyncBtn" type="button" aria-describedby="resyncHelp" title="Retune Chrome to the live waveform" disabled>Re-sync Signal</button>
+        <button id="connectBtn" type="button">Connect</button>
+      </div>
+    </header>
+
+    <div class="error-message" id="errorMessage" role="alert" hidden></div>
+    <aside class="simulation-warning" id="simulationWarning" hidden>
+      SIMULATED BENCH SIGNAL — NOT A PERSON. This mode checks the interface only.
+    </aside>
+    <section class="display" aria-labelledby="displayTitle">
+      <h2 id="displayTitle" class="sr-only">Live PulseSensor display</h2>
+      <div class="device-screen">
+        <div class="screen-header">
+          <span id="sourceName">PulseSensor</span>
+          <span class="heart" id="heart" aria-hidden="true">♥</span>
+          <span class="screen-source" id="screenSource">CHROME</span>
+        </div>
+
+        <div class="wave-coach-layout">
+          <div class="wave-wrap">
+            <canvas id="waveformCanvas" width="900" height="300" aria-label="Live PulseSensor waveform"></canvas>
+            <div class="waiting-overlay" id="waitingOverlay">CONNECT A PULSE STREAM</div>
+          </div>
+
+          <aside class="graph-guide" aria-labelledby="graphGuideTitle">
+            <article class="coach-card" id="coachCard">
+              <div class="coach-heading">
+                <span class="card-label" id="graphGuideTitle">Signal Coach</span>
+                <strong id="coachLabel">READY</strong>
+              </div>
+              <div class="quality-bar" id="qualityBar" aria-label="Signal confidence">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <p id="coachAdvice">Connect your board to begin.</p>
+            </article>
+            <div class="guide-key" aria-label="Coach color key">
+              <span class="guide-blue">Blue <b>Adjust</b></span>
+              <span class="guide-yellow">Yellow <b>Hold</b></span>
+              <span class="guide-green">Green <b>BPM ready</b></span>
+            </div>
+            <p class="wear-guide"><strong>Light touch.</strong> Fingertip or earlobe.</p>
+            <p class="resync-help" id="resyncHelp"><strong>Wave visible but not locking?</strong> Use <b>Re-sync Signal</b> to retune Chrome to the live wave.</p>
+          </aside>
+        </div>
+
+        <div class="readout-grid">
+          <article class="bpm-card" id="bpmCard">
+            <span class="card-label">BPM</span>
+            <strong id="liveBpm">--</strong>
+            <span class="card-note" id="bpmNote">Wait for a clean signal</span>
+          </article>
+        </div>
+      </div>
+
+      <div class="connection-summary" aria-live="polite">
+        <span id="modeChip">WAITING</span>
+        <span id="frameMeta">No samples received</span>
+        <span id="signalMeta">Signal --</span>
+      </div>
+    </section>
+
+    <details class="technical-details">
+      <summary>Technical details</summary>
+      <div class="technical-grid">
+        <div><span>Signal</span><strong id="liveSignal">--</strong><small>raw ADC</small></div>
+        <div><span>Browser beat</span><strong id="liveBeat">--</strong><small>detected in Chrome</small></div>
+        <div><span>Browser IBI</span><strong id="liveIbi">--</strong><small>milliseconds</small></div>
+        <div><span>Quality</span><strong id="liveQuality">--</strong><small>browser confidence</small></div>
+        <div><span>Input format</span><strong id="liveInputFormat">--</strong><small>auto detected</small></div>
+        <div><span>Sender values</span><strong id="sourceMetrics">--</strong><small>diagnostic only</small></div>
+      </div>
+      <p class="raw-line"><span>Latest frame</span><code id="rawSerial">waiting for data...</code></p>
+    </details>
+
+    <details class="technical-details supported-inputs">
+      <summary>Supported pulse streams</summary>
+      <p>Signal Coach needs a numeric pulse-wave sample. It accepts one number per line, <code>S512</code>, <code>Signal 512</code>, <code>signal=512</code>, <code>timestamp,signal</code>, JSON samples, Arduino <code>signal,bpm,ibi,beat</code>, and PulseLink PSWS. Sender BPM and IBI never control the coach.</p>
+      <p>Choose the rate your sketch prints. The default tutorial sends 50 samples each second.</p>
+    </details>
+
+    <footer>
+      <p>Samples stay in this browser tab. They are not saved or uploaded.</p>
+      <p class="source-links"><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/docs/signal-coach/README.md" target="_blank" rel="noopener">Build it at home</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/tree/master/docs/signal-coach" target="_blank" rel="noopener">View all source</a><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/examples/SignalCoachWebSerial/SignalCoachWebSerial.ino" target="_blank" rel="noopener">Arduino sketch</a></p>
+      <p>Educational biofeedback project. Not a medical device and not for health decisions.</p>
+    </footer>
+  </main>
+
+  <script>
+    if (window.parent !== window) {
+      const announceReady = () => window.parent.postMessage({ type: 'pulsesensor-signal-coach-ready' }, '*');
+      announceReady();
+      window.addEventListener('load', announceReady, { once: true });
+      setTimeout(announceReady, 500);
+    }
+  </script>
+  <script type="module" src="./signal-coach.mjs?v=20260812-action-first-r5"></script>
+</body>
+</html>

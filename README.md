@@ -1,165 +1,161 @@
+![PulseSensor logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200)
 
-![logo](https://avatars0.githubusercontent.com/u/7002937?v=3&s=200)
 ## [PulseSensor.com](https://pulsesensor.com) Playground
-[![How To Update Your Playground Code](https://github.com/yury-g/MyCodePlayground/blob/master/images/updateLib.png?raw=true)](https://youtu.be/Pt0fJvIeryY)
 
-```
-This Playground is a collection of code for the most popular uses of PulseSensor and Arduino.  
+Ready-to-use Arduino code for your PulseSensor. See your first pulse wave, calculate BPM, or make something respond to your heartbeat. 💓
 
-- Use this code to get started quickly, or do advanced stuff. 👍
-- Playground code is already written-out and commented! 🤘 
-- Switch between projects right in the Arduino IDE (software). 💻
-- Contribute your project's code back to the GitHub hive-mind. 🐝
-```
+**Start here:** Install **PulseSensor Playground** in Arduino Library Manager, open [GettingStartedProject](examples/GettingStartedProject/GettingStartedProject.ino), then try [PulseSensor_BPM](examples/PulseSensor_BPM/PulseSensor_BPM.ino) once your waveform is steady.
+
+- Commented examples help you get started and keep experimenting. 🤘
+- Switch projects right in the Arduino IDE. 💻
+- Share what you make with the community. 🐝
 
 ---
 
-## Buy Verified "PulseSensor.com"  
- <b><a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground/wiki/Buy-%22Verified-PulseSensor.com%22"> Where to buy Verified Sensors 💰 </a>  </b>
+## Buy PulseSensor
+
+- **United States:** [Buy the PulseSensor kit on Amazon](https://www.amazon.com/dp/B01CPP4QM0).
+- **International:** Buy from [SparkFun](https://www.sparkfun.com/pulse-sensor.html) or [Adafruit](https://www.adafruit.com/product/1093).
+- **Education & Bulk:** [Request a bulk quote](https://pulsesensor.com/pages/school-bulk-orders). 50-kit minimum, in increments of 25 kits.
 
 ---
 
+## Connecting the Hardware 😎
 
-## Connecting the Harware 😎
-<b><details><summary><code> Easy  Setup  </code>  </summary></b>
+<details>
+<summary>Easy setup: prepare, connect, and get a steady signal</summary>
 
-1. Prepare the sensor, with the Kit parts.
+### 1. Prepare your sensor
 
-<img src="https://cdn.shopify.com/s/files/1/0100/6632/products/PulseSensorKit-Labeled-Contents_1_2048x2048.jpg?v=1348506345" width="400">
+The current kit includes the **TPU Stabilizer Ring**, Velcro finger strap, ear clip, and transparent vinyl insulation dots. You'll also need a compatible development board, a USB data cable, and a computer.
 
-2. See the recommended wiring for your specific project
+Before skin contact, apply a transparent vinyl dot to the sensor face and fully insulate the rear electronics using the preparation method supplied with your kit. The ring helps hold the sensor steady; it does not replace insulation. Follow the website's [Start Here guide](https://pulsesensor.com/pages/start), or contact [support](mailto:support@pulsesensor.com) if the preparation method is unclear.
 
-<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/connections.png" width="400">
+### 2. Connect the three wires
 
-<img src="https://github.com/WorldFamousElectronics/PulseSensorStarterProject/raw/master/Arduino-LEDonPin13-PulseSensor-Pic.jpg" width="400">
+For the **Arduino Uno GettingStartedProject**:
 
-</div>
+| PulseSensor wire | Arduino Uno connection |
+| --- | --- |
+| Purple — signal | `A0` |
+| Red — power | `5V` |
+| Black — ground | `GND` |
+
+Using another board? Follow its example's analog pin and voltage instructions. PulseSensor needs an analog input (ADC); a 5V Uno wiring diagram does not apply to every board.
+
+### 3. Hold it gently
+
+After preparation, position the sensor with the ring, strap, or ear clip. Rest your hand, keep the cable from pulling, and use light, steady contact. Load the Getting Started example below and look for a repeating waveform before moving on to BPM.
+
 </details>
-
-
-
 
 ## Loading the Playground
- <b><details><summary><code> Steps For Loading the Playground in Arduino  </code> 🤓</summary></b>
-###
 
-An Arduino Library is a collection of code and examples on a specific topic or device.  For example, our PulseSensor Playground Library is a collection of code and projects made just for your PulseSensor and Arduino.
+<details>
+<summary>Install the library and see your first pulse wave 🤓</summary>
 
-(**NOTE** If you do not have Arduino, you can download it [here](https://www.arduino.cc/en/Main/Software))
+1. Install [Arduino IDE](https://www.arduino.cc/en/software/) if you don't already have it.
+2. Open **Tools → Manage Libraries…**, search for **PulseSensor Playground**, and click **Install** or **Update**.
+3. Open **File → Examples → PulseSensor Playground → GettingStartedProject**.
+4. Select your board and USB port, then upload the sketch. For other boards, use the matching [board-specific example](https://pulsesensor.com/pages/installing-our-playground-for-pulsesensor-arduino).
+5. Open **Tools → Serial Plotter** and select **115200 baud** for `GettingStartedProject`.
+6. Hold the prepared sensor gently against your fingertip. Give the signal 5–10 seconds to settle; look for a repeating pulse wave and the built-in LED blinking as the signal crosses the threshold.
 
-To install the PulseSensor Playground Library, in Arduino, to go
-`Sketch > Include Library > Manage Library...`
+Ready for BPM? Open [PulseSensor_BPM](examples/PulseSensor_BPM/PulseSensor_BPM.ino) and follow the [BPM tutorial](https://pulsesensor.com/pages/getting-advanced).
 
-<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/ManageLibraries.png" width="500">
+[Getting Started tutorial](https://pulsesensor.com/pages/code-and-guide) · [Library and example guide](https://pulsesensor.com/pages/installing-our-playground-for-pulsesensor-arduino)
 
-
-In the Library Manager: Search for and Select
-`"PulseSensor.com`
-
-<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/SearchForPulseSensor.png" width="500">
-
-
-Install or update to the latest version.👍
-
-<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/InstallLatestVersion.png" width="500">
-
-
-Hurray!  Once this library is installed you will see our examples in Arduino's dropdown!
-To select an example project, go to:
-`File > Examples > PulseSensor Playground > GettingStartedProject`
-<img src="https://github.com/yury-g/MyCodePlayground/blob/master/images/ExamplesPlaygroundGettingStartedMenuPullDown.png" width="500">
-
-
-
-
-
-More Info On Libraries in General 👉    [https://www.arduino.cc/en/Guide/Libraries](https://www.arduino.cc/en/Guide/Libraries).
-
-
-</div>
 </details>
 
+## Web Serial Signal Coach
 
+<details>
+<summary>See your pulse in the browser with Signal Coach</summary>
 
+[Open Signal Coach](https://pulsesensor.com/pages/signal-coach) for a live waveform and guidance on sensor placement in desktop Chrome or Edge.
 
+Upload the [Web Serial example](examples/SignalCoachWebSerial/SignalCoachWebSerial.ino), close Arduino Serial Monitor and Serial Plotter, select **50 samples/s**, then click **Connect**. The website walks you through setup.
 
+Want to run it locally or change the code? See the [full source and home-build guide](docs/signal-coach/README.md).
 
-## Playground Project Descriptions:
-<b><details><summary><code>Tinker and Experiment with Popular Projects </code> 👩🏽‍💻👩🏻‍🔬</summary></b>
+</details>
 
-### The "Getting Started" Project:  
-  Plug your sensor in for the first time!  Blink an LED with your pulse, live.
+## Playground Project Descriptions
+<details>
+<summary>Tinker and experiment with popular projects 👩🏽‍💻👩🏻‍🔬</summary>
+
+### The Getting Started Project
+  See your raw pulse wave in Serial Plotter and blink the built-in LED.
 
 - [**Project Page**](https://pulsesensor.com/pages/code-and-guide)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingStarted_bb_1024x1024.png?v=1511986616" width="400">
+  <img alt="PulseSensor Getting Started wiring diagram" src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingStarted_bb_1024x1024.png?v=1511986616" width="400">
 ---
 
-### Calculate BPM:  
-  Focus-in on the code that calculates a user's HeartRate Beats Per Minute, "BPM".    
-  See the best practises to get the best signal.  
+### Calculate BPM
+  Calculate beats per minute (BPM) once you have a steady raw waveform.
 
 - [**Project Page**](https://pulsesensor.com/pages/getting-advanced)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingAdvanced_bb_1024x1024.png?v=1511986194" width="400">
+  <img alt="PulseSensor BPM project wiring diagram" src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_GettingAdvanced_bb_1024x1024.png?v=1511986194" width="400">
 ---
 
-### Make A Sound to a live Heartbeat:  
-  Transform the heartbeat into a live "beep" with a speaker.  
+### Make a Sound with Your Heartbeat
+  Transform the heartbeat into a live "beep" with a speaker.
 
 - [**Project Page**](https://pulsesensor.com/pages/pulse-sensor-speaker-tutorial)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Speaker_bb_61a0333f-e868-4123-961d-7456a31fa928_1024x1024.png?v=1510863829" width="400">
----  
+  <img alt="PulseSensor speaker project wiring diagram" src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Speaker_bb_61a0333f-e868-4123-961d-7456a31fa928_1024x1024.png?v=1510863829" width="400">
+---
 
-### Move a Motor to a live Heartbeat:  
-  Make a servo motor pulse to your live heartbeat.  
+### Move a Motor with Your Heartbeat
+  Make a servo motor pulse to your live heartbeat.
 
 - [**Project Page**](https://pulsesensor.com/pages/pulse-sensor-servo-tutorial)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Servo_bb_87fce9fc-dc47-4208-b708-a7edb6df58a2_1024x1024.png?v=1510863990" width="400">
- ---
+  <img alt="PulseSensor servo project wiring diagram" src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_Servo_bb_87fce9fc-dc47-4208-b708-a7edb6df58a2_1024x1024.png?v=1510863990" width="400">
+---
 
-### Connect Two (or more) Pulse Sensors:  
-  Use 2 or more Pulse Sensors on one Arduino.  
+### Connect Two (or More) Pulse Sensors
+  Use 2 or more Pulse Sensors on one Arduino.
 
 - [**Project Page**](https://pulsesensor.com/pages/two-or-more-pulse-sensors)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/2_PulseSensors_bb_grande.png?v=1516733684" width="400">
- ---
+  <img alt="Two PulseSensors connected to an Arduino" src="https://cdn.shopify.com/s/files/1/0100/6632/files/2_PulseSensors_bb_grande.png?v=1516733684" width="400">
+---
 
-### Processing Visualizer:
+### Processing Visualizer
 
-  Get detailed visualization of the heart's pulse and behavior. Send the PulseSensor data into Processing!
+  Visualize the pulse waveform and BPM from your Arduino in Processing.
 
 - [**Project Page**](https://pulsesensor.com/pages/processing-visualization)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
+  <img alt="Processing pulse waveform visualizer" src="https://cdn.shopify.com/s/files/1/0100/6632/files/ScreenShot_1024x1024.png?v=1491857113" width="400">
 
 ---
 
-### Pulse Transit Time:
+### Pulse Transit Time
 
-  Use two Pulse Sensors on different parts of your body to measure Pulse Transit Time!
+  Explore pulse timing differences with two PulseSensors. This is an educational experiment, not a blood-pressure measurement.
 
 - [**Project Page**](https://pulsesensor.com/pages/pulse-transit-time)
 
-  <img src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_PTT-17042_grande.jpg?v=1517336059" width="400">
+  <img alt="Two-sensor pulse timing experiment" src="https://cdn.shopify.com/s/files/1/0100/6632/files/PulseSensor_PTT-17042_grande.jpg?v=1517336059" width="400">
 
 ---
 
-</div>
 </details>
 
+## Developer Resources
 
+<details>
+<summary>Functions, board examples, troubleshooting, and support</summary>
 
-## Developer Resources:
+### Build on the examples
 
-<b><details><summary><code> Troubleshooting / Issues / Function Guide  </code>  </summary></b>
-
-### The Functions Guide
-
-We put together a [HANDY GUIDE](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/resources/PulseSensor%20Playground%20Tools.md) to the function-ality of our library. Check it out if you want to dive into the inner workings!
+- [PulseSensor Playground function guide](resources/PulseSensor%20Playground%20Tools.md)
+- [All example sketches](examples/)
+- [Board-specific examples and library reference](https://pulsesensor.com/pages/installing-our-playground-for-pulsesensor-arduino)
 
 ---
 
@@ -175,27 +171,23 @@ Some PulseSensor projects are better kept outside the Arduino Library Manager pa
 
 ### Troubleshooting Your Signal:
 
- <b><details><summary><code> Ugh, Where's the Beat ? </code>😵</summary></b>
-  If you're having trouble seeing a heartbeat, make sure that you are using 'Goldilocks' pressure on the Pulse Sensor: Not too hard, not too soft. Squeezing the Pulse Sensor too hard against your skin will make the heartbeat go away, and not enough pressure will cause too much noise to creep in!
+Start with the raw waveform in `GettingStartedProject`:
 
-If you are seeing way too many Beats Per Minute, or you are getting lots of noise, try adjusting the Threshold setting. The Threshold variable tells Arduino when to find a pulse that is legit. Adjust this number (noted below with arrows) up for less sensitivity and down for more sensitivity. In the [**StarterProject**](https://pulsesensor.com/pages/code-and-guide) you can find the Threshold variable as shown in the pic below:
+- **Flat signal?** Check power, ground, the analog pin, and the selected board and port.
+- **Noisy signal?** Rest your hand, ease the pressure, reduce strong ambient light, and reseat the prepared sensor in the ring or strap.
+- **Extra or missed beats?** Get a steady waveform first, then adjust the threshold in your example. In `GettingStartedProject`, it is `Threshold`; other examples may use `THRESHOLD` or `setThreshold()`.
+- **Serial port busy?** Close other serial tools before opening Serial Plotter or Signal Coach.
 
-  ![StarterThreshold](https://github.com/WorldFamousElectronics/PulseSensorPlayground/blob/master/Images/screenshot-threshold-arrows.png)
+[More setup help](https://pulsesensor.com/pages/start)
 
-In the other examples, the `THRESHOLD` is defined at the top of the code.
+### Give and get feedback
 
-</div>
-   </details>
+For setup help, email [support@pulsesensor.com](mailto:support@pulsesensor.com) with your board, example name, wiring photo, and Serial Plotter screenshot. Report reproducible library bugs in [PulseSensorPlayground Issues](https://github.com/WorldFamousElectronics/PulseSensorPlayground/issues).
 
----
-
-### Give and Get Feedback
-The [Issues Tab](https://github.com/WorldFamousElectronics/PulseSensorStarterProject/issues) will get you the quickest answers to common techinal questions.
-
-
----
-
-#### Legal:  PulseSensor.com® World Famous Electronics llc. in Brooklyn, NY. USA
-
-</div>
 </details>
+
+---
+
+For educational and experimental use. PulseSensor is not a medical device.
+
+PulseSensor.com® · World Famous Electronics LLC · [MIT License](LICENSE)

@@ -1,0 +1,300 @@
+<!-- Existing Shopify page audit snapshot; trailing whitespace normalized on 2026-08-12.
+Page: gid://shopify/Page/117788999785
+Handle: pulsesensor-and-webserial
+Title: PulseSensor and Webserial
+Updated: 2026-01-08T22:29:46Z
+Captured: 2026-08-12 on PulseSilverBookPro
+-->
+<!-- INTRO -->
+<div style="max-width: 900px; margin: 0 auto 20px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+<p style="color: #333; font-size: 1.1em; line-height: 1.6; margin-bottom: 15px;"><strong>Try it now:</strong> Connect your PulseSensor to an Arduino/ESP32, upload the sketch below, then click <strong style="color: #ff6b6b;">Connect</strong> to see your live heartbeat in the browser. </p>
+<p style="color: #666; font-size: 0.95em;">No WiFi or software needed—just USB and Chrome/Edge/Brave. Scroll down for setup instructions.</p>
+</div>
+<!-- IFRAME -->
+<div id="dashboard"></div>
+<p><iframe src="https://worldfamouselectronics.github.io/PulseSensorPlayground/webserial-explainer/" width="100%" height="550" style="border-radius: 10px;"></iframe></p>
+<!-- Hero image -->
+<div style="max-width: 900px; margin: 25px auto 0 auto; text-align: center;">
+<p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">When it's working, you'll see something like this:</p>
+<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/ImageOFwebSerialWorking.png?v=1767735191" alt="PulseSensor WebSerial working" style="max-width: 100%; border-radius: 10px; border: 1px solid #ddd;">
+</div>
+<!-- Wiring image -->
+<div style="max-width: 900px; margin: 25px auto 0 auto; text-align: center;">
+<p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">Wiring setup:</p>
+<img src="https://cdn.shopify.com/s/files/1/0100/6632/files/XiaoPulseSensorOnly.png?v=1765841874" alt="PulseSensor wiring to XIAO ESP32-S3" style="max-width: 500px; width: 100%; border-radius: 10px; border: 1px solid #ddd;">
+<p style="color: #666; font-size: 0.9em; margin-top: 10px;"><code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">Signal → A0</code>   <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">+ → 3.3V</code>   <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">− → GND</code></p>
+</div>
+<!-- MAIN CONTENT -->
+<div style="max-width: 900px; margin: 30px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333;">
+<!-- UNDERSTANDING THE DISPLAY -->
+<h2 style="color: #e85555; margin-top: 35px; font-size: 1.4em;">Understanding What You're Seeing</h2>
+<p style="color: #666; margin-bottom: 20px;">If you've never seen a pulse waveform before, here's what each part means—and how to use these values in your own code.</p>
+<div style="background: #f8f8f8; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+<h3 style="color: #ff6b6b; margin: 0 0 10px 0; font-size: 1.1em;">The Waveform</h3>
+<p style="color: #666; margin: 0; line-height: 1.6;">Each peak is one heartbeat. The sensor shines light through your skin and measures how much bounces back—when your heart pumps blood, the amount of light changes. That's what creates the wave pattern. A healthy resting heart beats about once per second, so you should see roughly 60-80 peaks per minute.</p>
+</div>
+<div style="background: #f8f8f8; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
+<h3 style="color: #ff6b6b; margin: 0 0 15px 0; font-size: 1.1em;">The Four Values</h3>
+<div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+<strong style="color: #ff6b6b;">Signal</strong> <span style="color: #888; font-size: 0.85em;">(0–4095)</span>
+<p style="color: #666; margin: 5px 0 0 0; font-size: 0.95em;">The raw light reading from the sensor, updated 50 times per second. This is what draws the waveform. Higher numbers = more light reflected = less blood in that moment.</p>
+<code style="background: #1a1a1a; color: #ff6b6b; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; margin-top: 8px;">int signal = pulseSensor.getLatestSample();</code>
+</div>
+<div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+<strong style="color: #44cc44;">BPM</strong> <span style="color: #888; font-size: 0.85em;">(beats per minute)</span>
+<p style="color: #666; margin: 5px 0 0 0; font-size: 0.95em;">Your heart rate, calculated automatically by the library. It averages the last 10 beats for stability. Normal resting: 60-100. Shows 0 until the algorithm detects a clear pattern (takes 5-10 seconds).</p>
+<code style="background: #1a1a1a; color: #44cc44; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; margin-top: 8px;">int bpm = pulseSensor.getBeatsPerMinute();</code>
+</div>
+<div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+<strong style="color: #ffaa44;">IBI</strong> <span style="color: #888; font-size: 0.85em;">(inter-beat interval, milliseconds)</span>
+<p style="color: #666; margin: 5px 0 0 0; font-size: 0.95em;">Time between heartbeats in milliseconds. At 60 BPM, IBI ≈ 1000ms. At 80 BPM, IBI ≈ 750ms. Useful for heart rate variability (HRV) projects—the variation in IBI reveals stress levels and nervous system activity.</p>
+<code style="background: #1a1a1a; color: #ffaa44; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; margin-top: 8px;">int ibi = pulseSensor.getInterBeatIntervalMs();</code>
+</div>
+<div>
+<strong style="color: #64c8ff;">Beat</strong> <span style="color: #888; font-size: 0.85em;">(0 or 1)</span>
+<p style="color: #666; margin: 5px 0 0 0; font-size: 0.95em;">Flashes to 1 for one sample when a heartbeat is detected, then back to 0. This is your trigger—use it to flash an LED, play a sound, or sync anything to the heartbeat. The heart icon animates when this fires.</p>
+<code style="background: #1a1a1a; color: #64c8ff; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; margin-top: 8px;">if (pulseSensor.sawStartOfBeat()) { /* do something */ }</code>
+</div>
+</div>
+<!-- HOW TO WEAR SENSOR -->
+<h2 style="color: #e85555; margin-top: 35px; font-size: 1.4em;">How to Wear the Sensor</h2>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+<div style="background: #f0fff0; padding: 15px; border-radius: 8px; border-left: 3px solid #44cc44;">
+<strong style="color: #333;">Fingertip</strong>
+<p style="color: #666; margin: 8px 0 0 0; font-size: 0.9em;">Pad of index/middle finger. Light touch—don't squeeze. Keep still.</p>
+</div>
+<div style="background: #f0fff0; padding: 15px; border-radius: 8px; border-left: 3px solid #44cc44;">
+<strong style="color: #333;">Earlobe</strong>
+<p style="color: #666; margin: 8px 0 0 0; font-size: 0.9em;">Clip gently. Often the cleanest signal—less muscle interference.</p>
+</div>
+</div>
+<!-- CONCEPT: WEBSERIAL -->
+<div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 25px 0;">
+<strong style="color: #0284c7;">CONCEPT: WEBSERIAL</strong>
+<p style="color: #555; margin: 10px 0 0 0; line-height: 1.6;"><strong>WebSerial</strong> gives your browser direct USB access—no software to install. The Arduino/ESP32 sends <code style="background: #e0f2fe; padding: 2px 6px; border-radius: 3px;">signal,bpm,ibi,beat</code> data 50 times per second, and the browser's JavaScript receives it instantly to update the chart. This is why the waveform animates smoothly—there's no page refresh, just a constant data stream.</p>
+</div>
+<!-- SETUP -->
+<h2 style="color: #e85555; margin-top: 40px; font-size: 1.4em;">Setup</h2>
+<p style="color: #666; margin-bottom: 20px;">Two files work together: Arduino/ESP32 sends CSV over USB, browser parses and displays.</p>
+<div style="background: linear-gradient(90deg, #fff5f5, #f0f8ff); border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center;">
+<span style="color: #555; font-size: 0.9em;"><strong>Arduino/ESP32</strong> reads sensor → sends CSV over USB → <strong>Browser</strong> parses &amp; displays</span><br><code style="background: #1a1a1a; color: #44ff44; padding: 6px 12px; border-radius: 4px; font-size: 1em; display: inline-block; margin-top: 10px;">signal,bpm,ibi,beat</code> <span style="color: #888; font-size: 0.85em;"> → "1847,72,833,1"</span>
+</div>
+<!-- FILE 1: ARDUINO -->
+<h3 style="color: #e85555; margin-top: 30px; font-size: 1.1em;">Step 1: Upload Arduino Sketch</h3>
+<p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">Install the <a href="https://github.com/WorldFamousElectronics/PulseSensorPlayground" style="color: #e85555;" target="_blank">PulseSensor Playground</a> library (Arduino IDE → Sketch → Include Library → Manage Libraries → search "PulseSensor"). Then upload this:</p>
+<div style="background: #1a1a1a; border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
+<div style="background: #2a2a2a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
+<span style="color: #ff6b6b; font-weight: 600;">PulseSensor_WebSerial.ino</span> <button style="padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Copy Code</button>
+</div>
+<pre id="inoCode" style="color: #ccc; padding: 15px; margin: 0; overflow-x: auto; font-family: Monaco, Consolas, monospace; font-size: 0.8em; line-height: 1.5;"><code><span style="color: #666;">/*
+ * PulseSensor WebSerial
+ * Sends: signal,bpm,ibi,beat over USB @ 115200 baud
+ * By: World Famous Electronics | MIT License
+ */</span>
+
+<span style="color: #ff6b6b;">#include</span> &lt;PulseSensorPlayground.h&gt;
+
+PulseSensorPlayground pulseSensor;
+
+<span style="color: #666;">// CHANGE FOR YOUR BOARD:
+// Arduino Uno/Nano/Mega: A0
+// XIAO ESP32-S3: 1
+// ESP32 DevKit: 34</span>
+<span style="color: #ff6b6b;">const int</span> PULSE_PIN = <span style="color: #44ff44;">1</span>;
+
+<span style="color: #64c8ff;">void</span> <span style="color: #ffaa44;">setup</span>() {
+  Serial.<span style="color: #ffaa44;">begin</span>(<span style="color: #44ff44;">115200</span>);
+  <span style="color: #ffaa44;">delay</span>(<span style="color: #44ff44;">1000</span>);
+  pulseSensor.<span style="color: #ffaa44;">analogInput</span>(PULSE_PIN);
+  pulseSensor.<span style="color: #ffaa44;">setThreshold</span>(<span style="color: #44ff44;">550</span>);
+  pulseSensor.<span style="color: #ffaa44;">begin</span>();
+}
+
+<span style="color: #64c8ff;">void</span> <span style="color: #ffaa44;">loop</span>() {
+  <span style="color: #ff6b6b;">int</span> signal = pulseSensor.<span style="color: #ffaa44;">getLatestSample</span>();
+  <span style="color: #ff6b6b;">int</span> bpm = pulseSensor.<span style="color: #ffaa44;">getBeatsPerMinute</span>();
+  <span style="color: #ff6b6b;">int</span> ibi = pulseSensor.<span style="color: #ffaa44;">getInterBeatIntervalMs</span>();
+  <span style="color: #ff6b6b;">bool</span> beat = pulseSensor.<span style="color: #ffaa44;">sawStartOfBeat</span>();
+
+  Serial.<span style="color: #ffaa44;">print</span>(signal); Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #98c379;">","</span>);
+  Serial.<span style="color: #ffaa44;">print</span>(bpm);    Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #98c379;">","</span>);
+  Serial.<span style="color: #ffaa44;">print</span>(ibi);    Serial.<span style="color: #ffaa44;">print</span>(<span style="color: #98c379;">","</span>);
+  Serial.<span style="color: #ffaa44;">println</span>(beat ? <span style="color: #44ff44;">1</span> : <span style="color: #44ff44;">0</span>);
+
+  <span style="color: #ffaa44;">delay</span>(<span style="color: #44ff44;">20</span>);
+}</code></pre>
+</div>
+<!-- STEP 2: CLICK CONNECT -->
+<h3 style="color: #e85555; margin-top: 30px; font-size: 1.1em;">Step 2: Click Connect</h3>
+<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;"><a href="#dashboard" style="color: #e85555;">Scroll back up to the dashboard</a> and click <strong style="color: #ff6b6b;">Connect</strong>. Select your board's serial port from the popup. You should see your heartbeat within seconds.</p>
+<div style="text-align: center; margin: 15px 0;"><a href="#dashboard"><img src="https://cdn.shopify.com/s/files/1/0100/6632/files/connectButtonConnectionStatusPNG.png?v=1767741389" alt="Connect button and connection status" style="max-width: 500px; width: 100%; border-radius: 8px; border: 1px solid #ddd;"></a></div>
+<!-- OPTIONAL: OFFLINE HTML -->
+<div style="background: #f8f8f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+<strong style="color: #888; font-size: 0.85em;">Optional: Run Offline</strong>
+<p style="color: #666; margin: 8px 0 0 0; font-size: 0.85em;">Want your own copy? Save the HTML file below as <strong>PulseSensor_WebSerial.html</strong> and open it in Chrome/Edge/Brave.</p>
+<details style="margin-top: 10px;">
+<summary style="color: #e85555; cursor: pointer; font-size: 0.9em;">Show HTML code</summary>
+<pre style="color: #ccc; background: #1a1a1a; padding: 15px; margin: 10px 0 0 0; overflow-x: auto; font-family: Monaco, Consolas, monospace; font-size: 0.75em; line-height: 1.4; max-height: 300px; border-radius: 6px;"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;PulseSensor WebSerial&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; background: #111; color: white; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    button { padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    canvas { width: 100%; height: 180px; background: #222; border-radius: 6px; }
+    .bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #444; }
+    .dot.on { background: #51cf66; }
+    .vars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+    .var { background: #222; padding: 10px; border-radius: 6px; }
+    .var .value { font-size: 1.5em; font-weight: bold; }
+    .signal .value { color: #ff6b6b; }
+    .bpm .value { color: #44ff44; }
+    .ibi .value { color: #ffaa44; }
+    .beat .value { color: #64c8ff; }
+    .heart { color: #ff6b6b; transition: transform 0.1s; }
+    .heart.pulse { transform: scale(1.4); }
+    .raw { margin-top: 15px; padding: 10px; background: #222; font-family: monospace; border-radius: 6px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="container"&gt;
+    &lt;h1&gt;PulseSensor WebSerial&lt;/h1&gt;
+    &lt;div class="bar"&gt;
+      &lt;div&gt;&lt;span class="dot" id="dot"&gt;&lt;/span&gt; &lt;span id="status"&gt;Disconnected&lt;/span&gt;&lt;/div&gt;
+      &lt;button id="btn"&gt;Connect&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;canvas id="canvas"&gt;&lt;/canvas&gt;
+    &lt;div class="vars"&gt;
+      &lt;div class="var signal"&gt;&lt;div&gt;Signal&lt;/div&gt;&lt;div class="value" id="sig"&gt;—&lt;/div&gt;&lt;/div&gt;
+      &lt;div class="var bpm"&gt;&lt;div&gt;BPM&lt;/div&gt;&lt;div class="value" id="bpm"&gt;—&lt;/div&gt;&lt;/div&gt;
+      &lt;div class="var ibi"&gt;&lt;div&gt;IBI (ms)&lt;/div&gt;&lt;div class="value" id="ibi"&gt;—&lt;/div&gt;&lt;/div&gt;
+      &lt;div class="var beat"&gt;&lt;div&gt;Beat&lt;/div&gt;&lt;div class="value"&gt;&lt;span id="beat"&gt;—&lt;/span&gt; &lt;span class="heart" id="heart"&gt;♥&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="raw"&gt;&lt;div style="color:#666;font-size:0.8em"&gt;Raw Serial:&lt;/div&gt;&lt;div id="raw" style="color:#44ff44"&gt;waiting...&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;script&gt;
+const BAUD = 115200, LEN = 600;
+let hist = new Array(LEN).fill(2048), min = 2048, max = 2048;
+let port, reader, on = false;
+const $ = id =&gt; document.getElementById(id);
+const canvas = $('canvas'), ctx = canvas.getContext('2d');
+const dpr = devicePixelRatio || 1;
+
+function initCanvas() {
+  const r = canvas.getBoundingClientRect();
+  canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+  ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr, dpr); draw();
+}
+addEventListener('load', initCanvas);
+
+$('btn').onclick = async () =&gt; {
+  if (on) {
+    on = false; if (reader) reader.cancel(); if (port) await port.close();
+    $('btn').textContent = 'Connect'; $('dot').classList.remove('on'); $('status').textContent = 'Disconnected';
+    return;
+  }
+  try {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: BAUD });
+    on = true; $('btn').textContent = 'Disconnect'; $('dot').classList.add('on'); $('status').textContent = 'Connected';
+    const dec = new TextDecoderStream(); port.readable.pipeTo(dec.writable); reader = dec.readable.getReader();
+    let buf = '';
+    while (on) {
+      const { value, done } = await reader.read(); if (done) break;
+      buf += value; const lines = buf.split('\n'); buf = lines.pop();
+      for (const l of lines) parse(l.trim());
+    }
+  } catch (e) { alert('Error: ' + e.message); }
+};
+
+function parse(line) {
+  $('raw').textContent = line;
+  const p = line.split(','); if (p.length &lt; 4) return;
+  const [sig, bpm, ibi, beat] = p.map(Number);
+  $('sig').textContent = sig;
+  $('bpm').textContent = bpm &gt; 0 ? bpm : '—';
+  $('ibi').textContent = bpm &gt; 0 &amp;&amp; ibi &gt; 0 ? ibi : '—';
+  $('beat').textContent = beat ? '1' : '0';
+  if (beat) { $('heart').classList.add('pulse'); setTimeout(() =&gt; $('heart').classList.remove('pulse'), 150); }
+  hist.shift(); hist.push(sig);
+  min = Math.min(...hist); max = Math.max(...hist); draw();
+}
+
+function draw() {
+  const w = canvas.width/dpr, h = canvas.height/dpr;
+  ctx.fillStyle = '#222'; ctx.fillRect(0, 0, w, h);
+  const range = Math.max(max - min, 1), scale = h/2/range;
+  ctx.strokeStyle = '#ff6b6b'; ctx.lineWidth = 2; ctx.beginPath();
+  for (let i = 0; i &lt; LEN; i++) {
+    const x = (i/LEN)*w, y = h/2 - ((hist[i]-min)*scale - range/2*scale);
+    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  }
+  ctx.stroke();
+}
+draw();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</details>
+</div>
+<!-- SUCCESS LOOKS LIKE -->
+<div style="background: #fefce8; border-left: 4px solid #eab308; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 25px 0;">
+<strong style="color: #ca8a04;">SUCCESS LOOKS LIKE</strong>
+<ul style="color: #666; margin: 10px 0 0 20px; padding: 0; line-height: 1.8;">
+<li>
+<strong>Smooth waveform:</strong> Clear peaks matching your heartbeat</li>
+<li>
+<strong>BPM stabilizes:</strong> Settles to 60-100 within 5-10 seconds</li>
+<li>
+<strong>Heart pulses:</strong> Icon animates with each detected beat</li>
+<li>
+<strong>Raw serial updates:</strong> Numbers streaming continuously</li>
+</ul>
+</div>
+<!-- IMPORTANT NOTE -->
+<div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;">
+<strong style="color: #b45309;">Important:</strong> <span style="color: #666;"> Close Arduino's Serial Monitor before clicking Connect—only one app can use the serial port at a time.</span>
+</div>
+<!-- TROUBLESHOOTING -->
+<h2 style="color: #e85555; margin-top: 40px; font-size: 1.4em;">Troubleshooting</h2>
+<div style="background: #fff5f5; border-radius: 8px; overflow: hidden; margin-top: 15px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+<thead>
+<tr style="background: #fee;">
+<th style="text-align: left; padding: 12px 15px; color: #333; border-bottom: 1px solid #fcc;">Problem</th>
+<th style="text-align: left; padding: 12px 15px; color: #333; border-bottom: 1px solid #fcc;">Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background: #fff;">
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #333;">Can't connect</td>
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #666;">Close Arduino Serial Monitor first. Use Chrome, Edge, or Brave. Try unplugging/replugging USB.</td>
+</tr>
+<tr style="background: #fff;">
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #333;">Flat line / no waveform</td>
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #666;">Check wiring: Signal→A0, +→3.3V, −→GND. Verify pin number in code. Confirm 115200 baud.</td>
+</tr>
+<tr style="background: #fff;">
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #333;">Noisy / jagged signal</td>
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #666;">Light pressure—don't squeeze. Try earlobe instead. Keep hand still.</td>
+</tr>
+<tr style="background: #fff;">
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #333;">BPM shows 0 or —</td>
+<td style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; color: #666;">Wait 5-10 seconds to stabilize. Lower setThreshold() for more sensitivity. Signal must swing clearly.</td>
+</tr>
+<tr style="background: #fff;">
+<td style="padding: 12px 15px; color: #333;">Signal stuck at 0 or 4095</td>
+<td style="padding: 12px 15px; color: #666;">No contact or bad wiring. Check sensor connection. Try different finger.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ACCESSORIES -->
+<div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin-top: 25px;">
+<strong style="color: #333;">For Steadier Readings</strong>
+<p style="color: #666; margin: 10px 0 0 0; font-size: 0.9em;">Try the <a href="https://pulsesensor.com/products/gold-stablizer-ring" style="color: #e85555;" target="_blank">Gold Stabilizer Ring</a> or <a href="https://pulsesensor.com/pages/sensor-holder-and-light-shield" style="color: #e85555;" target="_blank">Sensor Holder &amp; Light Shield</a>.</p>
+</div>
+</div>

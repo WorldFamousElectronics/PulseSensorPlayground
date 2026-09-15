@@ -123,8 +123,8 @@ void setup() {
       likely because our particular Arduino platform interrupts
       aren't supported yet.
 
-      If your Sketch hangs here, try PulseSensor_BPM_Alternative.ino,
-      which doesn't use interrupts.
+      If your Sketch hangs here, report the board name and Arduino core
+      version at https://github.com/WorldFamousElectronics/PulseSensorPlayground/issues.
     */
     for (;;) {
       // Flash the led to show things didn't work.
