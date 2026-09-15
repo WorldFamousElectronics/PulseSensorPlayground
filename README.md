@@ -157,7 +157,19 @@ Want to run it locally or change the code? See the [full source and home-build g
 - [All example sketches](examples/)
 - [Board-specific examples and library reference](https://pulsesensor.com/pages/installing-our-playground-for-pulsesensor-arduino)
 
-### Troubleshooting your signal
+---
+
+### Related Projects
+
+Some PulseSensor projects are better kept outside the Arduino Library Manager package because they need browser features, display setup, or extra dependencies.
+
+- [PulseSensor and WebSerial](https://pulsesensor.com/pages/pulsesensor-and-webserial)
+- [PulseSensor on CYD](https://pulsesensor.com/pages/cyd)
+- [Related project notes](resources/RelatedProjects.md)
+
+---
+
+### Troubleshooting Your Signal:
 
 Start with the raw waveform in `GettingStartedProject`:
 
